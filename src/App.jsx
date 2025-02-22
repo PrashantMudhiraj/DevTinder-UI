@@ -4,8 +4,8 @@ import { Provider } from "react-redux";
 import Body from "./components/Body";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
-import Feed from "./components/feed";
 import appStore from "./redux/appStore";
+import Feed from "./components/Feed";
 
 function App() {
     return (

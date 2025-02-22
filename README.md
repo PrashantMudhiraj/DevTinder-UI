@@ -17,6 +17,8 @@
 -   Install redux and configure user store
 -   Login and see the data coming for store
 -   NavBar should update as soon as user logins
+-   Login Logout
+-   redirect route to login token is not there
 
 # Structure
 
