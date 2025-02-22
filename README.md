@@ -10,6 +10,13 @@
 -   Create BrowserRouter -> Routes -> Route=/ Body -> RouteChildern
 -   Create an Outlet in Body component
 -   Create Footer below Outlet it will be constant
+-   Create a Login page
+-   Install axios
+-   CORS - install cors in backend => enabled domain , front end => withCredentials true
+-   Whenever you're making an API call you need to pass withCredentials : true in axios
+-   Install redux and configure user store
+-   Login and see the data coming for store
+-   NavBar should update as soon as user logins
 
 # Structure
 
