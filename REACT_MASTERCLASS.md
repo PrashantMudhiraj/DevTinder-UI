@@ -254,15 +254,398 @@ Each node in this tree corresponds to a **React Element** (plain JS object). Rea
 
 ---
 
+## 1.6 — How React Code Compiles and Builds (Full Pipeline)
+
+> This is one of the most important "behind the scenes" topics. Understanding it removes all the magic from JSX, Babel, and bundlers.
+
+---
+
+### Step 1 — You Write JSX
+
+JSX looks like HTML inside JavaScript, but it is **not valid JavaScript**. Browsers cannot parse it. The browser only understands plain JS, CSS, and HTML.
+
+```jsx
+// ❌ Browser cannot run this directly — it's not valid JS
+function App() {
+    return (
+        <div className="app">
+            <h1>Hello, {name}!</h1>
+            <Button onClick={handleClick}>Click me</Button>
+        </div>
+    );
+}
+```
+
+---
+
+### Step 2 — Babel (or SWC) Transforms JSX → `React.createElement`
+
+**Babel** is a JavaScript compiler (transpiler). Its job:
+
+1. Parse your `.jsx` / `.tsx` file into an AST (Abstract Syntax Tree)
+2. Transform JSX syntax into valid JavaScript function calls
+3. Output plain `.js` that any browser can run
+
+```
+JSX Source  ──► Babel Parser ──► AST ──► Transform Plugins ──► Plain JS Output
+```
+
+**What Babel does to your JSX:**
+
+```jsx
+// ---- WHAT YOU WRITE ----
+function App() {
+    return (
+        <div className="app">
+            <h1>Hello</h1>
+            <Button color="blue">Click</Button>
+        </div>
+    );
+}
+```
+
+```js
+// ---- WHAT BABEL OUTPUTS (Classic Transform — React 16 and earlier) ----
+// Note: requires `import React from 'react'` at the top of every file
+function App() {
+    return React.createElement(
+        "div", // tag name (string) for HTML elements
+        { className: "app" }, // props object (null if no props)
+        React.createElement("h1", null, "Hello"), // child 1
+        React.createElement(Button, { color: "blue" }, "Click"), // child 2
+    );
+}
+```
+
+```js
+// ---- WHAT BABEL OUTPUTS (Automatic JSX Transform — React 17+) ----
+// No `import React` needed! Babel auto-imports the jsx() function.
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+
+function App() {
+    return _jsxs("div", {
+        className: "app",
+        children: [
+            _jsx("h1", { children: "Hello" }),
+            _jsx(Button, { color: "blue", children: "Click" }),
+        ],
+    });
+}
+```
+
+> **Key difference**: The new automatic transform (`react/jsx-runtime`) is more efficient. `jsx()` always takes children as a prop — no variadic arguments. This allows better optimization later.
+
+---
+
+### Step 3 — What `React.createElement` Actually Does
+
+`React.createElement(type, props, ...children)` is a simple factory function. It creates a **React Element** — a plain JavaScript object:
+
+```js
+// Signature
+React.createElement(
+    type, // string ('div', 'h1') for HTML | Component function/class for custom
+    props, // object of attributes/props, or null
+    ...children, // zero or more child elements or strings
+);
+```
+
+**Full example — nested JSX → nested createElement calls:**
+
+```jsx
+// JSX
+const ui = (
+    <form onSubmit={handleSubmit}>
+        <label htmlFor="email">Email</label>
+        <input id="email" type="email" value={email} onChange={setEmail} />
+        <button type="submit">Send</button>
+    </form>
+);
+
+// What createElement produces (a plain JS object tree):
+const ui = React.createElement(
+    "form",
+    { onSubmit: handleSubmit },
+    React.createElement("label", { htmlFor: "email" }, "Email"),
+    React.createElement("input", {
+        id: "email",
+        type: "email",
+        value: email,
+        onChange: setEmail,
+    }),
+    React.createElement("button", { type: "submit" }, "Send"),
+);
+```
+
+**The resulting object React holds in memory:**
+
+```js
+// React Element — just a plain object (the "Virtual DOM node")
+{
+  $$typeof: Symbol(react.element),  // anti-XSS security marker
+  type: "form",                     // what to render
+  key: null,                        // for list reconciliation
+  ref: null,                        // for DOM/instance access
+  props: {
+    onSubmit: handleSubmit,
+    children: [
+      { type: "label", props: { htmlFor: "email", children: "Email" } },
+      { type: "input", props: { id: "email", type: "email", value: email, onChange: setEmail } },
+      { type: "button", props: { type: "submit", children: "Send" } },
+    ]
+  }
+}
+```
+
+#### `$$typeof: Symbol(react.element)` — Why It Matters
+
+If an attacker injects a JSON string into your app (e.g., from a malicious API response) that looks like a React element object, React checks for `$$typeof`. A `Symbol` **cannot** be serialized to JSON (`JSON.stringify` drops Symbols). So injected JSON can never pass the `$$typeof` check — React refuses to render it as a component. This prevents a class of XSS attacks.
+
+---
+
+### Step 4 — How the Type Field Works
+
+```js
+// For HTML elements → type is a string
+React.createElement("div", ...)   // type = "div"
+React.createElement("span", ...)  // type = "span"
+
+// For custom components → type is the actual function/class reference
+React.createElement(MyButton, ...) // type = [Function: MyButton]
+React.createElement(Router, ...)   // type = [Function: Router]
+```
+
+React uses this to decide:
+
+- **String** → create a real DOM node (`document.createElement("div")`)
+- **Function** → call the function and recursively process what it returns
+- **Class** → instantiate it and call `.render()`
+
+---
+
+### Step 5 — The Bundler (Vite / Webpack)
+
+Babel handles **syntax transformation** (JSX → JS). But your app has hundreds of files, npm packages, CSS imports, images, etc. That's the bundler's job.
+
+```mermaid
+graph TD
+    SRC["Your Source Files<br/>(.jsx, .tsx, .css, .svg)"]
+    BABEL["Babel / SWC<br/>(JSX → JS, TypeScript → JS)"]
+    BUNDLE["Bundler (Vite / Webpack)<br/>- Resolves imports<br/>- Tree-shakes dead code<br/>- Splits chunks<br/>- Minifies"]
+    OUT1["main.js (your app code)"]
+    OUT2["vendor.js (React, libraries)"]
+    OUT3["chunk-AdminPanel.js (lazy)"]
+
+    SRC --> BABEL --> BUNDLE
+    BUNDLE --> OUT1
+    BUNDLE --> OUT2
+    BUNDLE --> OUT3
+
+    style BABEL fill:#f6921e,color:#fff
+    style BUNDLE fill:#7952b3,color:#fff
+    style OUT1 fill:#28a745,color:#fff
+```
+
+**Vite** (used in this project):
+
+- In **dev mode**: Uses native ES Modules — no bundling. Files are served individually. HMR (Hot Module Replacement) is instant.
+- In **prod mode**: Uses Rollup under the hood to bundle, tree-shake, and minify.
+
+**SWC** (Speedy Web Compiler):
+
+- Written in Rust — 20–70× faster than Babel
+- Vite uses SWC by default via `@vitejs/plugin-react-swc`
+- Does the same JSX → JS transform that Babel does, just much faster
+
+---
+
+### Step 6 — Full End-to-End Pipeline
+
+```mermaid
+graph LR
+    A["You write JSX<br/>(.jsx / .tsx)"]
+    B["Babel / SWC<br/>transforms JSX → JS<br/>TypeScript → JS"]
+    C["Bundler (Vite/Webpack)<br/>resolves imports<br/>adds polyfills<br/>tree-shakes"]
+    D["Browser downloads<br/>main.js, vendor.js,<br/>chunk files"]
+    E["JS Engine runs<br/>React.createElement calls<br/>build element tree"]
+    F["React reconciler<br/>diffs old vs new<br/>Fiber tree built"]
+    G["Commit phase<br/>Real DOM updated<br/>Browser paints"]
+
+    A --> B --> C --> D --> E --> F --> G
+
+    style A fill:#61dafb,color:#000
+    style B fill:#f6921e,color:#fff
+    style C fill:#7952b3,color:#fff
+    style D fill:#6c757d,color:#fff
+    style E fill:#f0ad4e,color:#000
+    style F fill:#0d6efd,color:#fff
+    style G fill:#28a745,color:#fff
+```
+
+---
+
+### The Classic vs. Automatic JSX Transform
+
+| Feature           | Classic (React ≤ 16)                          | Automatic (React 17+)                   |
+| ----------------- | --------------------------------------------- | --------------------------------------- |
+| Import required   | `import React from 'react'` in every file     | No manual import needed                 |
+| Function used     | `React.createElement()`                       | `jsx()` from `react/jsx-runtime`        |
+| Children handling | Variadic `...children` args                   | Always passed as `children` prop        |
+| Bundle size       | Slightly larger                               | Slightly smaller (tree-shakeable)       |
+| Babel plugin      | `@babel/plugin-transform-react-jsx` (classic) | Same plugin with `runtime: "automatic"` |
+
+---
+
+### Common Questions
+
+**Q: Do I need `import React from 'react'` in React 18?**  
+No — with the automatic JSX transform (default in Vite + React 17+), React is auto-imported by the compiler only where needed. You only import React when you use it explicitly (e.g., `React.memo`, `React.createContext`).
+
+**Q: What's the difference between Babel and SWC?**  
+Same job (transpile JS/JSX/TS), different implementation. Babel is JavaScript — slow but hugely extensible with plugins. SWC is Rust — extremely fast but fewer ecosystem plugins. Vite defaults to SWC; Create React App uses Babel.
+
+**Q: What is tree-shaking?**  
+Bundlers analyze your `import` statements and remove code that is never imported/used. If you import only `{ useState }` from React, the rest of React's source is tree-shaken out of your bundle.
+
+**Q: What is `react/jsx-runtime`?**  
+A small module React ships alongside the main `react` package. It exports `jsx()`, `jsxs()`, and `Fragment`. With the automatic transform, Babel/SWC injects `import { jsx } from 'react/jsx-runtime'` at the top of your compiled file — you never write it manually.
+
+---
+
+## 1.7 — Conditional Rendering
+
+React has no special template syntax for conditions (no `v-if`, no `*ngIf`). You use plain JavaScript. There are three common patterns:
+
+### Pattern 1 — `if` / `else` (for complex conditions)
+
+```jsx
+function UserGreeting({ user, isLoading }) {
+    if (isLoading) {
+        return <Spinner />;
+    }
+
+    if (!user) {
+        return <p>Please log in.</p>;
+    }
+
+    return <h1>Welcome back, {user.name}!</h1>;
+}
+```
+
+### Pattern 2 — Ternary Operator (inline, either/or)
+
+```jsx
+function StatusBadge({ isOnline }) {
+    return (
+        <span className={isOnline ? "badge-green" : "badge-grey"}>
+            {isOnline ? "Online" : "Offline"}
+        </span>
+    );
+}
+```
+
+### Pattern 3 — Short-Circuit `&&` (render or nothing)
+
+```jsx
+function Notification({ unreadCount }) {
+    return (
+        <div>
+            <h1>Inbox</h1>
+            {/* Only renders if unreadCount > 0 */}
+            {unreadCount > 0 && (
+                <span className="badge">{unreadCount} unread</span>
+            )}
+        </div>
+    );
+}
+
+// ⚠️ GOTCHA: Never use a number directly with &&
+// {items.length && <List />}  ← WRONG: renders "0" as text when items is empty
+// {items.length > 0 && <List />}  ← CORRECT: always a boolean
+```
+
+### Pattern 4 — Early Return (clearest for guards)
+
+```jsx
+function AdminPanel({ user }) {
+    if (!user.isAdmin) return null; // Render nothing
+
+    return <div className="admin-panel">...</div>;
+}
+```
+
+| Pattern       | Use when                                          |
+| ------------- | ------------------------------------------------- |
+| `if/else`     | Multiple conditions, complex logic, early returns |
+| Ternary `? :` | Two alternatives inline in JSX                    |
+| `&& `         | Render something OR nothing                       |
+| `null` return | Skip render entirely                              |
+
+---
+
+## 1.8 — Fragments: Grouping Without Extra DOM Nodes
+
+JSX requires a **single root element**. But wrapping in a `<div>` adds unnecessary DOM nodes, which can break CSS layouts (like flexbox/grid parents).
+
+**Fragments** solve this — they group JSX without adding any real DOM element.
+
+```jsx
+// ❌ BAD: Extra <div> pollutes the DOM — breaks table row, flex/grid layouts
+function TableRow() {
+    return (
+        <div>
+            {" "}
+            {/* This <div> inside <tr> is invalid HTML! */}
+            <td>Name</td>
+            <td>Age</td>
+        </div>
+    );
+}
+
+// ✅ GOOD: Fragment groups the cells with zero DOM output
+function TableRow() {
+    return (
+        <>
+            <td>Name</td>
+            <td>Age</td>
+        </>
+    );
+}
+
+// ✅ Explicit Fragment — needed when you need a key prop (in lists)
+import { Fragment } from "react";
+
+function DefinitionList({ terms }) {
+    return (
+        <dl>
+            {terms.map((term) => (
+                <Fragment key={term.id}>
+                    {" "}
+                    {/* <> shorthand can't take a key */}
+                    <dt>{term.word}</dt>
+                    <dd>{term.definition}</dd>
+                </Fragment>
+            ))}
+        </dl>
+    );
+}
+```
+
+> **Rule**: Use `<>...</>` everywhere. Only switch to `<Fragment key={...}>` when you need to attach a `key` prop — the shorthand syntax doesn't support attributes.
+
+---
+
 ## Module 1 Summary
 
-| Concept                | Key Takeaway                                                               |
-| ---------------------- | -------------------------------------------------------------------------- |
-| **JSX**                | Syntactic sugar for `React.createElement()`. Compiles to plain JS objects. |
-| **Virtual DOM**        | A tree of plain JS objects. Not magic — just a description of the UI.      |
-| **Props**              | Read-only, downward-flowing data. The public API of a component.           |
-| **Pure Components**    | Same inputs → same output. No side effects during render.                  |
-| **`$$typeof: Symbol`** | Security feature preventing JSON-injected XSS attacks.                     |
+| Concept                   | Key Takeaway                                                                  |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| **JSX**                   | Syntactic sugar for `React.createElement()`. Compiles to plain JS objects.    |
+| **Virtual DOM**           | A tree of plain JS objects. Not magic — just a description of the UI.         |
+| **Props**                 | Read-only, downward-flowing data. The public API of a component.              |
+| **Pure Components**       | Same inputs → same output. No side effects during render.                     |
+| **`$$typeof: Symbol`**    | Security feature preventing JSON-injected XSS attacks.                        |
+| **Conditional Rendering** | Use `if/else`, ternary, or `&&` — no special template syntax in React.        |
+| **Fragments**             | `<>...</>` groups JSX without extra DOM nodes. Use `<Fragment key>` in lists. |
 
 ---
 
@@ -517,15 +900,311 @@ function TodoList({ todos }) {
 
 ---
 
+## 2.5 — State Mutation: Who Actually Changes It?
+
+> **The #1 beginner misconception**: "I call `setState`, so React updates the variable in place."  
+> **Reality**: React never mutates your existing state. It replaces it with a brand new value — and YOU must never mutate it either.
+
+---
+
+### The Golden Rule
+
+```
+Never directly mutate state.
+Always give React a brand new value via the setter function.
+```
+
+React decides **when** to re-render and **what** the new state is. You only ever _request_ a state change by calling the setter. React does the actual swap inside its Fiber node.
+
+---
+
+### What Happens Internally When You Call `setState`
+
+```mermaid
+sequenceDiagram
+    participant You as Your Code
+    participant React as React Scheduler
+    participant Fiber as Fiber Node
+    participant DOM as Real DOM
+
+    You->>React: setCount(count + 1)
+    Note over React: Queues an update.<br/>Does NOT mutate count yet.
+    React->>Fiber: Schedules re-render at next frame
+    Fiber->>Fiber: Runs component function again<br/>with new state value
+    Fiber->>DOM: Commits only the changed parts
+    Note over You: count now holds new value<br/>on the NEXT render call
+```
+
+React stores state inside the **Fiber node** (`hook.memoizedState`). When you call `setCount(5)`:
+
+1. React pushes an update object onto a queue on that Fiber node.
+2. React schedules a re-render (batched with other updates).
+3. On the next render, React runs your component function again.
+4. The `useState` hook reads the new value from the update queue and returns it.
+5. Your component function sees the NEW value as `count`.
+
+**Between your `setCount()` call and the next render, `count` still holds the OLD value.**
+
+---
+
+### Direct Mutation — Why It Silently Breaks React
+
+```jsx
+// ============================================================
+// ❌ BAD CODE: Directly mutating state — React has NO IDEA this happened
+// ============================================================
+const [user, setUser] = useState({ name: "Alice", age: 30 });
+
+function handleBirthday() {
+    user.age = 31; // ← MUTATING the object directly
+    setUser(user); // ← Passing the SAME object reference
+}
+
+// WHY THIS BREAKS:
+// React does a shallow reference check: Object.is(prevState, nextState)
+// prevState === nextState (same object!) → React thinks NOTHING CHANGED
+// → NO re-render → UI stays stuck showing old value
+```
+
+```jsx
+// ============================================================
+// ✅ BEST PRACTICE: Always produce a NEW object / array
+// ============================================================
+const [user, setUser] = useState({ name: "Alice", age: 30 });
+
+function handleBirthday() {
+    setUser({ ...user, age: user.age + 1 }); // ← NEW object via spread
+    //      ↑ copies all existing fields, overwrites only `age`
+}
+
+// React: Object.is(prevUser, nextUser) → false (different reference)
+// → Re-render triggered → UI updates correctly ✔
+```
+
+---
+
+### Arrays Are the Same — Never `.push()` / `.splice()` Directly
+
+```jsx
+// ============================================================
+// ❌ BAD: Mutating array state directly
+// ============================================================
+const [items, setItems] = useState(["Apple", "Banana"]);
+
+function addItem() {
+    items.push("Cherry"); // ← mutates the existing array
+    setItems(items); // ← same reference → React skips re-render!
+}
+
+function removeFirst() {
+    items.splice(0, 1); // ← mutates in-place
+    setItems(items); // ← same reference again → broken
+}
+```
+
+```jsx
+// ============================================================
+// ✅ BEST PRACTICE: Always return a new array
+// ============================================================
+const [items, setItems] = useState(["Apple", "Banana"]);
+
+// ADD — spread to create a new array
+function addItem() {
+    setItems([...items, "Cherry"]); // ✅ new array
+}
+
+// REMOVE — filter creates a new array
+function removeItem(index) {
+    setItems(items.filter((_, i) => i !== index)); // ✅ new array
+}
+
+// UPDATE — map creates a new array
+function updateItem(index, newValue) {
+    setItems(items.map((item, i) => (i === index ? newValue : item))); // ✅ new array
+}
+
+// INSERT at position — slice + spread
+function insertAt(index, value) {
+    setItems([...items.slice(0, index), value, ...items.slice(index)]); // ✅ new array
+}
+```
+
+---
+
+### Nested Objects — The Deep Clone Trap
+
+```jsx
+// ============================================================
+// ❌ BAD: Spread only goes one level deep (shallow copy)
+// ============================================================
+const [profile, setProfile] = useState({
+    name: "Alice",
+    address: { city: "NYC", zip: "10001" },
+});
+
+function updateCity() {
+    // BUG: spread copies the `address` REFERENCE, not a new object
+    setProfile({ ...profile, address: { city: "LA" } }); // ← missing `zip`!
+    // or worse:
+    profile.address.city = "LA"; // ← mutates nested object directly
+    setProfile({ ...profile }); // ← looks like a new object but nested ref mutated
+}
+```
+
+```jsx
+// ============================================================
+// ✅ BEST PRACTICE: Spread at every level you're changing
+// ============================================================
+function updateCity(newCity) {
+    setProfile({
+        ...profile, // copy top-level fields
+        address: {
+            // replace the nested object
+            ...profile.address, // copy nested fields
+            city: newCity, // override only what changed
+        },
+    });
+}
+
+// For deeply nested state, consider using Immer (same syntax as mutation):
+// import produce from 'immer';
+// setProfile(produce(profile, draft => { draft.address.city = newCity; }));
+```
+
+---
+
+### Why Immer Looks Like Mutation But Isn't
+
+Redux Toolkit uses **Immer** under the hood. In a reducer you can write:
+
+```js
+// Inside a Redux Toolkit reducer (Immer-powered)
+state.user.age = 31; // Looks like mutation...
+state.items.push("Cherry"); // Looks like .push()...
+```
+
+Immer wraps your state in a **Proxy**. Any "mutation" you do on the proxy is **recorded** but not applied. At the end, Immer produces a brand new immutable object with all your changes applied. The original state object is untouched.
+
+So even in RTK, you are never actually mutating — Immer creates a new object. This is why you **cannot** use Immer-style writes outside of RTK reducers (plain `useState` does not have Immer).
+
+---
+
+### Quick Reference — Immutable Update Cheat Sheet
+
+| Operation            | ❌ Mutating        | ✅ Immutable                             |
+| -------------------- | ------------------ | ---------------------------------------- |
+| Update object field  | `obj.x = 1`        | `{ ...obj, x: 1 }`                       |
+| Add to array         | `arr.push(x)`      | `[...arr, x]`                            |
+| Remove from array    | `arr.splice(i, 1)` | `arr.filter((_, idx) => idx !== i)`      |
+| Update array item    | `arr[i] = x`       | `arr.map((v, idx) => idx === i ? x : v)` |
+| Nested object update | `obj.a.b = x`      | `{ ...obj, a: { ...obj.a, b: x } }`      |
+| Sort array           | `arr.sort()`       | `[...arr].sort()`                        |
+| Reverse array        | `arr.reverse()`    | `[...arr].reverse()`                     |
+
+---
+
+## 2.6 — State as a Snapshot
+
+> This is one of the most misunderstood React concepts, and the root cause of most "stale state" bugs.
+
+**State is not a live variable — it's a snapshot frozen at the time of the render.**
+
+When React calls your component function, it passes the current state value in. For the _entire duration of that render_, every reference to `count` (or whatever your state variable is) will return that same frozen value — even if you call `setState` multiple times.
+
+```jsx
+// ============================================================
+// The confusing example everyone runs into
+// ============================================================
+function Counter() {
+    const [count, setCount] = useState(0);
+
+    function handleClick() {
+        setCount(count + 1); // count is 0 here — queues: set to 1
+        setCount(count + 1); // count is STILL 0 — queues: set to 1 again!
+        setCount(count + 1); // count is STILL 0 — queues: set to 1 again!
+        // Result: count becomes 1, not 3
+        // Because `count` is the SNAPSHOT value (0) for this entire render
+    }
+
+    return <button onClick={handleClick}>{count}</button>;
+}
+```
+
+Think of it like a **photograph**: when the shutter fires, the image is frozen. You can look at the photo a thousand times and it always shows the same moment. Calling `setState` doesn't change the existing photo — it schedules a new photo (render) to be taken.
+
+```mermaid
+sequenceDiagram
+    participant Render1 as Render #1 (count=0)
+    participant Queue as Update Queue
+    participant Render2 as Render #2 (count=1)
+
+    Render1->>Queue: setCount(0 + 1) → schedule 1
+    Render1->>Queue: setCount(0 + 1) → schedule 1 (same!)
+    Render1->>Queue: setCount(0 + 1) → schedule 1 (same!)
+    Note over Render1: "count" in this render is ALWAYS 0
+    Queue->>Render2: React processes queue → count = 1
+    Note over Render2: New snapshot: count = 1
+```
+
+### The Fix: Functional Updater Form
+
+The functional updater `setCount(prev => prev + 1)` does NOT use the snapshot. It receives the latest **queued** value:
+
+```jsx
+function Counter() {
+    const [count, setCount] = useState(0);
+
+    function handleClick() {
+        setCount((prev) => prev + 1); // prev=0 → queues: set to 1
+        setCount((prev) => prev + 1); // prev=1 → queues: set to 2
+        setCount((prev) => prev + 1); // prev=2 → queues: set to 3
+        // Result: count becomes 3 ✔
+    }
+
+    return <button onClick={handleClick}>{count}</button>;
+}
+```
+
+### Stale Closures in `useEffect`
+
+The snapshot model also explains stale closures in `useEffect`:
+
+```jsx
+// ❌ STALE CLOSURE BUG
+function Timer() {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        const id = setInterval(() => {
+            setCount(count + 1); // ← `count` is FROZEN at 0 (the snapshot at mount time)
+            // This will always set count to 1, never increment beyond
+        }, 1000);
+        return () => clearInterval(id);
+    }, []); // Empty deps — only runs once, captures count=0 forever
+}
+
+// ✅ FIX: Use functional updater — no closure dependency on count
+useEffect(() => {
+    const id = setInterval(() => {
+        setCount((prev) => prev + 1); // ← Always works, no stale reference
+    }, 1000);
+    return () => clearInterval(id);
+}, []);
+```
+
+---
+
 ## Module 2 Summary
 
-| Concept              | Key Takeaway                                                                            |
-| -------------------- | --------------------------------------------------------------------------------------- |
-| **Fiber Node**       | Per-component JS object holding hooks, tree pointers, and scheduling info.              |
-| **Hook Linked List** | Hooks are identified by position. Never call hooks conditionally.                       |
-| **Batching**         | Multiple `setState` calls → 1 re-render. Use functional updater for sequential updates. |
-| **Reconciliation**   | $O(n)$ diffing using type-equality and `key` heuristics.                                |
-| **`key` prop**       | Must be stable and unique. Index keys cause bugs with dynamic lists.                    |
+| Concept                 | Key Takeaway                                                                            |
+| ----------------------- | --------------------------------------------------------------------------------------- |
+| **Fiber Node**          | Per-component JS object holding hooks, tree pointers, and scheduling info.              |
+| **Hook Linked List**    | Hooks are identified by position. Never call hooks conditionally.                       |
+| **Batching**            | Multiple `setState` calls → 1 re-render. Use functional updater for sequential updates. |
+| **Reconciliation**      | $O(n)$ diffing using type-equality and `key` heuristics.                                |
+| **`key` prop**          | Must be stable and unique. Index keys cause bugs with dynamic lists.                    |
+| **State Immutability**  | Never mutate state directly. Always return new objects/arrays via the setter.           |
+| **State as a Snapshot** | State is frozen per render. Use functional updater `prev =>` for sequential updates.    |
 
 ---
 
@@ -1245,10 +1924,10 @@ When you build a component that receives `children`, you sometimes need to **ins
 
 ```mermaid
 graph TD
-    PARENT["Parent component\nhas {children}"]
-    PARENT -->|React.Children.map| INSPECT["Inspect & filter\nchildren"]
-    INSPECT -->|React.cloneElement| INJECT["Clone each child\nwith extra props"]
-    INJECT --> RENDER["Render with\ninjected context"]
+    PARENT["Parent component<br/>has {children}"]
+    PARENT -->|React.Children.map| INSPECT["Inspect & filter<br/>children"]
+    INSPECT -->|React.cloneElement| INJECT["Clone each child<br/>with extra props"]
+    INJECT --> RENDER["Render with<br/>injected context"]
     style INJECT fill:#6366f1,color:#fff
 ```
 
@@ -1556,12 +2235,12 @@ function SafeLazy({ component: Component, fallback }) {
 
 ```mermaid
 graph TD
-    BUNDLE["main.js\n(downloaded immediately)"]
-    BUNDLE --> HOME["Home · NavBar · Login\n(always needed)"]
+    BUNDLE["main.js<br/>(downloaded immediately)"]
+    BUNDLE --> HOME["Home · NavBar · Login<br/>(always needed)"]
 
-    CHUNK1["admin.chunk.js\n(downloaded only if /admin)"]
-    CHUNK2["analytics.chunk.js\n(downloaded only if /analytics)"]
-    CHUNK3["editor.chunk.js\n(downloaded on button click)"]
+    CHUNK1["admin.chunk.js<br/>(downloaded only if /admin)"]
+    CHUNK2["analytics.chunk.js<br/>(downloaded only if /analytics)"]
+    CHUNK3["editor.chunk.js<br/>(downloaded on button click)"]
 
     HOME -.->|lazy()| CHUNK1
     HOME -.->|lazy()| CHUNK2
@@ -1678,12 +2357,12 @@ React 19 (released December 2024) is the biggest React update in years. It ships
 ```mermaid
 graph LR
     R19["React 19"]
-    R19 --> USE["use() hook\nReads Promises & Context"]
-    R19 --> ACTIONS["Actions & useActionState\nBuilt-in async form handling"]
-    R19 --> OPT["useOptimistic\nInstant UI before server confirms"]
-    R19 --> FC["ref as prop\nNo more forwardRef"]
-    R19 --> META["Document metadata\n<title>, <meta> anywhere"]
-    R19 --> COMPILER["React Compiler\nAuto-memoization"]
+    R19 --> USE["use() hook<br/>Reads Promises & Context"]
+    R19 --> ACTIONS["Actions & useActionState<br/>Built-in async form handling"]
+    R19 --> OPT["useOptimistic<br/>Instant UI before server confirms"]
+    R19 --> FC["ref as prop<br/>No more forwardRef"]
+    R19 --> META["Document metadata<br/><title>, <meta> anywhere"]
+    R19 --> COMPILER["React Compiler<br/>Auto-memoization"]
     style R19 fill:#6366f1,color:#fff
 ```
 
@@ -4069,6 +4748,8 @@ function App() {
 
 ---
 
+---
+
 ## 10.7 — Useful Router Hooks
 
 | Hook                | What it does                                      |
@@ -4077,6 +4758,9 @@ function App() {
 | `useNavigate()`     | Programmatic navigation (`navigate('/home')`)     |
 | `useLocation()`     | Get current URL, pathname, search params          |
 | `useSearchParams()` | Read/write URL query strings (`?page=2&sort=asc`) |
+| `useMatch()`        | Check if the current URL matches a pattern        |
+| `useRouteError()`   | Read the error thrown by a route's loader/action  |
+| `useLoaderData()`   | Read data returned by a route's `loader` function |
 
 ```jsx
 // useSearchParams example — URL-driven filter state
@@ -4100,17 +4784,328 @@ function ProductList() {
 
 ---
 
+## 10.8 — React Router v7: Data Mode (`createBrowserRouter`)
+
+React Router v7 introduced a **Data Mode** — a more powerful way to define routes using a route config object instead of JSX. This is the recommended modern approach.
+
+### The Three Modes in React Router v7
+
+| Mode            | When to use                                          | Setup                                    |
+| --------------- | ---------------------------------------------------- | ---------------------------------------- |
+| **Declarative** | Simple apps, migrating from v5/v6                    | `<BrowserRouter>` + JSX `<Routes>`       |
+| **Data**        | Medium/large apps — loaders, actions, error handling | `createBrowserRouter` + `RouterProvider` |
+| **Framework**   | Full-stack apps (replaces Remix)                     | File-based routing, SSR, server actions  |
+
+### Data Mode Setup
+
+```jsx
+// main.jsx
+import { createBrowserRouter, RouterProvider } from "react-router";
+import ReactDOM from "react-dom/client";
+import Root from "./Root";
+import Home from "./Home";
+import UserPage from "./UserPage";
+import ErrorPage from "./ErrorPage";
+
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Root />, // Layout component with <Outlet>
+        errorElement: <ErrorPage />, // Renders if loader throws or component crashes
+        children: [
+            { index: true, element: <Home /> }, // "/" default
+            {
+                path: "users/:userId",
+                element: <UserPage />,
+                errorElement: <UserErrorPage />,
+                // ← loader runs BEFORE the component renders
+                loader: async ({ params }) => {
+                    const res = await fetch(`/api/users/${params.userId}`);
+                    if (!res.ok)
+                        throw new Response("Not Found", { status: 404 });
+                    return res.json(); // returned value is available via useLoaderData()
+                },
+            },
+        ],
+    },
+]);
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+    <RouterProvider router={router} />,
+);
+```
+
+### `loader` + `useLoaderData`
+
+The `loader` function runs **before** the route component mounts. It fetches data server-side style — no `useEffect`, no loading state needed inside the component.
+
+```jsx
+// ❌ OLD WAY (without loaders) — component manages loading state
+function UserPage() {
+    const { userId } = useParams();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch(`/api/users/${userId}`)
+            .then((r) => r.json())
+            .then((data) => {
+                setUser(data);
+                setLoading(false);
+            });
+    }, [userId]);
+
+    if (loading) return <Spinner />;
+    return <h1>{user.name}</h1>;
+}
+```
+
+```jsx
+// ✅ NEW WAY — loader fetches before render, component just reads
+// Route config:
+{
+  path: "users/:userId",
+  loader: async ({ params }) => {
+    const user = await fetchUser(params.userId); // fetch before component mounts
+    return user;
+  },
+  element: <UserPage />,
+}
+
+// Component — zero loading state, zero useEffect:
+function UserPage() {
+  const user = useLoaderData(); // typed data from the loader
+  return <h1>{user.name}</h1>;
+}
+```
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant Router as React Router
+    participant Loader as Route Loader
+    participant Component as UserPage
+
+    Browser->>Router: Navigate to /users/42
+    Router->>Loader: Call loader({ params: { userId: "42" } })
+    Loader->>Loader: await fetch('/api/users/42')
+    Loader-->>Router: return { name: "Alice", ... }
+    Router->>Component: Render UserPage — useLoaderData() returns the user
+    Note over Component: No loading state needed. Data is already there.
+```
+
+### `errorElement` + `useRouteError`
+
+When a loader throws (or a component crashes), React Router renders the `errorElement` instead:
+
+```jsx
+// ErrorPage.jsx
+import { useRouteError, isRouteErrorResponse } from "react-router";
+
+function ErrorPage() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    // Error thrown from loader with `throw new Response(...)`
+    return (
+      <div>
+        <h1>{error.status} {error.statusText}</h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  }
+
+  // Unexpected runtime error
+  return <div>Something went wrong: {error.message}</div>;
+}
+
+// Route definition:
+{
+  path: "users/:userId",
+  loader: async ({ params }) => {
+    const res = await fetch(`/api/users/${params.userId}`);
+    if (!res.ok) throw new Response("User not found", { status: 404 }); // caught by errorElement
+    return res.json();
+  },
+  element: <UserPage />,
+  errorElement: <ErrorPage />,   // renders on any error in this route subtree
+}
+```
+
+### All Route Segment Types
+
+```jsx
+createBrowserRouter([
+    // Static segment
+    { path: "/about", element: <About /> },
+
+    // Dynamic segment — :param
+    { path: "/users/:userId", element: <User /> },
+
+    // Optional segment — :lang?
+    { path: "/:lang?/docs", element: <Docs /> },
+    // Matches /docs AND /en/docs AND /fr/docs
+
+    // Splat / catchall — *
+    { path: "/files/*", element: <FileExplorer /> },
+    // params["*"] holds the rest of the path
+
+    // Index route — renders at parent URL
+    { index: true, element: <Home /> },
+
+    // Layout route — no path, wraps children
+    {
+        element: <MarketingLayout />, // no `path` = layout only
+        children: [
+            { index: true, element: <HomeMarketing /> },
+            { path: "pricing", element: <Pricing /> },
+        ],
+    },
+
+    // 404 — catch-all at end
+    { path: "*", element: <NotFound /> },
+]);
+```
+
+---
+
+## 10.9 — v6 → v7 Key Differences
+
+| Feature        | v6                       | v7                                          |
+| -------------- | ------------------------ | ------------------------------------------- |
+| Package name   | `react-router-dom`       | `react-router`                              |
+| Data loading   | `useEffect` in component | `loader` in route config                    |
+| Error handling | try/catch in component   | `errorElement` per route                    |
+| Route config   | JSX `<Routes>/<Route>`   | `createBrowserRouter([...])`                |
+| Provider       | `<BrowserRouter>`        | `<RouterProvider router={router}>`          |
+| Form mutations | manual fetch             | `action` functions + `useFetcher`           |
+| TypeScript     | manual types             | auto-generated route types (framework mode) |
+
+---
+
+## 10.10 — Alternate Routing Libraries
+
+React Router is the most popular, but not the only option:
+
+### TanStack Router
+
+```bash
+npm install @tanstack/react-router
+```
+
+```tsx
+import {
+    createRouter,
+    createRoute,
+    createRootRoute,
+} from "@tanstack/react-router";
+
+const rootRoute = createRootRoute({ component: Root });
+const indexRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/",
+    component: Home,
+});
+const userRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/users/$userId",
+    loader: ({ params }) => fetchUser(params.userId),
+    component: UserPage,
+});
+
+const router = createRouter({
+    routeTree: rootRoute.addChildren([indexRoute, userRoute]),
+});
+```
+
+**Why choose TanStack Router?**
+
+- 100% TypeScript-first — route params and loader data are fully typed automatically
+- Built-in search param management with schema validation (Zod)
+- Devtools built in
+- No implicit `any` — search params, params are all typed
+
+### Wouter
+
+```bash
+npm install wouter
+```
+
+```jsx
+import { Route, Link, Switch } from "wouter";
+
+function App() {
+    return (
+        <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/users/:id">{({ id }) => <User id={id} />}</Route>
+            <Route>404 Not Found</Route>
+        </Switch>
+    );
+}
+```
+
+**Why choose Wouter?**
+
+- Tiny — 2kb gzipped (React Router is ~50kb)
+- No context, hook-based
+- Perfect for micro-frontends or small apps where bundle size matters
+
+### Next.js App Router (File-based Routing)
+
+```
+app/
+  page.tsx          → renders at "/"
+  about/
+    page.tsx        → renders at "/about"
+  users/
+    [id]/
+      page.tsx      → renders at "/users/:id"
+      loading.tsx   → automatic Suspense loading state
+      error.tsx     → automatic ErrorBoundary
+      layout.tsx    → shared layout for /users/*
+```
+
+**Why choose Next.js App Router?**
+
+- Zero config routing — file structure = routes
+- Server Components by default — data fetching in the component
+- Automatic code splitting per route
+- Streaming, loading states, and error handling built in
+
+### Comparison Table
+
+| Library            | Bundle Size     | TypeScript         | Data Loading      | SSR                | Best For         |
+| ------------------ | --------------- | ------------------ | ----------------- | ------------------ | ---------------- |
+| React Router v7    | ~50kb           | Good               | Loaders/Actions   | Via Framework mode | Most SPA apps    |
+| TanStack Router    | ~35kb           | Excellent (spec'd) | Loaders (typed)   | Limited            | Type-safe SPAs   |
+| Wouter             | ~2kb            | Good               | Manual            | No                 | Small apps       |
+| Next.js App Router | N/A (framework) | Excellent          | Server Components | Native             | Full-stack React |
+
+---
+
 ## Module 10 Summary
 
-| Concept                   | Key Takeaway                                                  |
-| ------------------------- | ------------------------------------------------------------- |
-| `BrowserRouter`           | Enables URL-based routing using browser history API           |
-| `Routes` / `Route`        | Maps URL paths to components                                  |
-| `Link` / `NavLink`        | Client-side navigation without full page reload               |
-| `useNavigate`             | Programmatic redirect after actions (login, submit)           |
-| Dynamic routes (`:param`) | URL segments that carry data                                  |
-| Nested routes + `Outlet`  | Shared layouts with swappable content areas                   |
-| Protected routes          | Auth guard using `Navigate` to redirect unauthenticated users |
+| Concept                       | Key Takeaway                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| `BrowserRouter`               | Enables URL-based routing using browser history API (Declarative mode)          |
+| `createBrowserRouter`         | Object-based router config — enables loaders, actions, errorElement (Data mode) |
+| `RouterProvider`              | Replaces `<BrowserRouter>` wrapper in Data mode                                 |
+| `Routes` / `Route`            | Maps URL paths to components (Declarative mode)                                 |
+| `Link` / `NavLink`            | Client-side navigation without full page reload                                 |
+| `useNavigate`                 | Programmatic redirect after actions (login, submit)                             |
+| Dynamic routes (`:param`)     | URL segments that carry data — read with `useParams()`                          |
+| Optional segments (`:param?`) | Match URL segment optionally                                                    |
+| Splat routes (`/*`)           | Catch remaining URL path — read from `params["*"]`                              |
+| Index routes                  | Default child rendered at parent URL                                            |
+| Layout routes                 | Pathless `element` wrapper — provides `<Outlet>` for children                   |
+| Nested routes + `Outlet`      | Shared layouts with swappable content areas                                     |
+| Protected routes              | Auth guard using `Navigate` to redirect unauthenticated users                   |
+| `loader` + `useLoaderData`    | Fetch data before component renders — no loading state needed                   |
+| `errorElement`                | Per-route error boundary — catches loader errors and crashes                    |
+| TanStack Router               | Best TypeScript-typed alternative to React Router                               |
+| Wouter                        | Tiny (2kb) router for small apps                                                |
+| Next.js App Router            | File-based routing for full-stack React with SSR                                |
 
 ---
 
@@ -6895,9 +7890,9 @@ The Performance score is based on **Core Web Vitals** — a set of user-centric 
 ```mermaid
 graph LR
     subgraph Core Web Vitals
-        LCP["LCP — Largest Contentful Paint\n< 2.5s = Good\n2.5–4s = Needs Work\n> 4s = Poor\nMeasures: loading speed (largest image/heading)"]
-        CLS["CLS — Cumulative Layout Shift\n< 0.1 = Good\n> 0.25 = Poor\nMeasures: layout stability (content jumping around)"]
-        INP["INP — Interaction to Next Paint\n< 200ms = Good\n> 500ms = Poor\nMeasures: interactivity responsiveness"]
+        LCP["LCP — Largest Contentful Paint<br/>< 2.5s = Good<br/>2.5–4s = Needs Work<br/>> 4s = Poor<br/>Measures: loading speed (largest image/heading)"]
+        CLS["CLS — Cumulative Layout Shift<br/>< 0.1 = Good<br/>> 0.25 = Poor<br/>Measures: layout stability (content jumping around)"]
+        INP["INP — Interaction to Next Paint<br/>< 200ms = Good<br/>> 500ms = Poor<br/>Measures: interactivity responsiveness"]
     end
     LCP --> FIX1["Fix: Preload images, lazy load below-fold, fast server"]
     CLS --> FIX2["Fix: Reserve space for images/ads, avoid inserting above content"]
