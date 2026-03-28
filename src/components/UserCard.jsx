@@ -1,7 +1,10 @@
 import axios from "axios";
 import { BASE_URL } from "../constants/appConstants";
+import { useDispatch } from "react-redux";
+import { removeUserFromFeed } from "../redux/slice/feedSlice";
 
 const UserCard = ({ user }) => {
+    const dispatch = useDispatch();
     const reviewConnection = async (usrInp, _id) => {
         try {
             await axios.post(
@@ -9,6 +12,7 @@ const UserCard = ({ user }) => {
                 {},
                 { withCredentials: true }
             );
+            dispatch(removeUserFromFeed(_id));
         } catch (error) {
             console.log(error);
         }

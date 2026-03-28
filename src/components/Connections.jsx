@@ -25,7 +25,7 @@ const Connections = () => {
             {connection.map((conn) => {
                 return (
                     <div
-                        className="flex w-1/3 h-16 bg-base-300 m-auto my-2"
+                        className="flex w-2/3 h-16 bg-base-300 m-auto my-2"
                         key={conn._id}
                     >
                         <img
@@ -37,6 +37,9 @@ const Connections = () => {
                             <h1>{conn.firstName}</h1>
                             <p>{conn.about}</p>
                         </div>
+                        <button className="bg-blue-400 px-3 py-1 m-2 font-serif text-black">
+                            Chat
+                        </button>
                     </div>
                 );
             })}

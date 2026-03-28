@@ -142,7 +142,7 @@ const EditProfile = ({ user }) => {
                         age,
                         photoUrl,
                         about,
-                        _id: user._id,
+                        _id: user?._id,
                     }}
                 />
             </div>
