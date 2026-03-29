@@ -22,7 +22,7 @@
 
 ### Building Real Apps
 
-- [Module 8: Event Handling & Forms](#module-8-event-handling--forms) — Synthetic Events, Controlled vs Uncontrolled, React Hook Form
+- [Module 8: Event Handling & Forms](#module-8-event-handling--forms) — Synthetic Events, Controlled vs Uncontrolled, React Hook Form, OTP Input UI (Interview)
 - [Module 9: Component Design Patterns](#module-9-component-design-patterns) — SPA, Presentational/Container, Lifting State Up, Composition
 - [Module 10: Routing with React Router](#module-10-routing-with-react-router) — Route config, Dynamic Routes, Nested Routes, Protected Routes
 - [Module 11: State Management](#module-11-state-management) — Redux Toolkit, Zustand, Context vs Redux comparison
@@ -43,6 +43,14 @@
 ### Ecosystem Libraries
 
 - [Module 19: Essential React Ecosystem Libraries](#module-19-essential-react-ecosystem-libraries) — MUI, shadcn/ui, Radix UI, Axios, SWR, Zod, Jotai, Framer Motion, Recharts, TanStack Table, Socket.io, dnd-kit, Day.js
+
+### Building From Scratch
+
+- [Module 20: Building From Scratch — Custom Router & UI Patterns](#module-20-building-from-scratch--custom-router--ui-patterns) — Manual Routing (pushState + popstate), NavigationContext, Route, Link, useNavigation, Config-Driven Table, useSort, SortableTable, Click-Outside Detection, Modal Portal, useCounter, Accordion
+
+### MNC Interview Preparation
+
+- [Module 21: MNC React Interview Questions](#module-21-mnc-react-interview-questions) — Fiber, Reconciliation, Stale Closures, Key vs Ref, useMemo vs useCallback, OTP Input, Debounce Search, Infinite Scroll, useFetch+Cache, Star Rating, useLocalStorage, Tabs (Compound Components), ErrorBoundary, Auth Flow, Performance Optimization, RSC vs SSR, Quick-fire Q&A (Google · Meta · Amazon · Microsoft · Flipkart · Swiggy · Razorpay)
 
 ---
 
@@ -4204,14 +4212,245 @@ function SignupFormRHF() {
 
 ---
 
+## 8.4 — Interview Question: Build a 6-Digit OTP Input UI
+
+> **Asked at**: Flipkart, Swiggy, Razorpay, Phonepe, Paytm frontend interviews.
+> **Category**: Controlled components · refs · keyboard event handling · useRef array
+
+### Problem Statement
+
+Build a 6-box OTP input where:
+
+1. Only one digit per box
+2. Focus **auto-advances** to the next box after typing a digit
+3. **Backspace** moves focus back to the previous box and clears it
+4. Pasting a full OTP string fills all boxes automatically
+5. Only numeric input is accepted
+
+---
+
+### The Mental Model
+
+Each box is an independent `<input>`. We store:
+
+- An array `otp` in state — the source of truth for displayed values
+- An array `inputRefs` of refs — so we can imperatively call `.focus()` on any box
+
+```
+State:   otp = ['3', '7', '', '', '', '']
+Refs:    inputRefs[0..5] → DOM input elements
+
+User types '5' in box index 1:
+  → set otp[1] = '5'
+  → move focus: inputRefs[2].current.focus()
+```
+
+---
+
+### Full Implementation
+
+```jsx
+import { useState, useRef } from "react";
+
+const OTPInput = ({ length = 6, onComplete }) => {
+    const [otp, setOtp] = useState(Array(length).fill(""));
+
+    // Array of refs — one per input box
+    const inputRefs = useRef([]);
+
+    const handleChange = (e, index) => {
+        const val = e.target.value;
+
+        // Allow only a single digit 0-9
+        if (!/^\d$/.test(val)) return;
+
+        // Update the otp array immutably
+        const newOtp = [...otp];
+        newOtp[index] = val;
+        setOtp(newOtp);
+
+        // Auto-advance focus to next box
+        if (index < length - 1) {
+            inputRefs.current[index + 1].focus();
+        }
+
+        // Fire callback when all digits filled
+        if (newOtp.every((d) => d !== "")) {
+            onComplete?.(newOtp.join(""));
+        }
+    };
+
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Backspace") {
+            if (otp[index] !== "") {
+                // Clear current box
+                const newOtp = [...otp];
+                newOtp[index] = "";
+                setOtp(newOtp);
+            } else if (index > 0) {
+                // Move back to previous box and clear it
+                const newOtp = [...otp];
+                newOtp[index - 1] = "";
+                setOtp(newOtp);
+                inputRefs.current[index - 1].focus();
+            }
+        }
+    };
+
+    const handlePaste = (e) => {
+        e.preventDefault();
+        const pasted = e.clipboardData
+            .getData("text")
+            .replace(/\D/g, "") // strip non-digits
+            .slice(0, length); // cap at length
+
+        if (!pasted) return;
+
+        const newOtp = Array(length).fill("");
+        [...pasted].forEach((char, i) => {
+            newOtp[i] = char;
+        });
+        setOtp(newOtp);
+
+        // Focus the first empty box, or the last if all filled
+        const nextEmpty = newOtp.findIndex((d) => d === "");
+        const focusIndex = nextEmpty === -1 ? length - 1 : nextEmpty;
+        inputRefs.current[focusIndex].focus();
+
+        if (newOtp.every((d) => d !== "")) {
+            onComplete?.(newOtp.join(""));
+        }
+    };
+
+    return (
+        <div className="flex gap-3">
+            {otp.map((digit, index) => (
+                <input
+                    key={index}
+                    ref={(el) => (inputRefs.current[index] = el)} // populate ref array
+                    type="text"
+                    inputMode="numeric" // numeric keyboard on mobile
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleChange(e, index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    onPaste={handlePaste}
+                    className="w-12 h-12 text-center text-xl border-2 border-gray-300
+                     rounded-lg outline-none focus:border-blue-500 caret-transparent"
+                />
+            ))}
+        </div>
+    );
+};
+
+export default OTPInput;
+```
+
+**Usage:**
+
+```jsx
+<OTPInput length={6} onComplete={(code) => console.log("OTP entered:", code)} />
+```
+
+---
+
+### Key Design Decisions — Explained for Interviews
+
+| Decision                                      | Why                                                                                                                                                           |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `otp` as `string[]` in state                  | Controlled inputs — React is the source of truth. Each box displays `otp[index]`.                                                                             |
+| `inputRefs` as `useRef([])`                   | We need to call `.focus()` imperatively — that's a side effect, not render logic. Using `useState` for refs would cause unnecessary re-renders.               |
+| `ref={(el) => inputRefs.current[index] = el}` | Callback ref — dynamically assigns each DOM element into the ref array at the right index. Can't use `createRef` in a loop because it resets on every render. |
+| `maxLength={1}`                               | Prevents the browser from allowing more than one character in the input — first line of defense.                                                              |
+| `inputMode="numeric"`                         | Shows the numeric keypad on mobile (iOS/Android) without using `type="number"` (which has a spinner and allows letters like `e`, `+`).                        |
+| `type="text"`                                 | Avoids `type="number"` quirks (leading zeros silently dropped, `e` allowed).                                                                                  |
+| `!/^\d$/.test(val)` guard                     | Server-side defense — even if `maxLength` is bypassed, only single digits pass.                                                                               |
+| `caret-transparent` Tailwind                  | Hides the text cursor — OTP boxes look cleaner without a blinking caret.                                                                                      |
+| `onPaste` on each box                         | Paste event bubbles — attaching it to any one box works, but attaching to all ensures detection regardless of which box is focused.                           |
+
+---
+
+### The `useRef` Array Pattern — Deep Dive
+
+```jsx
+// ❌ WRONG: useRef inside loop is illegal (violates Rules of Hooks)
+otp.map((_, i) => {
+    const ref = useRef(null); // never do this
+});
+
+// ❌ WRONG: createRef in render — creates a new ref object every render,
+//           losing the DOM node reference
+const refs = otp.map(() => React.createRef());
+
+// ✅ CORRECT: Single useRef holding an array, populated via callback refs
+const inputRefs = useRef([]);
+// Then in JSX:
+// ref={(el) => (inputRefs.current[index] = el)}
+// React calls this callback with the DOM node when mounted, and null when unmounted.
+```
+
+---
+
+### State Flow Diagram
+
+```mermaid
+flowchart TD
+    A["User types '7' in box 3"] --> B["handleChange(e, 3)"]
+    B --> C["Validate: /^\\d$/.test('7') → true"]
+    C --> D["newOtp = [...otp]; newOtp[3] = '7'"]
+    D --> E["setOtp(newOtp) → re-render, box 3 shows '7'"]
+    D --> F["index < 5 → inputRefs.current[4].focus()"]
+    E --> G{"All 6 filled?"}
+    G -- yes --> H["onComplete('123456')"]
+    G -- no --> I["Wait for next input"]
+
+    J["User presses Backspace on box 3 (empty)"] --> K["handleKeyDown(e, 3)"]
+    K --> L["otp[3] === '' → go back"]
+    L --> M["newOtp[2] = ''  setOtp(newOtp)"]
+    M --> N["inputRefs.current[2].focus()"]
+```
+
+---
+
+### Common Follow-Up Questions
+
+**Q: Why not use a single `<input type="text" maxLength={6}">` instead of 6 boxes?**  
+Single input is simpler but you lose the visual "box-per-digit" UX that OTP flows are designed around. Six separate controlled inputs let you style each box independently (highlight the active one, show error state per digit, etc.).
+
+**Q: How would you make it accessible (a11y)?**
+
+```jsx
+<input
+  aria-label={`OTP digit ${index + 1} of ${length}`}
+  autoComplete={index === 0 ? "one-time-code" : "off"}
+  // "one-time-code" lets iOS/Android auto-fill from SMS
+  ...
+/>
+```
+
+**Q: What if someone holds down a key?**  
+`onChange` fires for each character inserted. Since `maxLength={1}` and we validate `/^\d$/` (exactly one digit), held keys that produce repeated characters are blocked after the first accepted character moves focus away.
+
+**Q: How to reset the OTP (e.g., on wrong code)?**
+
+```jsx
+const reset = () => {
+    setOtp(Array(length).fill(""));
+    inputRefs.current[0].focus();
+};
+```
+
+---
+
 ## Module 8 Summary
 
-| Concept              | Key Takeaway                                                          |
-| -------------------- | --------------------------------------------------------------------- |
-| **Synthetic Events** | Cross-browser event wrappers; React uses event delegation at the root |
-| **Controlled**       | React state = source of truth. Good for live validation, formatting   |
-| **Uncontrolled**     | DOM = source of truth. Good for file inputs, simple submit-only forms |
-| **React Hook Form**  | Zero re-renders during typing; less code; built-in validation         |
+| Concept              | Key Takeaway                                                               |
+| -------------------- | -------------------------------------------------------------------------- |
+| **Synthetic Events** | Cross-browser event wrappers; React uses event delegation at the root      |
+| **Controlled**       | React state = source of truth. Good for live validation, formatting        |
+| **Uncontrolled**     | DOM = source of truth. Good for file inputs, simple submit-only forms      |
+| **React Hook Form**  | Zero re-renders during typing; less code; built-in validation              |
+| **OTP Input UI**     | Controlled `string[]` state + `useRef([])` array + keyboard/paste handling |
 
 ---
 
@@ -10968,5 +11207,1932 @@ dayjs("03-28-2026 2:30pm", "MM-DD-YYYY h:mma"); // With time
 
 ---
 
-_Master Class Notes — React JS | Modules 1–19 + Extended Sections_
-_Topics: JSX · Props · Pure Components · useState · Fiber · Reconciliation · useEffect · useMemo · useCallback · React.memo · Compound Components · Render Props · HOCs · React.Children · cloneElement · Server Components · Suspense · React.lazy · Dynamic Import · Code Splitting · Transitions · useReducer · useContext · useRef · useImperativeHandle · useLayoutEffect · useDeferredValue · useId · useDebugValue · useSyncExternalStore · Custom Hooks · React 19 · use() · useActionState · useOptimistic · Server Actions · Event Handling · Controlled/Uncontrolled Forms · React Hook Form · Presentational/Container Components · Lifting State Up · Composition · SPA · React Router · Protected Routes · Redux Toolkit · Zustand · Error Boundaries · Portals · CSS Modules · Tailwind CSS · clsx · cn() · tailwind-merge · Styled-components · Theming · Jest · Vitest · React Testing Library · MSW · Vite · Feature Architecture · TypeScript · Generics · React.FC · ComponentProps · SSR · SSG · Hydration · JWT Security · XSS · TanStack Query · Pagination · Infinite Scroll · Debounce · Throttle · Optimistic UI · Production Error Handling · Core Web Vitals · Lighthouse · LCP · CLS · INP · flushSync · MUI · Framer Motion · Axios · SWR · Zod · React Table · shadcn/ui · Radix UI · Recharts · Socket.io · dnd-kit · Jotai · Day.js · Glossary_
+# Module 20: Building From Scratch — Custom Router & UI Patterns
+
+> **Source**: `elements/` project — a real implementation of routing, tables, dropdowns, modals, and custom hooks built **without** any routing or UI library.
+
+---
+
+## 20.1 — Manual Routing (No React Router)
+
+> **The Core Question**: What exactly does React Router do, and how would we replicate it from scratch?
+
+React Router is convenient but it is just a wrapper around three browser primitives:
+
+1. `window.location.pathname` — the current URL path
+2. `window.history.pushState()` — change the URL without a page reload
+3. The `popstate` event — fires when the user clicks browser Back / Forward
+
+Understanding these primitives lets you build your own router — and deeply understand how React Router itself works.
+
+### The Three-Piece Architecture
+
+```
+NavigationContext   →   tracks currentPath, exposes navigate()
+     ↓
+useNavigation       →   custom hook — consumes context cleanly
+     ↓
+Route + Link        →   components that use the hook
+```
+
+---
+
+### Step 1 — NavigationContext: The Single Source of Truth
+
+```jsx
+// context/Navigation.js
+import { createContext, useState, useEffect } from "react";
+
+const NavigationContext = createContext();
+
+function NavigationProvider({ children }) {
+    // 1. Read the real URL on first render
+    const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+    useEffect(() => {
+        // 2. Listen for browser Back / Forward button — these fire "popstate"
+        const handler = () => {
+            setCurrentPath(window.location.pathname);
+        };
+        window.addEventListener("popstate", handler);
+        return () => window.removeEventListener("popstate", handler); // cleanup!
+    }, []);
+
+    // 3. Programmatic navigation — used by the <Link> component
+    const navigate = (to) => {
+        // pushState(state, title, url) — changes URL bar without HTTP request
+        window.history.pushState({}, "", to);
+        setCurrentPath(to);
+    };
+
+    return (
+        <NavigationContext.Provider value={{ currentPath, navigate }}>
+            {children}
+        </NavigationContext.Provider>
+    );
+}
+
+export { NavigationProvider };
+export default NavigationContext;
+```
+
+**Why `pushState` doesn't fire `popstate`**: `pushState` is a programmatic call — the browser only fires `popstate` for user-triggered navigation (Back/Forward buttons). So after calling `pushState` we manually call `setCurrentPath(to)` ourselves.
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Link
+    participant pushState
+    participant NavigationContext
+    participant Route
+
+    User->>Link: Click /accordion
+    Link->>pushState: window.history.pushState({}, "", "/accordion")
+    pushState-->>Link: URL bar updated (no reload)
+    Link->>NavigationContext: setCurrentPath("/accordion")
+    NavigationContext-->>Route: currentPath = "/accordion"
+    Route->>Route: path === currentPath → render children
+```
+
+---
+
+### Step 2 — `useNavigation` Custom Hook
+
+Instead of calling `useContext(NavigationContext)` everywhere, we wrap it in a custom hook:
+
+```jsx
+// hooks/useNavigation.js
+import { useContext } from "react";
+import NavigationContext from "../context/Navigation.js";
+
+function useNavigation() {
+    return useContext(NavigationContext);
+}
+
+export default useNavigation;
+```
+
+**Why this pattern?**
+
+- Hides the context import detail from consumers
+- If the implementation ever changes (e.g., swap context for Zustand), only this file changes
+- Makes testing easier — you can mock `useNavigation` in one place
+
+---
+
+### Step 3 — `<Route>` Component
+
+```jsx
+// components/Routes.js
+import useNavigation from "../hooks/useNavigation";
+
+function Route({ path, children }) {
+    const { currentPath } = useNavigation();
+
+    // If URL matches → render children. Otherwise → render nothing.
+    if (path === currentPath) {
+        return children;
+    }
+    return null;
+}
+
+export default Route;
+```
+
+This is the entire routing logic. A `<Route>` is just a conditional render. React Router's `<Route>` does the same thing at its core — with many more features layered on top.
+
+---
+
+### Step 4 — `<Link>` Component
+
+```jsx
+// components/Link.jsx
+import classNames from "classnames";
+import useNavigation from "../hooks/useNavigation";
+
+function Link({ to, children, className, activeClassName }) {
+    const { navigate, currentPath } = useNavigation();
+
+    // Merge base classes + active class when path matches
+    const classes = classNames(
+        "text-blue-500",
+        className,
+        currentPath === to && activeClassName, // active styling
+    );
+
+    const handler = (event) => {
+        // Allow Cmd+Click / Ctrl+Click to open in new tab (native browser behavior)
+        if (event.metaKey || event.ctrlKey) {
+            return;
+        }
+        event.preventDefault(); // prevent full page reload
+        navigate(to); // client-side navigation
+    };
+
+    return (
+        <a onClick={handler} href={to} className={classes}>
+            {children}
+        </a>
+    );
+}
+
+export default Link;
+```
+
+**Key details:**
+
+- `event.preventDefault()` — stops the browser from sending an HTTP GET request
+- `metaKey / ctrlKey` guard — lets Cmd+Click open a new tab (important for UX)
+- `href={to}` is still set — so right-click → "Open in new tab" works, and SEO crawlers still find links
+
+---
+
+### Step 5 — Wiring It All Together
+
+```jsx
+// index.js — wrap the entire app in NavigationProvider
+import { NavigationProvider } from "./context/Navigation";
+import App from "./App";
+
+root.render(
+    <NavigationProvider>
+        <App />
+    </NavigationProvider>,
+);
+
+// App.js — use Route to conditionally render pages
+import Route from "./components/Routes";
+import SideBar from "./components/SideBar";
+
+export default function App() {
+    return (
+        <div className="container mx-auto grid grid-cols-6 gap-4 mt-4">
+            <SideBar />
+            <div className="col-span-5">
+                <Route path="/accordion">
+                    <AccordionPage />
+                </Route>
+                <Route path="/dropdown">
+                    <DropdownPage />
+                </Route>
+                <Route path="/buttonpage">
+                    <ButtonPage />
+                </Route>
+                <Route path="/modal">
+                    <ModalPage />
+                </Route>
+                <Route path="/table">
+                    <TablePage />
+                </Route>
+                <Route path="/counter">
+                    <CounterPage initialCount={1} />
+                </Route>
+            </div>
+        </div>
+    );
+}
+
+// SideBar.jsx — uses <Link> with activeClassName
+function SideBar() {
+    const links = [
+        { label: "Accordion", path: "/accordion" },
+        { label: "DropDown", path: "/dropdown" },
+        { label: "Buttons", path: "/buttonpage" },
+        { label: "Modal", path: "/modal" },
+        { label: "Table", path: "/table" },
+        { label: "Counter", path: "/counter" },
+    ];
+
+    return (
+        <div className="sticky top-0 flex flex-col items-start">
+            {links.map((link) => (
+                <Link
+                    to={link.path}
+                    key={link.label}
+                    className="mb-3"
+                    activeClassName="font-bold border-l-4 border-blue-500 pl-2"
+                >
+                    {link.label}
+                </Link>
+            ))}
+        </div>
+    );
+}
+```
+
+---
+
+### Custom Router vs React Router — Comparison
+
+| Feature                | Custom Router (elements/)                | React Router v6                     |
+| ---------------------- | ---------------------------------------- | ----------------------------------- |
+| URL sync               | `window.location.pathname` + `pushState` | Same internally                     |
+| Back/Forward           | `popstate` listener                      | Same internally                     |
+| Route matching         | Exact string match only                  | Pattern matching, wildcards, params |
+| Active link            | Manual `currentPath === to`              | `NavLink` with `isActive`           |
+| Nested routes          | Not supported                            | `<Outlet>` pattern                  |
+| Dynamic params (`:id`) | Not supported                            | `useParams()`                       |
+| Protected routes       | Not supported                            | Wrapper component pattern           |
+| Bundle size            | 0 KB (no dependency)                     | ~50 KB                              |
+
+> **When to build custom**: Single-page apps with simple flat navigation, learning exercises, or environments where you can't add dependencies. For any production app with nested routes or auth, use React Router.
+
+---
+
+## 20.2 — Config-Driven Table + SortableTable Pattern
+
+The `elements/` project implements a reusable, config-driven table with sort support — entirely without an external table library.
+
+### The Column Config Pattern
+
+Instead of hardcoding `<td>` jsx, each column is described as a config object:
+
+```js
+// Each column config object has:
+const config = [
+    {
+        label: "Name", // Column header text
+        render: (row) => row.name, // How to render a cell
+        sortValue: (row) => row.name, // Value used for sorting (optional)
+    },
+    {
+        label: "Score",
+        render: (row) => <b>{row.score}</b>, // render() can return JSX
+        sortValue: (row) => row.score,
+    },
+    {
+        label: "Actions",
+        render: (row) => <button>Edit {row.id}</button>,
+        // No sortValue → this column is not sortable
+    },
+];
+```
+
+**Benefits**: Add/remove/reorder columns by editing config. No JSX changes in the Table component itself.
+
+---
+
+### `Table` Component
+
+```jsx
+// components/Table.jsx
+import { Fragment } from "react";
+
+const Table = ({ data, config, keyFn }) => {
+    // Render header row — if a column defines header(), call it (used by SortableTable)
+    const renderHeaders = config.map((column) => {
+        if (column.header) {
+            return <Fragment key={column.label}>{column.header()}</Fragment>;
+        }
+        return <th key={column.label}>{column.label}</th>;
+    });
+
+    // Render data rows
+    const renderedRows = data.map((rowData) => {
+        const renderedCells = config.map((column) => (
+            <td key={column.label} className="p-3">
+                {column.render(rowData)}
+            </td>
+        ));
+        return (
+            <tr className="border-b" key={keyFn(rowData)}>
+                {renderedCells}
+            </tr>
+        );
+    });
+
+    return (
+        <table className="table-auto border-spacing-2">
+            <thead>
+                <tr className="border-b-2">{renderHeaders}</tr>
+            </thead>
+            <tbody>{renderedRows}</tbody>
+        </table>
+    );
+};
+
+export default Table;
+```
+
+**Key design decisions:**
+
+- `keyFn` prop — caller provides the key function (e.g., `(row) => row.id`). Table doesn't assume the shape of data.
+- `column.header()` — escape hatch for SortableTable to inject clickable headers with sort icons. Regular Table just renders `column.label`.
+- `Fragment` used in header rendering — when `column.header()` returns a `<th>`, wrapping in `<Fragment key>` avoids an extra DOM node.
+
+---
+
+### `useSort` Custom Hook
+
+```jsx
+// hooks/useSort.jsx
+import { useState } from "react";
+
+const useSort = (config, data) => {
+    const [sortOrder, setSortOrder] = useState(null); // "asc" | "desc" | null
+    const [sortBy, setSortBy] = useState(null); // column label
+
+    // Toggle cycle: null → asc → desc → null
+    const setSortColumn = (label) => {
+        if (sortBy && label !== sortBy) {
+            // Clicked a different column → reset to asc
+            setSortOrder("asc");
+            setSortBy(label);
+            return;
+        }
+        if (sortOrder === null) {
+            setSortOrder("asc");
+            setSortBy(label);
+        } else if (sortOrder === "asc") {
+            setSortOrder("desc");
+            setSortBy(label);
+        } else {
+            setSortOrder(null);
+            setSortBy(null);
+        }
+    };
+
+    // Compute sorted data during render (no extra useEffect needed)
+    let sortedData = data;
+    if (sortBy && sortOrder) {
+        const { sortValue } = config.find((col) => col.label === sortBy);
+        sortedData = [...data].sort((a, b) => {
+            const valA = sortValue(a);
+            const valB = sortValue(b);
+            const direction = sortOrder === "asc" ? 1 : -1;
+
+            if (typeof valA === "string") {
+                return valA.localeCompare(valB) * direction;
+            }
+            return (valA - valB) * direction;
+        });
+    }
+
+    return { sortBy, sortOrder, sortedData, setSortColumn };
+};
+
+export default useSort;
+```
+
+**Why sort in the hook body (not `useEffect`)?**  
+Sorting is a pure derivation of `data + sortBy + sortOrder`. It has no side effects. Computing it during render is correct and efficient — React re-runs the function when state changes, so `sortedData` is always fresh. No need for `useEffect`.
+
+**Why `[...data].sort()` and not `data.sort()`?**  
+`Array.prototype.sort()` mutates in place. Mutating state (or props) breaks React's reference equality check. Always spread to a new array first.
+
+---
+
+### `SortableTable` — Composition Pattern
+
+`SortableTable` wraps `Table` and injects sort functionality via the `header()` override in config:
+
+```jsx
+// components/SortableTable.jsx
+import { FaCaretUp, FaCaretDown } from "react-icons/fa";
+import useSort from "../hooks/useSort";
+import Table from "./Table";
+
+const SortableTable = (props) => {
+    const { config, data } = props;
+    const { sortBy, sortOrder, sortedData, setSortColumn } = useSort(
+        config,
+        data,
+    );
+
+    // Override each sortable column's header with a clickable version
+    const updatedConfig = config.map((column) => {
+        if (!column.sortValue) return column; // non-sortable columns untouched
+
+        return {
+            ...column,
+            header: () => (
+                <th
+                    className="cursor-pointer hover:bg-gray-100 rounded"
+                    onClick={() => setSortColumn(column.label)}
+                >
+                    <div className="flex items-center">
+                        {getSortIcon(column.label, sortBy, sortOrder)}
+                        {column.label}
+                    </div>
+                </th>
+            ),
+        };
+    });
+
+    return <Table {...props} config={updatedConfig} data={sortedData} />;
+};
+
+// Icon helper — show both arrows when not sorted, single arrow when sorted
+function getSortIcon(label, sortBy, sortOrder) {
+    if (label !== sortBy || sortOrder === null) {
+        return (
+            <div>
+                <FaCaretUp />
+                <FaCaretDown />
+            </div>
+        );
+    }
+    if (sortOrder === "asc")
+        return (
+            <div>
+                <FaCaretUp />
+            </div>
+        );
+    if (sortOrder === "desc")
+        return (
+            <div>
+                <FaCaretDown />
+            </div>
+        );
+}
+
+export default SortableTable;
+```
+
+**The Composition Insight**: `SortableTable` doesn't rewrite `Table`. It passes through all props unchanged (`{...props}`) and overrides only `config` and `data`. This is the **Wrapper / Decorator** component pattern — extend behavior without modifying the base component.
+
+---
+
+## 20.3 — Button with `classnames` + `tailwind-merge`
+
+The `Button` component in `elements/` shows the production pattern for combining variant props with Tailwind:
+
+```jsx
+// components/Button.jsx
+import className from "classnames";
+import { twMerge } from "tailwind-merge";
+
+const Button = ({
+    children,
+    primary,
+    secondary,
+    success,
+    warning,
+    danger,
+    outline,
+    rounded,
+    ...rest // ...rest captures onClick, type, disabled, etc.
+}) => {
+    const classes = twMerge(
+        className(rest.className, "flex items-center px-3 py-1.5 border", {
+            // Solid variants
+            "border-blue-500 bg-blue-500 text-white": primary,
+            "border-gray-900 bg-gray-900 text-white": secondary,
+            "border-green-500 bg-green-500 text-white": success,
+            "border-yellow-400 bg-yellow-400 text-white": warning,
+            "border-red-500  bg-red-500  text-white": danger,
+            // Modifiers
+            "rounded-full": rounded,
+            "bg-white": outline,
+            "text-blue-500": outline && primary,
+            "text-gray-900": outline && secondary,
+            "text-green-500": outline && success,
+            "text-yellow-400": outline && warning,
+            "text-red-500": outline && danger,
+        }),
+    );
+
+    return (
+        <button {...rest} className={classes}>
+            {children}
+        </button>
+    );
+};
+```
+
+**PropTypes for mutual exclusivity** — validates that only one variant is passed:
+
+```jsx
+Button.propTypes = {
+    checkVariationValue: ({ primary, secondary, success, warning, danger }) => {
+        const count =
+            Number(!!primary) +
+            Number(!!secondary) +
+            Number(!!success) +
+            Number(!!warning) +
+            Number(!!danger);
+        if (count > 1) {
+            throw new Error("Only 1 variation is expected!");
+        }
+    },
+};
+```
+
+**Usage:**
+
+```jsx
+<Button primary>Save</Button>
+<Button danger outline rounded onClick={handleDelete}>Delete</Button>
+<Button secondary disabled>Loading...</Button>
+```
+
+---
+
+## 20.4 — Dropdown with Click-Outside Detection (`useRef`)
+
+The Dropdown component shows the canonical pattern for detecting clicks outside a component:
+
+```jsx
+// components/DropDown.jsx
+import { useState, useEffect, useRef } from "react";
+
+function DropDown({ options, value, onChange }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const divEl = useRef(); // ref attached to the dropdown's root div
+
+    useEffect(() => {
+        const handler = (event) => {
+            if (!divEl.current) return;
+            // If the click target is NOT inside our div → close
+            if (!divEl.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        // true = capture phase — fires before any inner onClick handlers
+        document.addEventListener("click", handler, true);
+        return () => document.removeEventListener("click", handler);
+    }, []);
+
+    const handleOptionSelect = (option) => {
+        setIsOpen(false);
+        onChange(option);
+    };
+
+    return (
+        <div ref={divEl} className="w-48 relative">
+            <Panel onClick={() => setIsOpen((o) => !o)}>
+                {value?.label || "Select a color"}
+            </Panel>
+            {isOpen && (
+                <Panel className="absolute top-full">
+                    {options.map((option) => (
+                        <div
+                            key={option.id}
+                            className="hover:bg-sky-100 rounded cursor-pointer p-3"
+                            onClick={() => handleOptionSelect(option)}
+                        >
+                            {option.label}
+                        </div>
+                    ))}
+                </Panel>
+            )}
+        </div>
+    );
+}
+```
+
+**Why `capture: true` on the event listener?**  
+The event propagation order is: capture phase (window → target) → bubble phase (target → window). By listening in the capture phase, the document handler fires _before_ the dropdown's own click handlers. This ensures the outside-click detection works even if an inner element calls `event.stopPropagation()`.
+
+**Why `useRef` instead of `useState` for the DOM node?**  
+`useRef` does not cause re-renders when `.current` changes. We only need the DOM node for the `contains()` check — we never want to trigger a render from it.
+
+---
+
+## 20.5 — Modal with `ReactDOM.createPortal`
+
+```jsx
+// components/Modal.jsx
+import { useEffect } from "react";
+import ReactDOM from "react-dom";
+
+const Modal = ({ onClose, children, actionBar }) => {
+    useEffect(() => {
+        // Prevent background scroll while modal is open
+        document.body.classList.add("overflow-hidden");
+        return () => document.body.classList.remove("overflow-hidden");
+    }, []);
+
+    return ReactDOM.createPortal(
+        <div>
+            {/* Semi-transparent overlay — clicking it closes the modal */}
+            <div
+                className="fixed inset-0 bg-gray-100 opacity-80"
+                onClick={onClose}
+            />
+            {/* Modal panel — centered via inset-60 */}
+            <div className="fixed inset-60 p-10 bg-white">
+                <div className="flex flex-col justify-between h-full">
+                    {children}
+                    <div className="flex justify-end">{actionBar}</div>
+                </div>
+            </div>
+        </div>,
+        document.querySelector(".modal-container"), // render OUTSIDE the React tree
+    );
+};
+```
+
+**Why `createPortal`?**  
+The modal needs `position: fixed` relative to the viewport. If it's deeply nested inside a parent with `transform`, `filter`, or `will-change` CSS, `position: fixed` becomes relative to that parent instead of the viewport. By portaling to `.modal-container` (a `<div>` directly inside `<body>`), the modal always escapes CSS stacking context issues.
+
+**Setup in `index.html`:**
+
+```html
+<body>
+    <div id="root"></div>
+    <div class="modal-container"></div>
+    <!-- portal target -->
+</body>
+```
+
+**The `overflow-hidden` cleanup**: The `useEffect` cleanup removes the class when the modal unmounts. Without cleanup, scrolling would stay locked after the modal closes.
+
+---
+
+## 20.6 — `useCounter` Custom Hook
+
+```jsx
+// hooks/useCounter.jsx
+import { useState, useEffect } from "react";
+
+const useCounter = (initialCount) => {
+    const [count, setCount] = useState(initialCount);
+
+    useEffect(() => {
+        console.log(count); // side effect — log whenever count changes
+    }, [count]);
+
+    const handleClick = (incrementBy) => {
+        setCount(count + incrementBy);
+    };
+
+    return { handleClick, count };
+};
+
+export default useCounter;
+```
+
+**Usage:**
+
+```jsx
+// pages/CounterPage.jsx
+const CounterPage = ({ initialCount }) => {
+    const { count, handleClick } = useCounter(initialCount);
+
+    return (
+        <div>
+            <h1>count is {count}</h1>
+            <Button onClick={() => handleClick(1)}>Increment</Button>
+        </div>
+    );
+};
+```
+
+**Why extract to a hook?**
+
+- The `CounterPage` component becomes purely presentational — no logic
+- `useCounter` can be reused by any component that needs a counter with logging
+- Logic can be tested independently without rendering any component
+
+---
+
+## 20.7 — Accordion with Functional `setState`
+
+```jsx
+// components/Accordion.jsx
+import { useState } from "react";
+import { GoChevronDown, GoChevronLeft } from "react-icons/go";
+
+function Accordion({ items }) {
+    const [expandedItem, setExpandedItem] = useState(null); // index or null
+
+    const handleClick = (nextIndex) => {
+        setExpandedItem((currentExpandedIndex) => {
+            // Toggle: clicking the open item closes it
+            if (currentExpandedIndex === nextIndex) return null;
+            return nextIndex;
+        });
+    };
+
+    return (
+        <div className="border-x border-t rounded">
+            {items.map((item, index) => {
+                const isExpanded = index === expandedItem;
+                return (
+                    <div key={item.id}>
+                        <div
+                            className="flex justify-between p-3 bg-gray-50 border-b cursor-pointer items-center"
+                            onClick={() => handleClick(index)}
+                        >
+                            {item.label}
+                            <span className="text-2xl">
+                                {isExpanded ? (
+                                    <GoChevronDown />
+                                ) : (
+                                    <GoChevronLeft />
+                                )}
+                            </span>
+                        </div>
+                        {isExpanded && (
+                            <div className="border-b p-5">{item.content}</div>
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+```
+
+**The functional updater in `setExpandedItem`**: Uses `(currentExpandedIndex) => ...` form — not because it needs stale-closure safety here (only one state value), but because it makes the toggle logic self-contained and readable: "given the current value, decide the next value."
+
+---
+
+## Module 20 Summary
+
+| Pattern                     | Key Mechanism                                                   | When to Use                                      |
+| --------------------------- | --------------------------------------------------------------- | ------------------------------------------------ |
+| **Custom Router**           | `pushState` + `popstate` + Context                              | Learning, tiny apps, no-library constraint       |
+| **`<Route>`**               | Simple conditional render (`path === currentPath`)              | Always — even React Router does this at its core |
+| **`<Link>`**                | `preventDefault` + `navigate()` + `metaKey` guard               | All client-side nav links                        |
+| **Config-Driven Table**     | Column config `{ label, render, sortValue }` drives all output  | Reusable data tables across the app              |
+| **`useSort` hook**          | Sort state + derived `sortedData` computed in hook body         | Extract sort logic from any component            |
+| **SortableTable**           | Wraps Table, overrides `header()` in config — decorator pattern | Add sort to Table without modifying Table        |
+| **Click-Outside Detection** | `useRef` + `document.addEventListener` capture phase            | Dropdowns, popovers, context menus               |
+| **Modal Portal**            | `ReactDOM.createPortal` to `.modal-container` beside `<body>`   | Modals, toasts — escape CSS stacking context     |
+| **Custom Hook**             | Extract `useState` + `useEffect` + handlers into reusable hook  | Any logic shared by 2+ components                |
+
+---
+
+# Module 21: MNC React Interview Questions
+
+> **Companies covered**: Google, Meta (Facebook), Amazon, Microsoft, Flipkart, Swiggy, Zomato, Razorpay, Phonepe, Paytm, Uber, LinkedIn, Adobe, Atlassian, Walmart Labs
+> **Format**: Each question includes what the interviewer is really testing, followed by a complete answer with code where applicable.
+
+---
+
+## 21.1 — Conceptual / Theory Questions
+
+---
+
+### Q1: What is the difference between `key` and `ref`? (Google, Meta)
+
+**What they're testing**: Understanding of React internals — reconciliation vs imperative DOM access.
+
+|                   | `key`                                                   | `ref`                                                   |
+| ----------------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| Purpose           | Helps reconciliation identify list items across renders | Gives direct access to a DOM node or component instance |
+| Where used        | On elements inside `.map()` lists                       | On any element or component                             |
+| Affects render?   | Yes — wrong keys cause unnecessary unmount/remount      | No — changing a ref never triggers a re-render          |
+| Accessible in JS? | No — `props.key` is `undefined` in children             | Yes — `ref.current` holds the node                      |
+| React sees it?    | Internally only                                         | You access it directly                                  |
+
+```jsx
+// key — tell React which item is which across renders
+items.map((item) => <Card key={item.id} data={item} />);
+
+// ref — get DOM node for focus, measurements, animations
+const inputRef = useRef(null);
+<input ref={inputRef} />;
+inputRef.current.focus(); // imperative DOM call
+```
+
+> **Critical gotcha**: Never use array index as `key` for reorderable/deletable lists. React uses the key to match the previous fiber to the new one — wrong keys force unnecessary unmount/remount, destroying DOM state (scroll position, input value, animations).
+
+---
+
+### Q2: Explain React Fiber. Why was it introduced? (Meta, Microsoft)
+
+**What they're testing**: Deep understanding of React internals beyond the surface API.
+
+**Pre-Fiber (React ≤ 15) — The Stack Reconciler problem**:  
+React's old reconciler was synchronous and recursive. Once it started reconciling a tree, it couldn't pause — it had to process the entire tree to completion. This meant a large tree update could block the main thread for 100ms+, causing dropped frames and unresponsive UIs.
+
+**Fiber — Incremental Rendering**:  
+Fiber is React's internal reconciliation engine rewritten from scratch (shipped in React 16). Key concepts:
+
+```
+A Fiber = a unit of work — a JS object representing one component
+          in the component tree, with pointers to:
+          - child (first child fiber)
+          - sibling (next sibling fiber)
+          - return (parent fiber)
+          - memoizedState (hooks linked list)
+          - pendingProps / memoizedProps
+          - flags (what work needs doing: Update, Placement, Deletion)
+```
+
+**What Fiber enables**:
+
+1. **Interruptible rendering** — React can pause reconciliation mid-tree and yield to the browser for higher-priority work
+2. **Priority lanes** — user interactions (clicks, typing) are high priority; data fetching updates are low priority
+3. **Concurrent Mode** — `useTransition`, `useDeferredValue`, `Suspense` all depend on Fiber's ability to work on multiple render trees simultaneously
+4. **Error boundaries** — Fiber maintains a `alternate` work-in-progress tree, so errors don't corrupt the committed tree
+
+> **One-line answer**: "Fiber replaced the synchronous recursive stack reconciler with an interruptible, linked-list-based unit of work, enabling React to pause, abort, and prioritize renders — which is the foundation of Concurrent Mode."
+
+---
+
+### Q3: What happens when you call `setState` inside `useEffect`? (Amazon, Flipkart)
+
+**What they're testing**: Understanding of the render cycle and when to avoid re-render loops.
+
+```jsx
+useEffect(() => {
+    setState(newValue); // ← triggers a re-render AFTER the current render finishes
+}, [dependency]);
+```
+
+**The sequence**:
+
+1. Component renders
+2. React commits to DOM
+3. `useEffect` runs (after paint)
+4. `setState` inside triggers another render cycle
+5. Repeat from step 1 (but only if `dependency` changed)
+
+**The infinite loop trap**:
+
+```jsx
+// ❌ INFINITE LOOP — state update triggers re-render → useEffect runs → state update → ...
+useEffect(() => {
+    setCount(count + 1); // dependency array includes count
+}, [count]);
+
+// ✅ SAFE — runs only once (empty dependency array)
+useEffect(() => {
+    fetchData().then(setData);
+}, []);
+
+// ✅ SAFE — functional updater with empty deps
+useEffect(() => {
+    setCount((prev) => prev + 1); // still only runs once
+}, []);
+```
+
+**Rule of thumb**: If you find yourself calling `setState` in `useEffect`, ask whether you can derive the value during render instead (no `useEffect` needed), or whether the dependency array is correct.
+
+---
+
+### Q4: What is `useLayoutEffect` and when do you use it over `useEffect`? (Google, Adobe)
+
+**What they're testing**: Knowledge of the render/paint pipeline.
+
+```
+Render → Commit to DOM → [useLayoutEffect runs] → Browser paints → [useEffect runs]
+```
+
+|               | `useEffect`                           | `useLayoutEffect`                            |
+| ------------- | ------------------------------------- | -------------------------------------------- |
+| Timing        | After browser paint (async)           | After DOM commit, **before** paint (sync)    |
+| Blocks paint? | No                                    | Yes                                          |
+| Use for       | Data fetching, subscriptions, logging | Reading DOM measurements, preventing flicker |
+| SSR safe?     | Yes                                   | No (`window` not available)                  |
+
+```jsx
+// ❌ useEffect causes flicker — component renders at wrong position,
+//    then jumps after paint
+useEffect(() => {
+    const rect = ref.current.getBoundingClientRect();
+    setPosition(rect.left); // paint happens, THEN position corrects → visible flash
+}, []);
+
+// ✅ useLayoutEffect runs before paint — position corrects before user sees anything
+useLayoutEffect(() => {
+    const rect = ref.current.getBoundingClientRect();
+    setPosition(rect.left); // correct before first paint
+}, []);
+```
+
+> **Rule**: Use `useLayoutEffect` only when you need to read/mutate the DOM to prevent a visual flash. For everything else, `useEffect`.
+
+---
+
+### Q5: What is `React.StrictMode` and what does it do in development? (Microsoft, Atlassian)
+
+**What they're testing**: Understanding of React's development-time safety nets.
+
+`<StrictMode>` does **nothing** in production. In development it:
+
+1. **Double-invokes render functions** — calls your component function twice to catch impure renders (side effects in render body)
+2. **Double-invokes `useEffect` setup+cleanup** — mounts → unmounts → mounts again to verify cleanup is correct
+3. **Warns about deprecated APIs** — `findDOMNode`, legacy string refs, `componentWillMount`, etc.
+4. **Detects unexpected side effects** — if your render function has side effects (mutations, network calls), the double-invoke exposes them
+
+```jsx
+function App() {
+    return (
+        <React.StrictMode>
+            <MyComponent /> {/* rendered twice in dev, once in prod */}
+        </React.StrictMode>
+    );
+}
+```
+
+> **Gotcha**: If you see `useEffect` cleanup/setup running twice on mount in dev — that's StrictMode intentionally. Ensure your cleanup properly reverses what setup does.
+
+---
+
+### Q6: How does Context avoid prop drilling? What are its performance implications? (Flipkart, Swiggy)
+
+**What they're testing**: Knowing Context vs Redux trade-offs and the re-render pitfall.
+
+```jsx
+// Without Context — prop drilling 3 levels deep
+<App user={user}>
+    <Layout user={user}>
+        <Sidebar user={user}>
+            <UserAvatar user={user} /> {/* only this needs user */}
+        </Sidebar>
+    </Layout>
+</App>;
+
+// With Context — jump directly to the consumer
+const UserContext = createContext(null);
+
+function App() {
+    return (
+        <UserContext.Provider value={user}>
+            <Layout /> {/* doesn't need user prop */}
+        </UserContext.Provider>
+    );
+}
+
+function UserAvatar() {
+    const user = useContext(UserContext); // consumes directly
+}
+```
+
+**The re-render problem**:  
+Every component that calls `useContext(MyContext)` re-renders whenever the context **value reference changes** — even if the specific field it uses didn't change.
+
+```jsx
+// ❌ BAD — new object on every render → ALL consumers re-render
+<UserContext.Provider value={{ user, theme }}>
+
+// ✅ Better — memoize the value
+const value = useMemo(() => ({ user, theme }), [user, theme]);
+<UserContext.Provider value={value}>
+
+// ✅ Best for large apps — split contexts by update frequency
+<UserContext.Provider value={user}>       {/* rarely changes */}
+  <ThemeContext.Provider value={theme}>   {/* user-toggle changes */}
+    <CartContext.Provider value={cart}>   {/* frequent changes */}
+```
+
+---
+
+### Q7: Explain the difference between Controlled and Uncontrolled components. (Amazon, Razorpay)
+
+**Controlled**: React state is the single source of truth. Every keystroke updates state → React re-renders → input shows state value.
+
+```jsx
+const [value, setValue] = useState("");
+<input value={value} onChange={(e) => setValue(e.target.value)} />;
+// React owns the value. DOM always mirrors state.
+```
+
+**Uncontrolled**: DOM holds the value. React reads it only when needed (on submit).
+
+```jsx
+const inputRef = useRef();
+<input ref={inputRef} defaultValue="Alice" />;
+// On submit:
+const value = inputRef.current.value;
+```
+
+|                          | Controlled              | Uncontrolled                       |
+| ------------------------ | ----------------------- | ---------------------------------- |
+| Source of truth          | React state             | DOM                                |
+| Validation timing        | On every change         | On submit only                     |
+| Instant feedback         | ✅                      | ❌                                 |
+| Re-renders per keystroke | Yes                     | No                                 |
+| File inputs              | ❌ (read-only)          | ✅ Always uncontrolled             |
+| Library support          | React Hook Form, Formik | React Hook Form (register pattern) |
+
+---
+
+### Q8: What is reconciliation and how does the diffing algorithm work? (Meta, Google)
+
+**What they're testing**: Deep React internals — O(n) vs O(n³) tree diffing.
+
+Naive tree diffing between two arbitrary trees is $O(n^3)$ — too slow for real-time UI. React achieves $O(n)$ with two heuristics:
+
+**Heuristic 1 — Different types → tear down and rebuild**:
+
+```jsx
+// Before:
+<div><Counter /></div>
+
+// After:
+<span><Counter /></span>
+// → React sees div→span (different type) → unmounts entire subtree → mounts fresh
+```
+
+**Heuristic 2 — `key` prop identifies stable children**:
+
+```jsx
+// Before: [<li key="a">, <li key="b">]
+// After:  [<li key="b">, <li key="a">]
+// → React matches by key → just reorders DOM nodes, no remount
+```
+
+**The diffing process**:
+
+1. Compare root element types — if different, rebuild
+2. Same type — update only changed props/attributes
+3. Recurse into children — use keys to match
+
+```
+Virtual DOM (prev)          Virtual DOM (next)
+      <ul>                        <ul>
+     /    \         diff         /    \
+ <li>A</li> <li>B</li>     <li>A</li> <li>C</li>
+                                           ↑
+                              New node — only this gets inserted to real DOM
+```
+
+---
+
+## 21.2 — Coding / Machine Coding Questions
+
+---
+
+### Q9: Build a Search with Debounce (Swiggy, Zomato, Uber)
+
+**Problem**: Build a search input that only fires an API call 500ms after the user stops typing.
+
+```jsx
+import { useState, useEffect, useRef } from "react";
+
+function useDebounce(value, delay = 500) {
+    const [debouncedValue, setDebouncedValue] = useState(value);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedValue(value), delay);
+        // Cleanup: cancel the previous timer if value changes before delay
+        return () => clearTimeout(timer);
+    }, [value, delay]);
+
+    return debouncedValue;
+}
+
+function SearchBox() {
+    const [query, setQuery] = useState("");
+    const [results, setResults] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const debouncedQuery = useDebounce(query, 500);
+
+    useEffect(() => {
+        if (!debouncedQuery.trim()) {
+            setResults([]);
+            return;
+        }
+
+        const controller = new AbortController(); // cancel stale requests
+        setLoading(true);
+
+        fetch(`/api/search?q=${encodeURIComponent(debouncedQuery)}`, {
+            signal: controller.signal,
+        })
+            .then((res) => res.json())
+            .then(setResults)
+            .catch((err) => {
+                if (err.name !== "AbortError") console.error(err);
+            })
+            .finally(() => setLoading(false));
+
+        return () => controller.abort(); // cancel if query changes again
+    }, [debouncedQuery]);
+
+    return (
+        <div>
+            <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search..."
+            />
+            {loading && <p>Loading...</p>}
+            <ul>
+                {results.map((r) => (
+                    <li key={r.id}>{r.name}</li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+```
+
+**Interviewer focus points**:
+
+- `AbortController` — cancels previous in-flight request when query changes (prevents race conditions / stale results)
+- Custom `useDebounce` hook — reusable, testable, single responsibility
+- `encodeURIComponent` — guards against XSS/injection in URL params
+
+---
+
+### Q10: Build an Infinite Scroll Feed (Flipkart, LinkedIn)
+
+**Problem**: Load more items as the user scrolls to the bottom.
+
+```jsx
+import { useState, useEffect, useRef, useCallback } from "react";
+
+function useFeed() {
+    const [items, setItems] = useState([]);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+
+    const loadMore = useCallback(async () => {
+        if (loading || !hasMore) return;
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/feed?page=${page}&limit=10`);
+            const data = await res.json();
+            setItems((prev) => [...prev, ...data.items]);
+            setHasMore(data.hasMore);
+            setPage((p) => p + 1);
+        } finally {
+            setLoading(false);
+        }
+    }, [page, loading, hasMore]);
+
+    return { items, loading, hasMore, loadMore };
+}
+
+function Feed() {
+    const { items, loading, hasMore, loadMore } = useFeed();
+    const sentinelRef = useRef(null); // invisible div at bottom of list
+
+    useEffect(() => {
+        // IntersectionObserver fires when sentinel enters the viewport
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) loadMore();
+            },
+            { threshold: 0.1 },
+        );
+
+        if (sentinelRef.current) observer.observe(sentinelRef.current);
+        return () => observer.disconnect();
+    }, [loadMore]);
+
+    return (
+        <div>
+            {items.map((item) => (
+                <Card key={item.id} data={item} />
+            ))}
+            {loading && <Spinner />}
+            {/* Sentinel — observed by IntersectionObserver */}
+            {hasMore && <div ref={sentinelRef} style={{ height: 1 }} />}
+            {!hasMore && <p>No more items</p>}
+        </div>
+    );
+}
+```
+
+**Why `IntersectionObserver` over `scroll` listener?**  
+`scroll` fires on every pixel movement — very expensive. `IntersectionObserver` fires only when the target enters/leaves the viewport — no throttling needed.
+
+---
+
+### Q11: Build a `useFetch` Custom Hook with Caching (Google, Amazon)
+
+**Problem**: Build a data-fetching hook that caches results and avoids duplicate requests.
+
+```jsx
+import { useState, useEffect, useRef } from "react";
+
+// Module-level cache — shared across all hook instances
+const cache = new Map();
+
+function useFetch(url) {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const abortRef = useRef(null);
+
+    useEffect(() => {
+        if (!url) return;
+
+        // Cache hit — return immediately, no network request
+        if (cache.has(url)) {
+            setData(cache.get(url));
+            setLoading(false);
+            return;
+        }
+
+        // Cancel any previous in-flight request for this hook instance
+        if (abortRef.current) abortRef.current.abort();
+        const controller = new AbortController();
+        abortRef.current = controller;
+
+        setLoading(true);
+        setError(null);
+
+        fetch(url, { signal: controller.signal })
+            .then((res) => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then((json) => {
+                cache.set(url, json); // populate cache
+                setData(json);
+            })
+            .catch((err) => {
+                if (err.name !== "AbortError") setError(err.message);
+            })
+            .finally(() => setLoading(false));
+
+        return () => controller.abort(); // cleanup on unmount or url change
+    }, [url]);
+
+    return { data, loading, error };
+}
+
+// Usage:
+function UserProfile({ userId }) {
+    const { data, loading, error } = useFetch(`/api/users/${userId}`);
+    if (loading) return <Spinner />;
+    if (error) return <Error message={error} />;
+    return <div>{data?.name}</div>;
+}
+```
+
+---
+
+### Q12: Build a Star Rating Component (Razorpay, Adobe, Walmart)
+
+**Problem**: Build a reusable 5-star rating component with hover preview state.
+
+```jsx
+import { useState } from "react";
+
+function StarRating({ value = 0, onChange, maxStars = 5, readOnly = false }) {
+    const [hovered, setHovered] = useState(null);
+
+    // Show hovered value during interaction, committed value otherwise
+    const displayValue = hovered ?? value;
+
+    return (
+        <div
+            className="flex gap-1"
+            // Reset hover when mouse leaves the whole component
+            onMouseLeave={() => setHovered(null)}
+        >
+            {Array.from({ length: maxStars }, (_, i) => {
+                const starValue = i + 1;
+                const filled = starValue <= displayValue;
+
+                return (
+                    <span
+                        key={starValue}
+                        className={`text-2xl cursor-pointer select-none transition-colors ${
+                            filled ? "text-yellow-400" : "text-gray-300"
+                        } ${readOnly ? "cursor-default" : "cursor-pointer"}`}
+                        onMouseEnter={() => !readOnly && setHovered(starValue)}
+                        onClick={() => !readOnly && onChange?.(starValue)}
+                        // Accessibility
+                        role="button"
+                        aria-label={`Rate ${starValue} out of ${maxStars}`}
+                        tabIndex={readOnly ? -1 : 0}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ")
+                                onChange?.(starValue);
+                        }}
+                    >
+                        ★
+                    </span>
+                );
+            })}
+        </div>
+    );
+}
+
+// Usage:
+function ReviewForm() {
+    const [rating, setRating] = useState(0);
+    return (
+        <div>
+            <StarRating value={rating} onChange={setRating} />
+            <p>Your rating: {rating} / 5</p>
+        </div>
+    );
+}
+```
+
+**What interviewers check**:
+
+- `hovered ?? value` — shows hover preview without updating committed state
+- `onMouseLeave` on the container (not each star) — single handler for the whole widget
+- `readOnly` guard — prop-driven behavior, no conditional hooks
+- Keyboard + ARIA — `role="button"`, `tabIndex`, `onKeyDown` for accessibility
+
+---
+
+### Q13: Build a `useLocalStorage` Hook (Microsoft, Atlassian)
+
+**Problem**: Persist state to localStorage, sync across tabs.
+
+```jsx
+import { useState, useEffect, useCallback } from "react";
+
+function useLocalStorage(key, initialValue) {
+    // Initialize from localStorage, fall back to initialValue
+    const [storedValue, setStoredValue] = useState(() => {
+        try {
+            const item = window.localStorage.getItem(key);
+            return item ? JSON.parse(item) : initialValue;
+        } catch {
+            return initialValue;
+        }
+    });
+
+    const setValue = useCallback(
+        (value) => {
+            try {
+                // Support functional updater: setValue(prev => prev + 1)
+                const valueToStore =
+                    value instanceof Function ? value(storedValue) : value;
+                setStoredValue(valueToStore);
+                window.localStorage.setItem(key, JSON.stringify(valueToStore));
+            } catch (e) {
+                console.error("useLocalStorage write failed:", e);
+            }
+        },
+        [key, storedValue],
+    );
+
+    // Sync across browser tabs via the "storage" event
+    useEffect(() => {
+        const handler = (e) => {
+            if (e.key === key && e.newValue !== null) {
+                try {
+                    setStoredValue(JSON.parse(e.newValue));
+                } catch {}
+            }
+        };
+        window.addEventListener("storage", handler);
+        return () => window.removeEventListener("storage", handler);
+    }, [key]);
+
+    return [storedValue, setValue];
+}
+
+// Usage — drop-in replacement for useState:
+const [theme, setTheme] = useLocalStorage("theme", "light");
+```
+
+**Bonus follow-up**: How to handle non-serializable values? — Store a serialization key and use a custom serializer/deserializer pair.
+
+---
+
+### Q14: Implement a `<ErrorBoundary>` Component (Meta, Amazon)
+
+**Problem**: Catch render errors in a subtree and show a fallback UI.
+
+```jsx
+import { Component } from "react";
+
+class ErrorBoundary extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+
+    // Fired during render when a descendant throws
+    static getDerivedStateFromError(error) {
+        return { hasError: true, error };
+    }
+
+    // Fired after commit — good place to log to an error service
+    componentDidCatch(error, info) {
+        console.error("Error caught by boundary:", error);
+        console.error("Component stack:", info.componentStack);
+        // logErrorToService(error, info); // e.g., Sentry, Datadog
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                this.props.fallback ?? (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded">
+                        <h2 className="text-red-700 font-bold">
+                            Something went wrong
+                        </h2>
+                        <p className="text-red-500 text-sm">
+                            {this.state.error?.message}
+                        </p>
+                        <button
+                            onClick={() =>
+                                this.setState({ hasError: false, error: null })
+                            }
+                        >
+                            Try again
+                        </button>
+                    </div>
+                )
+            );
+        }
+        return this.props.children;
+    }
+}
+
+// Usage:
+<ErrorBoundary fallback={<p>This section crashed.</p>}>
+    <UserDashboard />
+</ErrorBoundary>;
+```
+
+**Critical interview point**: Error Boundaries **must** be class components — there is no function component equivalent because `getDerivedStateFromError` and `componentDidCatch` have no hook equivalents. The `react-error-boundary` library gives a hook-friendly wrapper.
+
+**What errors are NOT caught**: Errors in event handlers (use try/catch), async code, SSR rendering, errors inside the boundary itself.
+
+---
+
+### Q15: What is the output? `useState` stale closure trap (Flipkart, Swiggy, Paytm)
+
+**The question** — what does this log?
+
+```jsx
+function Counter() {
+    const [count, setCount] = useState(0);
+
+    const handleClick = () => {
+        setTimeout(() => {
+            console.log(count); // ← what does this print?
+            setCount(count + 1);
+        }, 3000);
+    };
+
+    return <button onClick={handleClick}>Click me: {count}</button>;
+}
+
+// User clicks 3 times rapidly within 3 seconds. What happens?
+```
+
+**Answer**: All three `setTimeout` callbacks have a **stale closure** over `count = 0`. After 3 seconds all three fire — all log `0`, all call `setCount(0 + 1)` — final count is `1`, not `3`.
+
+**Fix — use the functional updater**:
+
+```jsx
+setTimeout(() => {
+    setCount((prev) => prev + 1); // always uses latest state from React's queue
+}, 3000);
+// Now: final count = 3 ✅
+```
+
+**Fix — use useRef to always access latest value**:
+
+```jsx
+const countRef = useRef(count);
+useEffect(() => {
+    countRef.current = count;
+}, [count]);
+
+setTimeout(() => {
+    console.log(countRef.current); // always fresh
+    setCount(countRef.current + 1);
+}, 3000);
+```
+
+---
+
+### Q16: Build a Throttled Window Resize Hook (Google, Uber)
+
+**Problem**: Track window size but throttle updates to at most once per 200ms.
+
+```jsx
+import { useState, useEffect, useRef } from "react";
+
+function useWindowSize(throttleMs = 200) {
+    const [size, setSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
+    const lastCalledRef = useRef(0);
+
+    useEffect(() => {
+        const handler = () => {
+            const now = Date.now();
+            if (now - lastCalledRef.current >= throttleMs) {
+                lastCalledRef.current = now;
+                setSize({
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                });
+            }
+        };
+
+        window.addEventListener("resize", handler);
+        return () => window.removeEventListener("resize", handler);
+    }, [throttleMs]);
+
+    return size;
+}
+
+// Usage:
+const { width, height } = useWindowSize(200);
+```
+
+**Debounce vs Throttle** (always asked as follow-up):
+
+|             | Debounce                     | Throttle                           |
+| ----------- | ---------------------------- | ---------------------------------- |
+| Fires when? | After N ms of **silence**    | At most once per N ms              |
+| Use for     | Search input, form autosave  | Scroll handler, resize, mouse move |
+| Example     | Wait until user stops typing | Update layout every 200ms max      |
+
+---
+
+### Q17: Build a `<Tabs>` Component with Compound Components Pattern (Adobe, Atlassian)
+
+**Problem**: Build a flexible Tabs API using the Compound Components pattern.
+
+```jsx
+import { createContext, useContext, useState } from "react";
+
+const TabsContext = createContext(null);
+
+function Tabs({ children, defaultTab }) {
+    const [activeTab, setActiveTab] = useState(defaultTab);
+    return (
+        <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+            <div className="tabs">{children}</div>
+        </TabsContext.Provider>
+    );
+}
+
+function TabList({ children }) {
+    return <div className="flex border-b">{children}</div>;
+}
+
+function Tab({ id, children }) {
+    const { activeTab, setActiveTab } = useContext(TabsContext);
+    const isActive = activeTab === id;
+    return (
+        <button
+            className={`px-4 py-2 font-medium ${
+                isActive
+                    ? "border-b-2 border-blue-500 text-blue-500"
+                    : "text-gray-500"
+            }`}
+            onClick={() => setActiveTab(id)}
+            role="tab"
+            aria-selected={isActive}
+        >
+            {children}
+        </button>
+    );
+}
+
+function TabPanel({ id, children }) {
+    const { activeTab } = useContext(TabsContext);
+    if (activeTab !== id) return null;
+    return (
+        <div role="tabpanel" className="p-4">
+            {children}
+        </div>
+    );
+}
+
+// Attach sub-components to parent namespace
+Tabs.List = TabList;
+Tabs.Tab = Tab;
+Tabs.Panel = TabPanel;
+
+// Usage — expressive, flexible API with no props drilling:
+<Tabs defaultTab="profile">
+    <Tabs.List>
+        <Tabs.Tab id="profile">Profile</Tabs.Tab>
+        <Tabs.Tab id="settings">Settings</Tabs.Tab>
+        <Tabs.Tab id="billing">Billing</Tabs.Tab>
+    </Tabs.List>
+    <Tabs.Panel id="profile">
+        <ProfilePage />
+    </Tabs.Panel>
+    <Tabs.Panel id="settings">
+        <SettingsPage />
+    </Tabs.Panel>
+    <Tabs.Panel id="billing">
+        <BillingPage />
+    </Tabs.Panel>
+</Tabs>;
+```
+
+---
+
+### Q18: What is `useMemo` vs `useCallback` — and when should you NOT use them? (Meta, Google)
+
+**What they're testing**: Whether you know the cost of memoization — it's not free.
+
+```jsx
+// useMemo — memoizes a COMPUTED VALUE
+const sortedList = useMemo(
+    () => [...data].sort((a, b) => a.name.localeCompare(b.name)),
+    [data], // only re-sort when data changes
+);
+
+// useCallback — memoizes a FUNCTION REFERENCE
+const handleDelete = useCallback(
+    (id) => setItems((prev) => prev.filter((item) => item.id !== id)),
+    [], // stable reference — doesn't change on re-renders
+);
+```
+
+**When NOT to use them** (critical for senior roles):
+
+```jsx
+// ❌ Wasteful — simple computation, no perf benefit
+const doubled = useMemo(() => count * 2, [count]);
+// Just write: const doubled = count * 2;
+
+// ❌ Wasteful — function not passed to memoized child
+const handleClick = useCallback(() => setOpen(true), []);
+// Only matters if: (a) passed to React.memo child, or (b) used as useEffect dep
+
+// ✅ Correct use — expensive computation
+const expensiveResult = useMemo(() => {
+    return largeDataset.reduce(/* complex aggregation */);
+}, [largeDataset]);
+
+// ✅ Correct use — stable ref for memoized child + useEffect dep
+const fetchUser = useCallback(() => fetch(`/api/users/${id}`), [id]);
+```
+
+**The cost of `useMemo`**: React stores the previous value + dependencies array. On every render it still runs the comparison. For trivial computations this overhead **exceeds** the savings.
+
+> **Rule**: Memoize when the computation is expensive (measurable with React DevTools Profiler), or when referential stability is required (passed as a prop to `React.memo` children, or used as a `useEffect` dependency).
+
+---
+
+### Q19: What are React Server Components? How are they different from SSR? (Meta, Google, Microsoft)
+
+**What they're testing**: Cutting-edge React knowledge.
+
+|                      | SSR (Server-Side Rendering)                      | React Server Components (RSC)            |
+| -------------------- | ------------------------------------------------ | ---------------------------------------- |
+| When rendered        | On each request, on server                       | On server, at build time or request time |
+| Hydration            | Full JS bundle sent to client, hydration happens | Zero JS sent for server components       |
+| Client interactivity | Full React on client after hydration             | Only Client Components are interactive   |
+| Data fetching        | `getServerSideProps` / loaders                   | Direct `async/await` in component body   |
+| Bundle size impact   | Full bundle still shipped                        | Server components don't add to JS bundle |
+
+```jsx
+// Server Component — runs ONLY on the server
+// Can: async/await, access DB directly, read filesystem
+// Cannot: useState, useEffect, event handlers, browser APIs
+async function ProductPage({ id }) {
+    const product = await db.products.findById(id); // direct DB call — no fetch!
+    return (
+        <div>
+            <h1>{product.name}</h1>
+            <p>{product.description}</p>
+            {/* Client Component — handles interactivity */}
+            <AddToCartButton productId={id} />
+        </div>
+    );
+}
+
+// Client Component — add "use client" directive at top of file
+("use client");
+function AddToCartButton({ productId }) {
+    const [added, setAdded] = useState(false); // useState is allowed here
+    return (
+        <button onClick={() => setAdded(true)}>
+            {added ? "Added!" : "Add to Cart"}
+        </button>
+    );
+}
+```
+
+> **One-line answer**: "SSR sends HTML + a full React bundle for hydration. RSC sends HTML for server components with zero JS — only Client Components ship JavaScript. RSC reduces bundle size and lets server components directly access databases."
+
+---
+
+## 21.3 — System Design / Architecture Questions (Senior Roles)
+
+---
+
+### Q20: How would you optimize a React app that has performance issues? (Amazon, Flipkart, Google)
+
+**A structured answer**:
+
+**Step 1 — Measure first, optimize second**:
+
+```
+React DevTools Profiler → find components with high render time / render count
+Chrome DevTools Performance tab → find long tasks (>50ms)
+Lighthouse → LCP, CLS, INP scores
+```
+
+**Step 2 — Fix unnecessary re-renders**:
+
+```jsx
+// Wrap expensive components in React.memo
+const ExpensiveCard = React.memo(({ data }) => <Card data={data} />);
+
+// Stable callbacks with useCallback
+const handleClick = useCallback(() => {
+    /* ... */
+}, [dep]);
+
+// Memoize expensive computations
+const result = useMemo(() => computeExpensive(data), [data]);
+```
+
+**Step 3 — Code splitting and lazy loading**:
+
+```jsx
+const HeavyChart = React.lazy(() => import("./HeavyChart"));
+
+function Dashboard() {
+    return (
+        <Suspense fallback={<Spinner />}>
+            <HeavyChart />
+        </Suspense>
+    );
+}
+```
+
+**Step 4 — Virtualize long lists**:
+
+```jsx
+// Don't render 10,000 rows — only render what's visible
+import { FixedSizeList } from "react-window";
+
+<FixedSizeList height={600} itemCount={10000} itemSize={50}>
+    {({ index, style }) => <Row style={style} data={items[index]} />}
+</FixedSizeList>;
+```
+
+**Step 5 — Optimize Context**:
+
+```jsx
+// Split contexts by update frequency
+// Memoize context values
+// Use selectors (Zustand / Redux) instead of raw context for high-frequency data
+```
+
+**Step 6 — Image & asset optimization**:
+
+```jsx
+<img loading="lazy" src={url} width={800} height={600} decoding="async" />
+// Use next/image in Next.js, or native lazy loading
+```
+
+---
+
+### Q21: How would you implement authentication in a React SPA? (Amazon, Razorpay, Paytm)
+
+**Complete architecture**:
+
+```jsx
+// 1. AuthContext — global auth state
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    // Check token on app load
+    useEffect(() => {
+        const token = localStorage.getItem("token"); // or httpOnly cookie
+        if (token) {
+            validateToken(token)
+                .then(setUser)
+                .catch(() => localStorage.removeItem("token"))
+                .finally(() => setLoading(false));
+        } else {
+            setLoading(false);
+        }
+    }, []);
+
+    const login = async (credentials) => {
+        const { user, token } = await apiLogin(credentials);
+        localStorage.setItem("token", token);
+        setUser(user);
+    };
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        setUser(null);
+    };
+
+    if (loading) return <SplashScreen />;
+
+    return (
+        <AuthContext.Provider value={{ user, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
+}
+
+// 2. Protected Route — wrapper component
+function ProtectedRoute({ children }) {
+    const { user } = useContext(AuthContext);
+    if (!user) return <Navigate to="/login" replace />;
+    return children;
+}
+
+// 3. Axios interceptor — attach token to every request
+axios.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token");
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+});
+
+// 4. Route setup
+<Routes>
+    <Route path="/login" element={<LoginPage />} />
+    <Route
+        path="/dashboard"
+        element={
+            <ProtectedRoute>
+                <DashboardPage />
+            </ProtectedRoute>
+        }
+    />
+</Routes>;
+```
+
+**Security note for interviewers**: For high-security apps, prefer `httpOnly` cookies over `localStorage`. `localStorage` is accessible to JS (XSS risk). `httpOnly` cookies are not readable by JS. Use `SameSite=Strict` or `SameSite=Lax` + `Secure` flag.
+
+---
+
+## 21.4 — Quick-Fire Questions (Common Across All MNCs)
+
+| Question                                                     | One-Line Answer                                                                                    |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| What triggers a re-render?                                   | State change, parent re-render, context value change, forced via `forceUpdate` (class)             |
+| What is reconciliation?                                      | Process of diffing prev and next virtual DOM trees to find minimal DOM changes                     |
+| Can you call hooks inside loops?                             | No — Rules of Hooks: top-level only, unconditionally                                               |
+| What does `React.memo` do?                                   | Shallow-compares props; skips re-render if props didn't change                                     |
+| Difference between `null` and `undefined` in JSX?            | Both render nothing, but `null` is explicit "render nothing"; `undefined` is implicit              |
+| What is `Suspense`?                                          | Let components wait for something (async data, lazy import) and show fallback meanwhile            |
+| What is `useId()`?                                           | Generates stable unique IDs safe for SSR (avoids hydration mismatch)                               |
+| What is `flushSync`?                                         | Forces React to flush state updates synchronously — needed before reading DOM measurements         |
+| Difference between `useEffect` and `useLayoutEffect` in SSR? | `useLayoutEffect` causes a warning in SSR because it runs after DOM commit (no DOM on server)      |
+| What is tree shaking?                                        | Bundler removes unused exported code from the final bundle                                         |
+| What is hydration?                                           | React attaches event listeners to server-rendered HTML without re-creating DOM nodes               |
+| Why shouldn't you use index as key?                          | Reordering shifts indices → React remounts wrong components → input state bugs                     |
+| What is `React.Fragment`?                                    | Groups JSX children without adding an extra DOM node                                               |
+| What is `forwardRef`?                                        | Lets a parent component pass a `ref` down to a child DOM element through the component             |
+| What is `useImperativeHandle`?                               | Customizes what `ref.current` exposes — restrict parent to a limited imperative API                |
+| Difference between `useRef` and `createRef`?                 | `useRef` persists across renders; `createRef` creates a new ref object on every render             |
+| What is prop types?                                          | Runtime type checking for component props in development (replaced by TypeScript in modern apps)   |
+| What is the `children` prop?                                 | The JSX content placed between a component's opening and closing tags                              |
+| When to use Redux over Context?                              | High-frequency updates, devtools needed, async flows, or when app has many interconnected features |
+| What is an HOC?                                              | A function that takes a component and returns a new component with added behavior                  |
+
+---
+
+## Module 21 Summary
+
+| Category           | Key Topics                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| **Internals**      | Fiber, Reconciliation, diffing O(n), StrictMode double-invoke                           |
+| **Hooks**          | Stale closure in setTimeout, useLayoutEffect vs useEffect, useRef array pattern         |
+| **State**          | Functional updater for sequential updates, Context re-render pitfalls                   |
+| **Machine Coding** | OTP Input, Search+Debounce, Infinite Scroll, Star Rating, Tabs with Compound Components |
+| **Custom Hooks**   | useFetch+cache, useDebounce, useLocalStorage, useWindowSize+throttle                    |
+| **Architecture**   | Auth flow, Performance optimization checklist, RSC vs SSR                               |
+| **Quick-fire**     | 20 common one-liner answers across all MNC levels                                       |
+
+---
+
+_Master Class Notes — React JS | Modules 1–21 + Extended Sections_
+_Topics: JSX · Props · Pure Components · useState · Fiber · Reconciliation · useEffect · useMemo · useCallback · React.memo · Compound Components · Render Props · HOCs · React.Children · cloneElement · Server Components · Suspense · React.lazy · Dynamic Import · Code Splitting · Transitions · useReducer · useContext · useRef · useImperativeHandle · useLayoutEffect · useDeferredValue · useId · useDebugValue · useSyncExternalStore · Custom Hooks · React 19 · use() · useActionState · useOptimistic · Server Actions · Event Handling · Controlled/Uncontrolled Forms · React Hook Form · Presentational/Container Components · Lifting State Up · Composition · SPA · React Router · Protected Routes · Redux Toolkit · Zustand · Error Boundaries · Portals · CSS Modules · Tailwind CSS · clsx · cn() · tailwind-merge · Styled-components · Theming · Jest · Vitest · React Testing Library · MSW · Vite · Feature Architecture · TypeScript · Generics · React.FC · ComponentProps · SSR · SSG · Hydration · JWT Security · XSS · TanStack Query · Pagination · Infinite Scroll · Debounce · Throttle · Optimistic UI · Production Error Handling · Core Web Vitals · Lighthouse · LCP · CLS · INP · flushSync · MUI · Framer Motion · Axios · SWR · Zod · React Table · shadcn/ui · Radix UI · Recharts · Socket.io · dnd-kit · Jotai · Day.js · Manual Routing · pushState · popstate · NavigationContext · Config-Driven Table · useSort · SortableTable · Click-Outside Detection · Modal Portal · OTP Input · Star Rating · Compound Components Tabs · useDebounce · useLocalStorage · useWindowSize · useFetch · ErrorBoundary · Stale Closure · React Server Components · Auth Flow · Performance Optimization · MNC Interview Questions · Glossary_
