@@ -141,6 +141,7 @@
   - 15.2 Vite Configuration
   - 15.3 Environment Variables: Full Multi-Environment Setup (dev/test/e2e/staging/prod)
   - 15.4 Nginx Configuration for Serving a React App
+  - 15.5 Browser Compatibility (`.browserslistrc`, Babel, `@vitejs/plugin-legacy`, autoprefixer, feature detection)
   - [Module 15 — Interview Q&A](#module-15--interview-qa)
 
 - [Module 16: SSR, SSG, Hydration & Auth Security](#module-16-ssr-ssg-hydration--auth-security)
@@ -11464,6 +11465,311 @@ docker compose build --build-arg BUILD_MODE=e2e frontend
 
 ---
 
+## 15.5 — Browser Compatibility
+
+Making a React app work across different browsers means handling two separate problems:
+1. **JavaScript compatibility** — older browsers don't support modern JS syntax/APIs
+2. **CSS compatibility** — some CSS properties need vendor prefixes in certain browsers
+
+---
+
+### The Compatibility Stack
+
+```
+Your modern JS/CSS code
+        ↓
+  .browserslistrc  ←── defines which browsers you support
+        ↓
+  Babel (@babel/preset-env)  ←── transforms JS syntax
+  core-js                    ←── polyfills missing runtime APIs
+  autoprefixer (PostCSS)     ←── adds CSS vendor prefixes
+        ↓
+  Browser-compatible bundle
+```
+
+---
+
+### Step 1 — Define Your Target Browsers with `.browserslistrc`
+
+All tools (Babel, autoprefixer, ESLint compat plugin) read this single file to know which browsers you support.
+
+```
+# .browserslistrc
+# Production — modern browsers only
+> 0.5%           # browsers used by more than 0.5% of global users
+last 2 versions  # last 2 versions of every browser
+not dead         # exclude browsers with no official support/updates
+not IE 11        # explicitly drop IE 11
+
+# Development (same file, separate query)
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 safari version
+```
+
+**Common query presets:**
+
+| Query | Meaning |
+|---|---|
+| `> 0.5%` | Global usage > 0.5% (via caniuse data) |
+| `last 2 versions` | Last 2 releases of each browser |
+| `not dead` | Browsers with official support in last 24 months |
+| `not IE 11` | Explicitly drop Internet Explorer 11 |
+| `defaults` | Shorthand for `> 0.5%, last 2 versions, not dead` |
+| `supports es6-module` | Only browsers that support native ES modules |
+
+```bash
+# Check which browsers your query resolves to
+npx browserslist "> 0.5%, last 2 versions, not dead"
+```
+
+---
+
+### Step 2 — JavaScript: Babel + core-js (Webpack / CRA projects)
+
+> **Vite projects** — skip directly to Step 3. Vite handles this differently (see below).
+
+```bash
+npm install -D @babel/preset-env
+npm install core-js@3          # runtime polyfills (save, not devDependency)
+```
+
+```json
+// babel.config.json
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": "defaults",   // reads .browserslistrc
+      "useBuiltIns": "usage",  // inject polyfills only for APIs you actually use
+      "corejs": 3
+    }]
+  ]
+}
+```
+
+**How `useBuiltIns: "usage"` works:**
+
+```js
+// YOUR SOURCE
+const result = [1, [2, 3]].flat();
+const p = new Promise((res) => res(1));
+
+// BABEL OUTPUT (for a browser that lacks Array.flat and Promise)
+import "core-js/modules/es.array.flat.js";   // ← auto-injected
+import "core-js/modules/es.promise.js";       // ← auto-injected
+const result = [1, [2, 3]].flat();
+const p = new Promise((res) => res(1));
+```
+
+**Syntax transforms vs runtime polyfills** — Babel handles both but differently:
+
+| Feature | Type | Handled by |
+|---|---|---|
+| Arrow functions | Syntax | `@babel/preset-env` rewrites to `function(){}` |
+| `async / await` | Syntax | `@babel/preset-env` rewrites to generator/Promise |
+| Optional chaining `?.` | Syntax | `@babel/preset-env` rewrites to `&&` chain |
+| `Promise` | Runtime API | `core-js` injects the global |
+| `Array.prototype.flat` | Runtime API | `core-js` adds `.flat()` to `Array.prototype` |
+| `fetch` | Runtime API | NOT in `core-js` — use `whatwg-fetch` separately |
+| `IntersectionObserver` | Browser API | NOT polyfillable via Babel — use feature detection |
+
+---
+
+### Step 3 — JavaScript: Vite Browser Target + `@vitejs/plugin-legacy`
+
+Vite uses **esbuild** (not Babel) for transforms. It targets modern browsers by default, but you can configure it.
+
+#### Default modern target (recommended for most apps)
+
+```ts
+// vite.config.ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+    plugins: [react()],
+    build: {
+        // Default: ["es2020", "edge88", "firefox78", "chrome87", "safari14"]
+        // Override if you want stricter targets:
+        target: "es2015",  // transpile down to ES2015 for slightly older browsers
+    },
+});
+```
+
+#### Supporting legacy browsers (old Safari, Samsung Internet, UC Browser)
+
+```bash
+npm install -D @vitejs/plugin-legacy
+```
+
+```ts
+// vite.config.ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import legacy from "@vitejs/plugin-legacy";
+
+export default defineConfig({
+    plugins: [
+        react(),
+        legacy({
+            targets: ["defaults", "not IE 11"],  // reads .browserslistrc if omitted
+            additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
+        }),
+    ],
+});
+```
+
+**What `@vitejs/plugin-legacy` generates at build time:**
+
+```html
+<!-- index.html after build — two bundles, browser picks the right one -->
+<script type="module" src="/assets/index-abc123.js"></script>         <!-- modern -->
+<script nomodule src="/assets/index-legacy-def456.js"></script>       <!-- legacy (Babel-compiled) -->
+```
+
+Modern browsers execute the `type="module"` script and ignore `nomodule`. Legacy browsers (no ES module support) ignore `type="module"` and execute the `nomodule` script. Zero runtime overhead for modern users.
+
+---
+
+### Step 4 — CSS: autoprefixer via PostCSS
+
+autoprefixer reads `.browserslistrc` and automatically adds vendor prefixes to your CSS.
+
+```bash
+npm install -D autoprefixer postcss
+```
+
+```js
+// postcss.config.js
+export default {
+    plugins: {
+        autoprefixer: {},  // reads .browserslistrc automatically
+    },
+};
+```
+
+**Input CSS:**
+```css
+.card {
+    display: flex;
+    user-select: none;
+    backdrop-filter: blur(4px);
+}
+```
+
+**autoprefixer output (for targets including older Safari):**
+```css
+.card {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+```
+
+> Vite and CRA both include PostCSS support built-in. Just add `postcss.config.js` — no extra Vite config needed.
+
+---
+
+### Step 5 — Feature Detection (Runtime Guards)
+
+For browser APIs that can't be polyfilled, check at runtime before using them.
+
+```tsx
+// Pattern: check before use
+function MapComponent() {
+    // Geolocation — not available in all contexts (e.g., HTTP, some browsers)
+    if (!("geolocation" in navigator)) {
+        return <p>Location not supported in this browser.</p>;
+    }
+    // ...
+}
+
+// Intersection Observer — polyfill or degrade gracefully
+if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(callback);
+    observer.observe(element);
+} else {
+    // fallback: load all images immediately
+}
+
+// CSS feature detection in JS (matches @supports in CSS)
+const supportsGrid = CSS.supports("display", "grid");
+
+// Web APIs: check before using
+const canShare = "share" in navigator;          // Web Share API
+const canVibrate = "vibrate" in navigator;      // Vibration API
+const canBluetooth = "bluetooth" in navigator;  // Web Bluetooth
+```
+
+```css
+/* CSS @supports — native feature detection in CSS */
+.container {
+    display: flex; /* fallback */
+}
+
+@supports (display: grid) {
+    .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+```
+
+---
+
+### Step 6 — Checking Browser Support Before Using a Feature
+
+**Decision workflow before using any new API:**
+
+1. Check **MDN** (developer.mozilla.org) — "Browser compatibility" table at the bottom
+2. Check **Can I Use** (caniuse.com) — filterable by usage %
+3. If support is < your `.browserslistrc` targets → need polyfill or feature detection
+4. If no polyfill exists → provide a graceful fallback UI
+
+**Quick reference — common APIs and their support status:**
+
+| API | Chrome | Firefox | Safari | Need polyfill? |
+|---|---|---|---|---|
+| `fetch` | ✅ 42+ | ✅ 39+ | ✅ 10.1+ | No (or `whatwg-fetch` for old targets) |
+| `IntersectionObserver` | ✅ 51+ | ✅ 55+ | ✅ 12.1+ | `intersection-observer` polyfill for Safari <12 |
+| `ResizeObserver` | ✅ 64+ | ✅ 69+ | ✅ 13.1+ | `resize-observer-polyfill` for older Safari |
+| `CSS Grid` | ✅ 57+ | ✅ 52+ | ✅ 10.1+ | `@supports` fallback |
+| `CSS container queries` | ✅ 105+ | ✅ 110+ | ✅ 16+ | `@supports` fallback |
+| `Web Crypto` | ✅ 37+ | ✅ 34+ | ✅ 11+ | No — use HTTPS (required anyway) |
+| `CSS backdrop-filter` | ✅ 76+ | ✅ 103+ | ✅ 9+ (-webkit-) | autoprefixer handles the prefix |
+
+---
+
+### Complete Setup Checklist
+
+```bash
+# 1. Create .browserslistrc
+echo "defaults\nnot IE 11" > .browserslistrc
+
+# 2. Verify what browsers it resolves to
+npx browserslist
+
+# 3. Add autoprefixer
+npm install -D autoprefixer postcss
+echo "export default { plugins: { autoprefixer: {} } };" > postcss.config.js
+
+# 4. (Vite) Add legacy plugin for older browser support
+npm install -D @vitejs/plugin-legacy
+# Add legacy() to vite.config.ts plugins array
+
+# 5. (Webpack/CRA) Add core-js
+npm install core-js@3
+# Configure useBuiltIns: "usage" in babel.config.json
+```
+
+---
+
 ## Module 15 — Interview Q&A
 
 **Q: How do environment variables work in Vite? What is the `VITE_` prefix rule?**
@@ -11498,6 +11804,12 @@ docker compose build --build-arg BUILD_MODE=e2e frontend
 | **Nginx `try_files`**     | The one critical rule — always serve `index.html` for unknown paths |
 | **Cache strategy**        | `index.html` = never cache. Hashed assets = cache forever (1y + immutable) |
 | **Nginx as proxy**        | Route `/api/*` to backend — eliminates CORS, single origin for browser |
+| **`.browserslistrc`** | Single source of truth for target browsers — read by Babel, autoprefixer, ESLint |
+| **`@babel/preset-env`** | Transforms modern JS syntax + injects `core-js` polyfills for target browsers |
+| **`@vitejs/plugin-legacy`** | Generates `type="module"` + `nomodule` dual bundles — modern perf, legacy support |
+| **autoprefixer** | PostCSS plugin — adds `-webkit-`, `-moz-` prefixes based on `.browserslistrc` |
+| **Feature detection** | `'IntersectionObserver' in window` — runtime guard before using unsupported APIs |
+| **`@supports`** | CSS-native feature detection — apply grid/container-query styles only if supported |
 
 ---
 
