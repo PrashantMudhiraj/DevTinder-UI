@@ -11,6 +11,8 @@
 
 - [Module 1: The Foundation](#module-1-the-foundation)
   - 1.0 UI Was Built with Pure JavaScript First
+    - 1.0.1 How a Web App is Built in HTML (`<script>` Tags)
+    - 1.0.2 Sync vs Async JS Loading (`defer`, `async`, `type="module"`)
   - 1.1 Why Does React Exist?
   - 1.2 JSX: Syntactic Sugar Over `React.createElement`
   - 1.3 Props: The Contractual Interface of a Component
@@ -412,13 +414,13 @@ Before React, **AngularJS** (2010) was the dominant solution. It introduced **tw
 
 This felt magical — but it came with a serious cost: **the digest cycle**. AngularJS had to "watch" every bound variable and run a loop (`$digest`) to detect changes. In large apps with hundreds of watchers, this loop became a serious performance bottleneck.
 
-| Issue | AngularJS | React |
-|---|---|---|
-| Data sync | Two-way binding (auto) | One-way data flow (explicit) |
-| Change detection | Dirty-checking `$digest` loop | Virtual DOM diffing |
-| Performance at scale | Degrades with watcher count | Efficient O(n) reconciliation |
-| Learning curve | High (directives, scope, `$apply`) | Lower (just JavaScript) |
-| Testability | Complex | Pure functions, easy to test |
+| Issue                | AngularJS                          | React                         |
+| -------------------- | ---------------------------------- | ----------------------------- |
+| Data sync            | Two-way binding (auto)             | One-way data flow (explicit)  |
+| Change detection     | Dirty-checking `$digest` loop      | Virtual DOM diffing           |
+| Performance at scale | Degrades with watcher count        | Efficient O(n) reconciliation |
+| Learning curve       | High (directives, scope, `$apply`) | Lower (just JavaScript)       |
+| Testability          | Complex                            | Pure functions, easy to test  |
 
 ---
 
@@ -534,14 +536,392 @@ function TodoList() {
 }
 ```
 
-| | Pure JS | React |
-|---|---|---|
-| **UI updates** | Manual `element.textContent =` | Automatic on state change |
-| **Reusability** | Copy-paste HTML/JS | Components |
-| **Data sync** | Manual, error-prone | Guaranteed by rendering model |
-| **Memory leaks** | Easy to create | React cleans up via unmount |
-| **Testability** | Requires browser | Pure functions, easy to unit test |
-| **Scale** | Breaks down at ~10+ components | Designed for 1000s of components |
+|                  | Pure JS                        | React                             |
+| ---------------- | ------------------------------ | --------------------------------- |
+| **UI updates**   | Manual `element.textContent =` | Automatic on state change         |
+| **Reusability**  | Copy-paste HTML/JS             | Components                        |
+| **Data sync**    | Manual, error-prone            | Guaranteed by rendering model     |
+| **Memory leaks** | Easy to create                 | React cleans up via unmount       |
+| **Testability**  | Requires browser               | Pure functions, easy to unit test |
+| **Scale**        | Breaks down at ~10+ components | Designed for 1000s of components  |
+
+---
+
+## 1.0.1 — How a Web App is Built in HTML (`<script>` Tags)
+
+> Before React, bundlers, or any build tooling, a web app was simply an HTML file that linked CSS and JavaScript together. Understanding this wiring is the true starting point.
+
+---
+
+### The Three Pillars of a Web Page
+
+Every web page is made of three technologies the browser understands natively:
+
+| Technology     | Role                                             | File         |
+| -------------- | ------------------------------------------------ | ------------ |
+| **HTML**       | Structure — defines elements and their hierarchy | `index.html` |
+| **CSS**        | Presentation — controls visual appearance        | `styles.css` |
+| **JavaScript** | Behaviour — makes the page interactive           | `app.js`     |
+
+The HTML file is the **entry point**. It wires the other two together.
+
+---
+
+### A Minimal Web App (No Framework, No Bundler)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Web App</title>
+
+    <!-- 1. CSS is linked in <head> — downloaded early, parsed before render -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1 id="title">Hello, World!</h1>
+    <button id="btn">Click me</button>
+
+    <!-- 2. JS is placed at the BOTTOM of <body> — a classic best practice -->
+    <!--    Reason: HTML above is already parsed; DOM nodes exist when JS runs -->
+    <script src="app.js"></script>
+  </body>
+</html>
+```
+
+```js
+// app.js — runs after the DOM above is fully parsed
+const btn = document.getElementById("btn");
+const title = document.getElementById("title");
+
+btn.addEventListener("click", function () {
+    title.textContent = "Button was clicked!";
+});
+```
+
+This is a complete, working web app — no npm, no webpack, no React.
+
+---
+
+### What Happens When the Browser Loads an HTML File
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant HTML_Parser as HTML Parser
+    participant Network
+    participant JS_Engine as JS Engine
+
+    Browser->>HTML_Parser: Start parsing index.html top → bottom
+    HTML_Parser->>Network: Encounters <link rel="stylesheet"> → fetch styles.css
+    Note over HTML_Parser,Network: CSS does NOT block HTML parsing (only rendering)
+    HTML_Parser->>HTML_Parser: Continues parsing HTML...
+    HTML_Parser->>Network: Encounters <script src="app.js"> → STOP parsing
+    Network-->>JS_Engine: app.js downloaded
+    JS_Engine->>JS_Engine: Execute app.js (synchronous — blocks everything)
+    JS_Engine-->>HTML_Parser: Done → resume parsing
+    HTML_Parser->>HTML_Parser: Finish parsing remaining HTML
+    Note over Browser: DOMContentLoaded fires
+    Network-->>Browser: All images/fonts loaded
+    Note over Browser: load event fires
+```
+
+> **Key insight**: A plain `<script>` tag is **render-blocking and parser-blocking** by default. The browser stops everything to download and execute it.
+
+---
+
+### Why Putting `<script>` at the Bottom Was the Old Fix
+
+```html
+<!-- ❌ OLD BAD PATTERN: script in <head> -->
+<head>
+  <script src="app.js"></script>  <!-- Blocks HTML parsing immediately -->
+                                 <!-- DOM doesn't exist yet → getElementById returns null -->
+</head>
+<body>
+  <h1 id="title">Hello</h1>  <!-- Not parsed yet when app.js ran! -->
+</body>
+
+<!-- ✅ OLD GOOD PATTERN: script at bottom of <body> -->
+<body>
+  <h1 id="title">Hello</h1>  <!-- Parsed ✔ -->
+  <button id="btn">Click</button>  <!-- Parsed ✔ -->
+
+  <script src="app.js"></script>  <!-- DOM already exists → safe to query ✔ -->
+</body>
+```
+
+The "put scripts at the bottom" rule was the standard fix — but `defer` (below) is the modern, superior approach.
+
+---
+
+## 1.0.2 — Sync vs Async JS Loading (`defer`, `async`, `type="module"`)
+
+> The `<script>` tag has evolved significantly. Understanding the three loading modes — **normal**, **async**, and **defer** — is essential for performance and interview rounds.
+
+---
+
+### Mode 1 — Normal (Synchronous / Parser-Blocking)
+
+```html
+<script src="app.js"></script>
+```
+
+```
+HTML:    ███████████████░░░░░░░░░░███████████████
+                        ↑ STOP   ↑ RESUME
+JS:                     ████████ (download + execute)
+                        ↑ blocks everything here
+```
+
+**Behaviour**:
+1. HTML parser hits `<script>` → **immediately stops**.
+2. Browser fetches `app.js` from the network.
+3. Browser executes `app.js` synchronously.
+4. Only then does HTML parsing resume.
+
+**Problem**: If `app.js` is large or the network is slow, the user sees a **blank page** while waiting.
+
+**When to use**: Almost never — only for tiny inline scripts that must run before any HTML renders.
+
+---
+
+### Mode 2 — `async` (Parallel Download, Immediate Execution)
+
+```html
+<script src="analytics.js" async></script>
+```
+
+```
+HTML:    ████████████████████████████████████████
+                   ↑ download starts (parallel)
+JS:                ░░░░░░░░░████
+                            ↑ HTML parsing INTERRUPTED to execute
+```
+
+**Behaviour**:
+1. HTML parser continues normally while `analytics.js` downloads **in parallel**.
+2. The instant the download finishes, HTML parsing **pauses** and JS executes immediately.
+3. After execution, HTML parsing resumes.
+
+**Key characteristics**:
+- ✅ Download is non-blocking (parallel)
+- ❌ Execution order is **not guaranteed** — whichever script downloads first runs first
+- ❌ Execution still interrupts HTML parsing
+- ❌ DOM may not be fully built when the script runs
+
+**When to use**: Independent, self-contained scripts that don't depend on each other or the DOM — analytics trackers (`Google Analytics`, `Segment`), A/B testing scripts.
+
+```html
+<!-- Multiple async scripts — execution order is UNPREDICTABLE -->
+<script src="analytics.js" async></script>
+<script src="tracking.js" async></script>
+<!-- Whichever downloads first executes first — could be either one -->
+```
+
+---
+
+### Mode 3 — `defer` (Parallel Download, Execute After Parsing)
+
+```html
+<script src="app.js" defer></script>
+```
+
+```
+HTML:    ████████████████████████████████████████
+                   ↑ download starts (parallel)
+JS:                ░░░░░░░░░░░░░░░░░░░░░░░░░░░░███
+                                               ↑ executes AFTER HTML fully parsed
+                                               ↑ before DOMContentLoaded fires
+```
+
+**Behaviour**:
+1. HTML parser continues normally while script downloads **in parallel**.
+2. Script execution is **deferred** until the entire HTML document is parsed.
+3. Multiple `defer` scripts execute **in the order they appear** in the HTML.
+4. All `defer` scripts execute before the `DOMContentLoaded` event fires.
+
+**Key characteristics**:
+- ✅ Download is non-blocking (parallel)
+- ✅ Execution order is **guaranteed** (document order)
+- ✅ DOM is **fully built** when the script executes
+- ✅ No more "put scripts at the bottom" hacks needed
+
+**When to use**: Almost all application scripts. This is the **modern best practice** for loading JS.
+
+```html
+<!-- Modern best practice: defer in <head> -->
+<head>
+  <script src="utils.js" defer></script>   <!-- executes 1st -->
+  <script src="app.js" defer></script>     <!-- executes 2nd (guaranteed order) -->
+</head>
+<body>
+  <!-- HTML parsed fully before either script runs -->
+</body>
+```
+
+---
+
+### Mode 4 — `type="module"` (ES Modules)
+
+```html
+<script type="module" src="app.js"></script>
+```
+
+**Behaviour**:
+- **Always deferred by default** — behaves exactly like `defer`.
+- Enables native ES Module syntax (`import`/`export`) in the browser.
+- Each module has its own scope — no global variable pollution.
+- The same module URL is only fetched and executed **once**, even if imported multiple times.
+- Runs in **strict mode** automatically.
+
+```html
+<!-- app.js can now use import/export natively -->
+<script type="module" src="app.js"></script>
+```
+
+```js
+// app.js — ES Module
+import { formatDate } from "./utils.js";  // native browser import ✔
+
+const today = formatDate(new Date());
+document.getElementById("date").textContent = today;
+```
+
+> **Why React / Vite uses this**: Vite's dev server serves files as native ES Modules using `type="module"`. No bundling needed in development — the browser resolves imports itself.
+
+---
+
+### Side-by-Side Comparison
+
+```
+              Download      Execution       Order       DOM Ready?
+────────────────────────────────────────────────────────────────────
+<script>      Blocking      Immediately     In-order    ❌ No
+<script async> Parallel     On-download     Random      ❌ Maybe
+<script defer> Parallel     After parsing   In-order    ✅ Yes
+<script module>Parallel     After parsing   In-order    ✅ Yes
+```
+
+| Attribute       | Download | Execution Timing      | Order Guaranteed | DOM Available | Use Case                           |
+| --------------- | -------- | --------------------- | ---------------- | ------------- | ---------------------------------- |
+| *(none)*        | Blocking | Immediately           | ✅ Yes            | ❌ No          | Inline critical scripts            |
+| `async`         | Parallel | As soon as downloaded | ❌ No             | ❌ Maybe       | Analytics, independent scripts     |
+| `defer`         | Parallel | After full HTML parse | ✅ Yes            | ✅ Yes         | App scripts (modern best practice) |
+| `type="module"` | Parallel | After full HTML parse | ✅ Yes            | ✅ Yes         | ES Module apps, Vite dev server    |
+
+---
+
+### `DOMContentLoaded` vs `load` — The Two Key Events
+
+```js
+// DOMContentLoaded — fires when HTML is fully parsed and defer scripts have run
+// CSS, images, fonts may still be loading
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM is ready — safe to query elements");
+    // document.getElementById("btn") works here ✔
+});
+
+// load — fires when EVERYTHING is loaded (images, fonts, CSS, iframes)
+// The complete page is visually rendered
+window.addEventListener("load", function () {
+    console.log("Page fully loaded including all assets");
+    // Use for: measuring total page load time, initialising charts that depend on image sizes
+});
+```
+
+| Event              | Fires When                             | Use For                                      |
+| ------------------ | -------------------------------------- | -------------------------------------------- |
+| `DOMContentLoaded` | HTML parsed, `defer` scripts run       | DOM manipulation, app initialisation         |
+| `load`             | All assets (images, fonts, CSS) loaded | Image size measurements, full-page analytics |
+
+---
+
+### Inline Scripts vs External Scripts
+
+```html
+<!-- Inline script — JS is embedded directly in HTML -->
+<script>
+    // Executes immediately when parser hits this line
+    // No network request needed — but cannot be cached by browser
+    console.log("Inline script running");
+</script>
+
+<!-- External script — JS is in a separate file -->
+<script src="app.js" defer></script>
+<!-- Separate file → browser can cache it → subsequent page loads are instant -->
+```
+
+|                     | Inline `<script>`      | External `<script src>`   |
+| ------------------- | ---------------------- | ------------------------- |
+| **Network request** | None                   | Yes (first visit)         |
+| **Browser cache**   | ❌ Never cached         | ✅ Cached on repeat visits |
+| **`async`/`defer`** | Ignored                | ✅ Supported               |
+| **Best for**        | Critical tiny snippets | All application code      |
+
+---
+
+### How React's `index.html` Wires It All Together
+
+When you run `npm create vite@latest`, the generated `index.html` looks like this:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root"></div>   <!-- React mounts its entire tree here -->
+
+    <!-- type="module" → deferred + ES Module support -->
+    <!-- Vite injects: import React from 'react' etc. at the top of main.jsx -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+```
+
+```jsx
+// src/main.jsx — React's entry point
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+
+// Find the <div id="root"> in index.html and take it over
+const root = createRoot(document.getElementById('root'));
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
+```
+
+**The full chain**:
+1. Browser loads `index.html`
+2. Hits `<script type="module" src="/src/main.jsx">` → defers download
+3. HTML parsing finishes (`<div id="root">` exists)
+4. `main.jsx` executes → `document.getElementById('root')` succeeds ✔
+5. React mounts the component tree inside `#root`
+6. The browser paints the first frame
+
+---
+
+### Script Loading Summary
+
+| Concept                | Key Takeaway                                                               |
+| ---------------------- | -------------------------------------------------------------------------- |
+| **Default `<script>`** | Parser-blocking — stops HTML parsing to download + execute                 |
+| **Bottom of `<body>`** | Old workaround — DOM exists by then, but download starts late              |
+| **`async`**            | Download in parallel; execute immediately when ready; order not guaranteed |
+| **`defer`**            | Download in parallel; execute after full HTML parse; order guaranteed      |
+| **`type="module"`**    | Like `defer` + ES Module scope + strict mode + single execution            |
+| **`DOMContentLoaded`** | HTML parsed + defer scripts done — use for app init                        |
+| **`load`**             | Everything including images loaded — use for full-page measurements        |
 
 ---
 
@@ -1323,17 +1703,17 @@ export default defineConfig({
 
 ### Bundler Comparison — Full Table
 
-| | Webpack | Vite | Rollup | esbuild | Parcel |
-|---|---|---|---|---|---|
-| **Best for** | Complex apps, CRA | Modern React apps | Libraries/packages | Raw speed, tooling | Zero-config apps |
-| **Dev server** | Slow (full bundle) | Fast (native ESM) | No dev server | No dev server | Fast |
-| **Prod bundler** | Webpack | Rollup | Rollup | esbuild | Parcel |
-| **Config** | Complex | Minimal | Moderate | Minimal | Zero |
-| **Speed** | Slow | Very fast | Fast | Fastest | Fast |
-| **HMR** | ✅ (slow) | ✅ (instant) | ❌ | ❌ | ✅ |
-| **Tree shaking** | ✅ (ESM only) | ✅ | ✅ (best) | ✅ | ✅ |
-| **Plugin ecosystem** | Huge | Good (Rollup compat) | Good | Small | Small |
-| **Used by** | CRA, older Next.js | New React apps | npm libraries | Vite internally | Small projects |
+|                      | Webpack            | Vite                 | Rollup             | esbuild            | Parcel           |
+| -------------------- | ------------------ | -------------------- | ------------------ | ------------------ | ---------------- |
+| **Best for**         | Complex apps, CRA  | Modern React apps    | Libraries/packages | Raw speed, tooling | Zero-config apps |
+| **Dev server**       | Slow (full bundle) | Fast (native ESM)    | No dev server      | No dev server      | Fast             |
+| **Prod bundler**     | Webpack            | Rollup               | Rollup             | esbuild            | Parcel           |
+| **Config**           | Complex            | Minimal              | Moderate           | Minimal            | Zero             |
+| **Speed**            | Slow               | Very fast            | Fast               | Fastest            | Fast             |
+| **HMR**              | ✅ (slow)           | ✅ (instant)          | ❌                  | ❌                  | ✅                |
+| **Tree shaking**     | ✅ (ESM only)       | ✅                    | ✅ (best)           | ✅                  | ✅                |
+| **Plugin ecosystem** | Huge               | Good (Rollup compat) | Good               | Small              | Small            |
+| **Used by**          | CRA, older Next.js | New React apps       | npm libraries      | Vite internally    | Small projects   |
 
 ---
 
@@ -1472,16 +1852,16 @@ That's the **entire setup** — no config files at all.
 
 When Parcel encounters a file, it checks the extension and applies the right transformer — no config needed:
 
-| File | What Parcel Does Automatically |
-|---|---|
-| `.jsx` / `.tsx` | Installs `@babel/preset-react`, transforms JSX |
-| `.ts` / `.tsx` | Installs `@babel/preset-typescript`, strips types |
-| `.module.css` | Processes as CSS Modules, returns class name object |
-| `.css` | Injects into `<style>` tag or extracts to `.css` file |
-| `.svg` | Inlines as data URL or imports as React component |
-| `.json` | Parses and exports as JS object |
-| `image.png` | Copies to `dist/`, exports the hashed URL |
-| `.env` | Reads environment variables (no plugin needed) |
+| File            | What Parcel Does Automatically                        |
+| --------------- | ----------------------------------------------------- |
+| `.jsx` / `.tsx` | Installs `@babel/preset-react`, transforms JSX        |
+| `.ts` / `.tsx`  | Installs `@babel/preset-typescript`, strips types     |
+| `.module.css`   | Processes as CSS Modules, returns class name object   |
+| `.css`          | Injects into `<style>` tag or extracts to `.css` file |
+| `.svg`          | Inlines as data URL or imports as React component     |
+| `.json`         | Parses and exports as JS object                       |
+| `image.png`     | Copies to `dist/`, exports the hashed URL             |
+| `.env`          | Reads environment variables (no plugin needed)        |
 
 ---
 
@@ -1643,15 +2023,15 @@ Parcel automatically:
 
 ### Parcel vs Vite vs CRA — When to Use Each
 
-| | Parcel | Vite | CRA |
-|---|---|---|---|
-| **Config needed** | Zero | Minimal | Zero |
-| **Dev speed** | Fast | Fastest | Slow |
-| **Build speed** | Fast (SWC) | Fast (Rollup) | Slow (Webpack) |
-| **Customisability** | Low–Medium | High | Low (eject only) |
-| **TypeScript** | Auto-detected | Auto-detected | Bundled |
-| **Best for** | Prototypes, learning, small apps | Production React apps | Legacy projects |
-| **Maintained** | ✅ Active | ✅ Very active | ⚠️ Slow updates |
+|                     | Parcel                           | Vite                  | CRA              |
+| ------------------- | -------------------------------- | --------------------- | ---------------- |
+| **Config needed**   | Zero                             | Minimal               | Zero             |
+| **Dev speed**       | Fast                             | Fastest               | Slow             |
+| **Build speed**     | Fast (SWC)                       | Fast (Rollup)         | Slow (Webpack)   |
+| **Customisability** | Low–Medium                       | High                  | Low (eject only) |
+| **TypeScript**      | Auto-detected                    | Auto-detected         | Bundled          |
+| **Best for**        | Prototypes, learning, small apps | Production React apps | Legacy projects  |
+| **Maintained**      | ✅ Active                         | ✅ Very active         | ⚠️ Slow updates   |
 
 **Rule of thumb:**
 - **Learning / prototyping** → Parcel (zero friction, start coding immediately)
@@ -1662,21 +2042,21 @@ Parcel automatically:
 
 ### Bundlers Deep Dive Summary
 
-| Concept | Key Takeaway |
-|---|---|
+| Concept                | Key Takeaway                                                                                        |
+| ---------------------- | --------------------------------------------------------------------------------------------------- |
 | **Why bundlers exist** | Browsers can't resolve `node_modules`, 500 HTTP requests is too slow, non-JS assets need processing |
-| **Dependency graph** | Bundler starts at entry point, follows every `import`, builds a complete map |
-| **Tree shaking** | Dead code removed based on static `import` analysis — only works with ESM |
-| **Code splitting** | Dynamic `import()` creates separate chunks downloaded on demand |
-| **Minification** | Rename variables, remove whitespace → 60–80% smaller files |
-| **Content hashing** | Filenames change when content changes → perfect browser cache invalidation |
-| **Webpack** | OG bundler, hugely configurable, slow dev server — used by CRA |
-| **Vite** | Native ESM dev server (instant), Rollup for prod — the modern standard |
-| **Rollup** | Cleanest tree-shaking output, standard for publishing npm libraries |
-| **esbuild** | Go-based, 100× faster, used inside Vite as a building block |
-| **Parcel** | Zero-config, HTML as entry point, auto-installs transforms — best for prototypes |
-| **HMR** | Swap changed modules without page reload, preserving component state |
-| **Source maps** | Map minified prod code back to source for readable error stack traces |
+| **Dependency graph**   | Bundler starts at entry point, follows every `import`, builds a complete map                        |
+| **Tree shaking**       | Dead code removed based on static `import` analysis — only works with ESM                           |
+| **Code splitting**     | Dynamic `import()` creates separate chunks downloaded on demand                                     |
+| **Minification**       | Rename variables, remove whitespace → 60–80% smaller files                                          |
+| **Content hashing**    | Filenames change when content changes → perfect browser cache invalidation                          |
+| **Webpack**            | OG bundler, hugely configurable, slow dev server — used by CRA                                      |
+| **Vite**               | Native ESM dev server (instant), Rollup for prod — the modern standard                              |
+| **Rollup**             | Cleanest tree-shaking output, standard for publishing npm libraries                                 |
+| **esbuild**            | Go-based, 100× faster, used inside Vite as a building block                                         |
+| **Parcel**             | Zero-config, HTML as entry point, auto-installs transforms — best for prototypes                    |
+| **HMR**                | Swap changed modules without page reload, preserving component state                                |
+| **Source maps**        | Map minified prod code back to source for readable error stack traces                               |
 
 ---
 
@@ -1743,10 +2123,10 @@ A small module React ships alongside the main `react` package. It exports `jsx()
 
 Babel is configured via one of two file formats. Both do the same thing — the difference is **scope**:
 
-| File | Scope | Best For |
-|---|---|---|
-| `babel.config.json` | Entire project (monorepos too) | Apps, Next.js, CRA |
-| `.babelrc` / `.babelrc.json` | Only the package it lives in | Libraries, packages |
+| File                         | Scope                          | Best For            |
+| ---------------------------- | ------------------------------ | ------------------- |
+| `babel.config.json`          | Entire project (monorepos too) | Apps, Next.js, CRA  |
+| `.babelrc` / `.babelrc.json` | Only the package it lives in   | Libraries, packages |
 
 ```json
 // babel.config.json — the most common setup for a React app
@@ -1879,13 +2259,13 @@ Syntax Transform  →  Babel rewrites the CODE
 Runtime Polyfill  →  Babel injects a FUNCTION that didn't exist in the old browser
 ```
 
-| Feature | Type | Handled by |
-|---|---|---|
-| Arrow functions | Syntax | `@babel/preset-env` rewrites to `function` |
-| `async/await` | Syntax | `@babel/preset-env` rewrites to Promises |
-| `Promise` | Runtime API | `core-js` polyfill injects `Promise` globally |
-| `Array.prototype.flat` | Runtime API | `core-js` polyfill adds `.flat()` to Array prototype |
-| `fetch` | Runtime API | NOT in `core-js` — use `whatwg-fetch` or `cross-fetch` |
+| Feature                | Type        | Handled by                                             |
+| ---------------------- | ----------- | ------------------------------------------------------ |
+| Arrow functions        | Syntax      | `@babel/preset-env` rewrites to `function`             |
+| `async/await`          | Syntax      | `@babel/preset-env` rewrites to Promises               |
+| `Promise`              | Runtime API | `core-js` polyfill injects `Promise` globally          |
+| `Array.prototype.flat` | Runtime API | `core-js` polyfill adds `.flat()` to Array prototype   |
+| `fetch`                | Runtime API | NOT in `core-js` — use `whatwg-fetch` or `cross-fetch` |
 
 ```json
 // Three modes for useBuiltIns:
@@ -1980,15 +2360,15 @@ const buildTime = preval`module.exports = new Date().toISOString()`;
 
 ### Babel vs. `tsc` vs. SWC — Full Comparison
 
-| | Babel | TypeScript (`tsc`) | SWC |
-|---|---|---|---|
-| **Language** | JavaScript | TypeScript (Go internals) | Rust |
-| **Speed** | Slow (JS) | Medium | 20–70× faster than Babel |
-| **Type checking** | ❌ | ✅ | ❌ |
-| **JSX support** | ✅ via preset | ✅ built-in | ✅ built-in |
-| **Plugin ecosystem** | Huge | Limited | Growing |
-| **Used by** | CRA, older setups | CI type checks | Vite (default), Next.js 13+ |
-| **Config file** | `babel.config.json` | `tsconfig.json` | `.swcrc` or `vite.config.ts` |
+|                      | Babel               | TypeScript (`tsc`)        | SWC                          |
+| -------------------- | ------------------- | ------------------------- | ---------------------------- |
+| **Language**         | JavaScript          | TypeScript (Go internals) | Rust                         |
+| **Speed**            | Slow (JS)           | Medium                    | 20–70× faster than Babel     |
+| **Type checking**    | ❌                   | ✅                         | ❌                            |
+| **JSX support**      | ✅ via preset        | ✅ built-in                | ✅ built-in                   |
+| **Plugin ecosystem** | Huge                | Limited                   | Growing                      |
+| **Used by**          | CRA, older setups   | CI type checks            | Vite (default), Next.js 13+  |
+| **Config file**      | `babel.config.json` | `tsconfig.json`           | `.swcrc` or `vite.config.ts` |
 
 **Typical production setup:**
 
@@ -2041,17 +2421,17 @@ Source (.tsx) → tsc --noEmit (type check in CI only, no output)
 
 ### Babel Deep Dive Summary
 
-| Concept | Key Takeaway |
-|---|---|
-| **Config files** | `babel.config.json` for apps; `.babelrc` for library packages |
-| **`@babel/preset-env`** | Downcompiles modern JS based on your browser targets |
-| **`@babel/preset-react`** | Transforms JSX; use `runtime: "automatic"` for React 17+ |
-| **`@babel/preset-typescript`** | Strips types only — does NOT type-check |
-| **Syntax vs Runtime** | Syntax → Babel rewrites code. Runtime APIs → `core-js` polyfills |
-| **`useBuiltIns: "usage"`** | Auto-inject only the polyfills you actually use |
-| **Babel macros** | Compile-time transforms with zero config — just import from `.macro` |
-| **Babel vs SWC** | Same job, SWC is 20–70× faster but fewer plugins |
-| **Babel vs `tsc`** | Babel transpiles only; `tsc --noEmit` for type checking in CI |
+| Concept                        | Key Takeaway                                                         |
+| ------------------------------ | -------------------------------------------------------------------- |
+| **Config files**               | `babel.config.json` for apps; `.babelrc` for library packages        |
+| **`@babel/preset-env`**        | Downcompiles modern JS based on your browser targets                 |
+| **`@babel/preset-react`**      | Transforms JSX; use `runtime: "automatic"` for React 17+             |
+| **`@babel/preset-typescript`** | Strips types only — does NOT type-check                              |
+| **Syntax vs Runtime**          | Syntax → Babel rewrites code. Runtime APIs → `core-js` polyfills     |
+| **`useBuiltIns: "usage"`**     | Auto-inject only the polyfills you actually use                      |
+| **Babel macros**               | Compile-time transforms with zero config — just import from `.macro` |
+| **Babel vs SWC**               | Same job, SWC is 20–70× faster but fewer plugins                     |
+| **Babel vs `tsc`**             | Babel transpiles only; `tsc --noEmit` for type checking in CI        |
 
 ---
 
@@ -2604,18 +2984,18 @@ class LegacyComponent extends Component {
 
 #### Complete `setState()` Behaviour in Lifecycle Methods
 
-| Lifecycle Method | Can call `setState()`? | Effect |
-|---|---|---|
-| `constructor` | ❌ No | Use `this.state = {}` instead |
-| `getDerivedStateFromProps` | ❌ No | Return state object directly |
-| `render` | ❌ No | Infinite loop |
-| `componentDidMount` | ✅ Yes | Triggers second render before browser paints |
-| `shouldComponentUpdate` | ❌ No | Undefined behaviour |
-| `getSnapshotBeforeUpdate` | ❌ No | Undefined behaviour |
-| `componentDidUpdate` | ✅ Yes (with guard) | Must be inside `if` condition or infinite loop |
-| `componentWillUnmount` | ❌ No | Component is destroyed — React warns |
-| `getDerivedStateFromError` | ❌ No (static) | Return new state object directly |
-| `componentDidCatch` | ✅ Yes | Used to update error state |
+| Lifecycle Method           | Can call `setState()`? | Effect                                         |
+| -------------------------- | ---------------------- | ---------------------------------------------- |
+| `constructor`              | ❌ No                   | Use `this.state = {}` instead                  |
+| `getDerivedStateFromProps` | ❌ No                   | Return state object directly                   |
+| `render`                   | ❌ No                   | Infinite loop                                  |
+| `componentDidMount`        | ✅ Yes                  | Triggers second render before browser paints   |
+| `shouldComponentUpdate`    | ❌ No                   | Undefined behaviour                            |
+| `getSnapshotBeforeUpdate`  | ❌ No                   | Undefined behaviour                            |
+| `componentDidUpdate`       | ✅ Yes (with guard)     | Must be inside `if` condition or infinite loop |
+| `componentWillUnmount`     | ❌ No                   | Component is destroyed — React warns           |
+| `getDerivedStateFromError` | ❌ No (static)          | Return new state object directly               |
+| `componentDidCatch`        | ✅ Yes                  | Used to update error state                     |
 
 ---
 
@@ -2686,18 +3066,18 @@ class DataDashboard extends Component {
 
 #### Lifecycle Methods — Quick Reference Card
 
-| Method | Phase | Called When | Primary Use |
-|---|---|---|---|
-| `constructor` | Mount | Once, before first render | Initialise state, bind methods |
-| `getDerivedStateFromProps` | Mount + Update | Before every render | Sync state from props (rare) |
-| `render` | Mount + Update | Every render | Return JSX |
-| `componentDidMount` | Mount | After first DOM paint | Fetch data, subscriptions, timers |
-| `shouldComponentUpdate` | Update | Before re-render | Skip unnecessary renders |
-| `getSnapshotBeforeUpdate` | Update | Before DOM update | Capture scroll position |
-| `componentDidUpdate` | Update | After re-render | React to prop/state changes |
-| `componentWillUnmount` | Unmount | Before removal | Clean up timers, listeners, requests |
-| `getDerivedStateFromError` | Error | Child throws | Show fallback UI |
-| `componentDidCatch` | Error | Child throws | Log errors to service |
+| Method                     | Phase          | Called When               | Primary Use                          |
+| -------------------------- | -------------- | ------------------------- | ------------------------------------ |
+| `constructor`              | Mount          | Once, before first render | Initialise state, bind methods       |
+| `getDerivedStateFromProps` | Mount + Update | Before every render       | Sync state from props (rare)         |
+| `render`                   | Mount + Update | Every render              | Return JSX                           |
+| `componentDidMount`        | Mount          | After first DOM paint     | Fetch data, subscriptions, timers    |
+| `shouldComponentUpdate`    | Update         | Before re-render          | Skip unnecessary renders             |
+| `getSnapshotBeforeUpdate`  | Update         | Before DOM update         | Capture scroll position              |
+| `componentDidUpdate`       | Update         | After re-render           | React to prop/state changes          |
+| `componentWillUnmount`     | Unmount        | Before removal            | Clean up timers, listeners, requests |
+| `getDerivedStateFromError` | Error          | Child throws              | Show fallback UI                     |
+| `componentDidCatch`        | Error          | Child throws              | Log errors to service                |
 
 ```jsx
 // ❌ BAD: Regular method — `this` is undefined when called as an event handler
@@ -2768,16 +3148,16 @@ Introduced in 2015 as "stateless functional components" — just a function that
 
 Every class lifecycle method has a functional hook equivalent:
 
-| Class Lifecycle | Hook Equivalent |
-|---|---|
-| `constructor` | `useState(initialValue)` initialiser |
-| `componentDidMount` | `useEffect(() => { ... }, [])` |
-| `componentDidUpdate` | `useEffect(() => { ... }, [dep])` |
-| `componentWillUnmount` | `useEffect(() => { return () => cleanup() }, [])` |
-| `shouldComponentUpdate` | `React.memo` + `useMemo` |
-| `getDerivedStateFromError` | ❌ No hook — must use class Error Boundary |
-| `componentDidCatch` | ❌ No hook — must use class Error Boundary |
-| `getSnapshotBeforeUpdate` | ❌ No hook equivalent |
+| Class Lifecycle            | Hook Equivalent                                   |
+| -------------------------- | ------------------------------------------------- |
+| `constructor`              | `useState(initialValue)` initialiser              |
+| `componentDidMount`        | `useEffect(() => { ... }, [])`                    |
+| `componentDidUpdate`       | `useEffect(() => { ... }, [dep])`                 |
+| `componentWillUnmount`     | `useEffect(() => { return () => cleanup() }, [])` |
+| `shouldComponentUpdate`    | `React.memo` + `useMemo`                          |
+| `getDerivedStateFromError` | ❌ No hook — must use class Error Boundary         |
+| `componentDidCatch`        | ❌ No hook — must use class Error Boundary         |
+| `getSnapshotBeforeUpdate`  | ❌ No hook equivalent                              |
 
 ```jsx
 // Class: componentDidMount + componentDidUpdate + componentWillUnmount
@@ -2906,19 +3286,19 @@ async function ProductPage({ id }) {
 
 ### Class vs Functional — Complete Comparison
 
-| | Class Component | Functional Component |
-|---|---|---|
-| **Syntax** | `class Foo extends Component` | `function Foo()` |
-| **State** | `this.state` + `this.setState()` | `useState()` hook |
-| **Lifecycle** | `componentDidMount`, `componentDidUpdate`, etc. | `useEffect()` |
-| **`this` keyword** | Required everywhere (causes bugs) | Not needed |
-| **Code reuse** | HOCs, Render Props (verbose) | Custom hooks (clean) |
-| **Boilerplate** | High (constructor, bind, render) | Minimal |
-| **Performance** | Slightly heavier | Slightly lighter |
-| **Error boundaries** | ✅ Supported | ❌ Not supported |
-| **Testing** | Harder (class instances, `this`) | Easier (pure functions) |
-| **React DevTools** | Good | Excellent (hook names visible) |
-| **Recommended** | ❌ Legacy (avoid in new code) | ✅ Modern standard |
+|                      | Class Component                                 | Functional Component           |
+| -------------------- | ----------------------------------------------- | ------------------------------ |
+| **Syntax**           | `class Foo extends Component`                   | `function Foo()`               |
+| **State**            | `this.state` + `this.setState()`                | `useState()` hook              |
+| **Lifecycle**        | `componentDidMount`, `componentDidUpdate`, etc. | `useEffect()`                  |
+| **`this` keyword**   | Required everywhere (causes bugs)               | Not needed                     |
+| **Code reuse**       | HOCs, Render Props (verbose)                    | Custom hooks (clean)           |
+| **Boilerplate**      | High (constructor, bind, render)                | Minimal                        |
+| **Performance**      | Slightly heavier                                | Slightly lighter               |
+| **Error boundaries** | ✅ Supported                                     | ❌ Not supported                |
+| **Testing**          | Harder (class instances, `this`)                | Easier (pure functions)        |
+| **React DevTools**   | Good                                            | Excellent (hook names visible) |
+| **Recommended**      | ❌ Legacy (avoid in new code)                    | ✅ Modern standard              |
 
 > **The one exception**: Error Boundaries **must** be class components. React has not (as of React 18) provided hook equivalents for `getDerivedStateFromError` / `componentDidCatch`. Use `react-error-boundary` to avoid writing class components yourself.
 
@@ -3008,15 +3388,15 @@ function SearchBox() {
 
 ### Component Types Summary
 
-| Type | Syntax | Use Case |
-|---|---|---|
-| **Functional** | `function Foo()` | Everything — the modern default |
-| **Class** | `class Foo extends Component` | Legacy code, Error Boundaries only |
-| **PureComponent** | `class Foo extends PureComponent` | Class-era perf optimisation |
-| **React.memo** | `React.memo(Foo)` | Functional equivalent of PureComponent |
-| **forwardRef** | `forwardRef((props, ref) => ...)` | Expose DOM ref to parent (not needed in React 19) |
-| **HOC** | `withX(Foo)` | Cross-cutting concerns (auth, logging) |
-| **Lazy** | `React.lazy(() => import(...))` | Code splitting on demand |
+| Type                 | Syntax                            | Use Case                                           |
+| -------------------- | --------------------------------- | -------------------------------------------------- |
+| **Functional**       | `function Foo()`                  | Everything — the modern default                    |
+| **Class**            | `class Foo extends Component`     | Legacy code, Error Boundaries only                 |
+| **PureComponent**    | `class Foo extends PureComponent` | Class-era perf optimisation                        |
+| **React.memo**       | `React.memo(Foo)`                 | Functional equivalent of PureComponent             |
+| **forwardRef**       | `forwardRef((props, ref) => ...)` | Expose DOM ref to parent (not needed in React 19)  |
+| **HOC**              | `withX(Foo)`                      | Cross-cutting concerns (auth, logging)             |
+| **Lazy**             | `React.lazy(() => import(...))`   | Code splitting on demand                           |
 | **Server Component** | Async function, no `'use client'` | Server-only rendering, DB access, no JS to browser |
 
 ---
@@ -3154,14 +3534,14 @@ function DefinitionList({ terms }) {
 
 **Q: What is the difference between class components and functional components?**
 
-| | Class Component | Functional Component |
-|---|---|---|
-| State | `this.state` + `this.setState()` | `useState()` hook |
-| Lifecycle | Lifecycle methods (`componentDidMount` etc.) | `useEffect()` hook |
-| `this` binding | Required, error-prone | Not needed |
-| Error boundaries | ✅ Can be error boundaries | ❌ Cannot (yet) |
-| Boilerplate | More | Less |
-| Recommended | Legacy codebases | All new code |
+|                  | Class Component                              | Functional Component |
+| ---------------- | -------------------------------------------- | -------------------- |
+| State            | `this.state` + `this.setState()`             | `useState()` hook    |
+| Lifecycle        | Lifecycle methods (`componentDidMount` etc.) | `useEffect()` hook   |
+| `this` binding   | Required, error-prone                        | Not needed           |
+| Error boundaries | ✅ Can be error boundaries                    | ❌ Cannot (yet)       |
+| Boilerplate      | More                                         | Less                 |
+| Recommended      | Legacy codebases                             | All new code         |
 
 **Q: What is a pure component? Why does React require purity?**
 > A pure component always produces the same output for the same input and has no side effects during render. React requires purity because it may call your render function multiple times (StrictMode, Concurrent Mode) — side effects in render would fire unpredictably. Use `useEffect` for side effects, never in the render function body.
@@ -3174,6 +3554,36 @@ function DefinitionList({ terms }) {
 
 **Q: What is tree shaking?**
 > Tree shaking is a bundler feature (Rollup, Vite, Webpack) that removes unused exported code from the final bundle. It relies on ES module `import/export` syntax (which is statically analyzable). `require()` (CommonJS) cannot be tree-shaken.
+
+**Q: What happens when the browser encounters a `<script>` tag?**
+> By default, the HTML parser **stops completely** — it halts parsing, waits for the JS file to download over the network, executes it synchronously, and only then resumes parsing HTML. This is called **parser-blocking** or **render-blocking** behaviour. It's why a large `<script>` in `<head>` can cause a blank page flash.
+
+**Q: What is the difference between `async` and `defer` on a `<script>` tag?**
+
+|                      | `async`                                         | `defer`                            |
+| -------------------- | ----------------------------------------------- | ---------------------------------- |
+| **Download**         | Parallel (non-blocking)                         | Parallel (non-blocking)            |
+| **Execution timing** | As soon as downloaded (interrupts HTML parsing) | After full HTML document is parsed |
+| **Order guaranteed** | ❌ No — whichever downloads first runs first     | ✅ Yes — document order             |
+| **DOM available**    | ❌ Not necessarily                               | ✅ Always                           |
+| **Best for**         | Independent analytics / tracking scripts        | All application scripts            |
+
+> **One-line rule**: Use `defer` for your app code (order matters, DOM needed). Use `async` for independent third-party scripts like analytics.
+
+**Q: What is render-blocking JavaScript?**
+> Any `<script>` without `async` or `defer` is render-blocking. The browser cannot display anything below that script tag until it finishes downloading and executing the JS. This directly impacts **First Contentful Paint (FCP)** and **Largest Contentful Paint (LCP)** — Core Web Vitals metrics.
+
+**Q: What does `<script type="module">` do?**
+> It tells the browser to treat the script as an **ES Module**. This has three effects: (1) it is automatically **deferred** — executes after HTML is parsed; (2) it enables native `import`/`export` syntax in the browser; (3) the script runs in **strict mode** automatically and has its own module scope — no global variable leakage.
+
+**Q: What is the difference between `DOMContentLoaded` and `load`?**
+> `DOMContentLoaded` fires when the HTML is fully parsed and all `defer` scripts have executed — but images, stylesheets, and fonts may still be loading. `load` fires when **everything** (HTML, CSS, images, fonts, iframes) is fully downloaded and rendered. Use `DOMContentLoaded` for DOM manipulation and app initialisation; use `load` for measurements that depend on image sizes or total load time.
+
+**Q: Why does React's `index.html` use `<script type="module">` instead of a plain `<script>`?**
+> Because `type="module"` gives React/Vite two critical features for free: (1) **deferred execution** — the DOM (`<div id="root">`) is guaranteed to exist when `main.jsx` runs, so `document.getElementById('root')` never returns `null`; (2) **ES Module support** — `main.jsx` can use `import` statements that the browser (in dev) or Vite/Rollup (in prod) resolves into the correct files.
+
+**Q: Why does placing `<script>` at the bottom of `<body>` work? Is it still the best practice?**
+> Placing the script at the bottom works because by the time the parser reaches it, all the HTML above has already been parsed — so DOM nodes exist and `getElementById` works. However, it is **no longer the recommended approach**. `defer` is strictly better: the script starts downloading immediately (as soon as the browser sees the tag in `<head>`), and execution is still deferred until parsing completes. With the bottom-of-body approach, the download only starts after all the HTML is parsed — wasting time.
 
 ---
 
@@ -3635,7 +4045,7 @@ So even in RTK, you are never actually mutating — Immer creates a new object. 
 
 ### Quick Reference — Immutable Update Cheat Sheet
 
-| Operation            | ❌ Mutating        | ✅ Immutable                             |
+| Operation            | ❌ Mutating         | ✅ Immutable                              |
 | -------------------- | ------------------ | ---------------------------------------- |
 | Update object field  | `obj.x = 1`        | `{ ...obj, x: 1 }`                       |
 | Add to array         | `arr.push(x)`      | `[...arr, x]`                            |
@@ -3742,11 +4152,11 @@ useEffect(() => {
 
 **Q: What is the difference between state and props?**
 
-| | Props | State |
-|---|---|---|
-| Owned by | Parent component | The component itself |
-| Mutable? | ❌ Read-only | ✅ via setter |
-| Flow | Downward (parent → child) | Local to component |
+|                     | Props                               | State                           |
+| ------------------- | ----------------------------------- | ------------------------------- |
+| Owned by            | Parent component                    | The component itself            |
+| Mutable?            | ❌ Read-only                         | ✅ via setter                    |
+| Flow                | Downward (parent → child)           | Local to component              |
 | Triggers re-render? | Parent's re-render pushes new props | `setState()` triggers re-render |
 
 **Q: What is automatic batching in React 18?**
@@ -4043,11 +4453,11 @@ function WindowSize() {
 
 **Q: Explain the three modes of `useEffect`'s dependency array.**
 
-| Dependency Array | When `useEffect` runs |
-|---|---|
-| `[]` (empty) | Once — after first render only (mount) |
+| Dependency Array  | When `useEffect` runs                            |
+| ----------------- | ------------------------------------------------ |
+| `[]` (empty)      | Once — after first render only (mount)           |
 | `[a, b]` (values) | After first render + whenever `a` or `b` changes |
-| Omitted | After every render |
+| Omitted           | After every render                               |
 
 **Q: Why do you return a cleanup function from `useEffect`?**
 > React calls the cleanup function (1) before the component unmounts, and (2) before re-running the effect when dependencies change. Without cleanup: event listeners stack up, intervals keep firing after unmount, WebSocket connections leak, and stale fetch callbacks can update state on an unmounted component (memory leak warning). Always clean up timers, subscriptions, and async operations.
@@ -4298,12 +4708,12 @@ function Component() {
 
 **Q: What is the difference between `useMemo` and `useCallback`?**
 
-| | `useMemo` | `useCallback` |
-|---|---|---|
-| Memoizes | A **computed value** | A **function reference** |
-| Returns | The result of calling the function | The function itself |
-| Use case | Expensive derived data | Stable callback for `React.memo` child or `useEffect` dep |
-| Equivalent | `useMemo(() => fn(), deps)` | `useCallback(fn, deps)` = `useMemo(() => fn, deps)` |
+|            | `useMemo`                          | `useCallback`                                             |
+| ---------- | ---------------------------------- | --------------------------------------------------------- |
+| Memoizes   | A **computed value**               | A **function reference**                                  |
+| Returns    | The result of calling the function | The function itself                                       |
+| Use case   | Expensive derived data             | Stable callback for `React.memo` child or `useEffect` dep |
+| Equivalent | `useMemo(() => fn(), deps)`        | `useCallback(fn, deps)` = `useMemo(() => fn, deps)`       |
 
 **Q: When should you NOT use `useMemo`/`useCallback`?**
 > When the computation is trivial. `useMemo` itself has a cost — React stores the previous value + deps array and runs a comparison every render. For `const x = a + b`, this overhead *exceeds* the savings. Only memoize when: (1) you've measured a real performance problem with React Profiler, or (2) you need referential stability (passing to `React.memo` child or `useEffect` deps).
@@ -5009,14 +5419,14 @@ graph TD
 
 **Q: What are React Server Components (RSC)? How are they different from SSR?**
 
-| | SSR | RSC |
-|---|---|---|
-| Rendered on | Server, per request | Server (build time or request time) |
-| JS sent to client | Full bundle + hydration | Zero JS for server components |
-| Can use hooks? | Yes (after hydration) | No (`useState`, `useEffect` not allowed) |
-| Data fetching | `getServerSideProps` / loaders | Direct `async/await` in component body |
-| DB access | Via API layer | Directly (no fetch needed) |
-| Interactive? | After hydration | Only Client Components are interactive |
+|                   | SSR                            | RSC                                      |
+| ----------------- | ------------------------------ | ---------------------------------------- |
+| Rendered on       | Server, per request            | Server (build time or request time)      |
+| JS sent to client | Full bundle + hydration        | Zero JS for server components            |
+| Can use hooks?    | Yes (after hydration)          | No (`useState`, `useEffect` not allowed) |
+| Data fetching     | `getServerSideProps` / loaders | Direct `async/await` in component body   |
+| DB access         | Via API layer                  | Directly (no fetch needed)               |
+| Interactive?      | After hydration                | Only Client Components are interactive   |
 
 > One-line: "SSR ships a full JS bundle and hydrates it. RSC ships zero JS for server components — only Client Components (`'use client'`) ship JavaScript."
 
@@ -5617,12 +6027,12 @@ function Sidebar({ children }) {
 
 ### Context vs. State Management Libraries
 
-| Factor                             | Context                      | Redux/Zustand              |
-| ---------------------------------- | ---------------------------- | -------------------------- |
+| Factor                             | Context                     | Redux/Zustand             |
+| ---------------------------------- | --------------------------- | ------------------------- |
 | Frequent updates (every keystroke) | ❌ Can cause many re-renders | ✅ Optimized subscriptions |
-| Infrequent updates (theme, auth)   | ✅ Perfect fit               | Overkill                   |
+| Infrequent updates (theme, auth)   | ✅ Perfect fit               | Overkill                  |
 | Complex async logic                | ❌ DIY                       | ✅ Built-in middleware     |
-| Bundle size                        | ✅ Zero cost                 | Small cost                 |
+| Bundle size                        | ✅ Zero cost                 | Small cost                |
 
 ---
 
@@ -6159,13 +6569,13 @@ graph TD
 
 ### Rules for Custom Hooks
 
-| Rule | Why |
-|---|---|
-| Name **must** start with `use` | ESLint's `react-hooks` plugin applies Rules of Hooks checks to it |
-| Can call any hooks (built-in or custom) | They're just functions — full hook API available |
-| Each component gets **own isolated state** | Hooks share *logic*, not state instances |
-| Can accept any params, return anything | Tuple, object, single value, functions — your choice |
-| Must follow Rules of Hooks inside them | No conditionals around hook calls |
+| Rule                                       | Why                                                               |
+| ------------------------------------------ | ----------------------------------------------------------------- |
+| Name **must** start with `use`             | ESLint's `react-hooks` plugin applies Rules of Hooks checks to it |
+| Can call any hooks (built-in or custom)    | They're just functions — full hook API available                  |
+| Each component gets **own isolated state** | Hooks share *logic*, not state instances                          |
+| Can accept any params, return anything     | Tuple, object, single value, functions — your choice              |
+| Must follow Rules of Hooks inside them     | No conditionals around hook calls                                 |
 
 ---
 
@@ -6898,35 +7308,35 @@ function useTheme() { /* theme only */ }
 
 ### Hook Naming Conventions
 
-| Pattern | Example | Returns |
-|---|---|---|
-| `use[Noun]` | `useUser`, `useCart`, `useTheme` | State + setters |
-| `use[Noun][Action]` | `useFormValidation`, `useScrollPosition` | Derived state |
-| `use[Adjective]` | `useDebounced`, `useThrottled` | Modified value |
-| `use[VerbNoun]` | `useFetchUser`, `useCopyToClipboard` | Action + status |
-| `use[EventNoun]` | `useClickOutside`, `useKeyPress` | Event-driven state |
+| Pattern             | Example                                  | Returns            |
+| ------------------- | ---------------------------------------- | ------------------ |
+| `use[Noun]`         | `useUser`, `useCart`, `useTheme`         | State + setters    |
+| `use[Noun][Action]` | `useFormValidation`, `useScrollPosition` | Derived state      |
+| `use[Adjective]`    | `useDebounced`, `useThrottled`           | Modified value     |
+| `use[VerbNoun]`     | `useFetchUser`, `useCopyToClipboard`     | Action + status    |
+| `use[EventNoun]`    | `useClickOutside`, `useKeyPress`         | Event-driven state |
 
 ---
 
 ### Module 7 Custom Hooks Summary
 
-| Hook | What it solves | Key detail |
-|---|---|---|
-| `useToggle` | Boolean on/off | Stable `toggle` via `useCallback` |
-| `useLocalStorage` | Persist state across sessions | JSON serialize/deserialize, lazy init |
-| `useFetch` | Data fetching with cleanup | AbortController prevents race conditions |
-| `useDebounce` | Delay rapidly-changing values | Clears timeout on every change |
-| `useThrottle` | Limit update frequency | Uses `useRef` to track last update time |
-| `useWindowSize` | Responsive logic in JS | Passive scroll listener |
-| `useMediaQuery` | CSS breakpoints in JS | `matchMedia` event listener |
-| `useOnClickOutside` | Close dropdowns/modals | `contains()` check on mousedown |
-| `usePrevious` | Compare to last render's value | `useRef` updated in `useEffect` |
-| `useIntersectionObserver` | Lazy load + infinite scroll | `IntersectionObserver` API |
-| `useCopyToClipboard` | Copy with "Copied!" feedback | `navigator.clipboard` async API |
-| `useEventListener` | Safe DOM event attachment | Stable handler via `useRef` |
-| `useAsync` | Any async operation lifecycle | `idle/loading/success/error` states |
-| `useCounter` | Bounded numeric counter | min/max/step constraints |
-| `useScrollPosition` | Scroll-aware UI (hide nav) | Direction tracking with `useRef` |
+| Hook                      | What it solves                 | Key detail                               |
+| ------------------------- | ------------------------------ | ---------------------------------------- |
+| `useToggle`               | Boolean on/off                 | Stable `toggle` via `useCallback`        |
+| `useLocalStorage`         | Persist state across sessions  | JSON serialize/deserialize, lazy init    |
+| `useFetch`                | Data fetching with cleanup     | AbortController prevents race conditions |
+| `useDebounce`             | Delay rapidly-changing values  | Clears timeout on every change           |
+| `useThrottle`             | Limit update frequency         | Uses `useRef` to track last update time  |
+| `useWindowSize`           | Responsive logic in JS         | Passive scroll listener                  |
+| `useMediaQuery`           | CSS breakpoints in JS          | `matchMedia` event listener              |
+| `useOnClickOutside`       | Close dropdowns/modals         | `contains()` check on mousedown          |
+| `usePrevious`             | Compare to last render's value | `useRef` updated in `useEffect`          |
+| `useIntersectionObserver` | Lazy load + infinite scroll    | `IntersectionObserver` API               |
+| `useCopyToClipboard`      | Copy with "Copied!" feedback   | `navigator.clipboard` async API          |
+| `useEventListener`        | Safe DOM event attachment      | Stable handler via `useRef`              |
+| `useAsync`                | Any async operation lifecycle  | `idle/loading/success/error` states      |
+| `useCounter`              | Bounded numeric counter        | min/max/step constraints                 |
+| `useScrollPosition`       | Scroll-aware UI (hide nav)     | Direction tracking with `useRef`         |
 
 ---
 
@@ -6940,12 +7350,12 @@ function useTheme() { /* theme only */ }
 
 **Q: What is `useRef` and how does it differ from `useState`?**
 
-| | `useRef` | `useState` |
-|---|---|---|
-| Triggers re-render? | ❌ No | ✅ Yes |
-| Mutable? | ✅ `ref.current = x` | Via setter only |
-| Use for | DOM access, instance variables, prev value | UI-driving state |
-| Persists across renders? | ✅ Yes | ✅ Yes |
+|                          | `useRef`                                   | `useState`       |
+| ------------------------ | ------------------------------------------ | ---------------- |
+| Triggers re-render?      | ❌ No                                       | ✅ Yes            |
+| Mutable?                 | ✅ `ref.current = x`                        | Via setter only  |
+| Use for                  | DOM access, instance variables, prev value | UI-driving state |
+| Persists across renders? | ✅ Yes                                      | ✅ Yes            |
 
 **Q: What is `useLayoutEffect` and when should you use it over `useEffect`?**
 > `useLayoutEffect` fires synchronously *after* React updates the DOM but *before* the browser paints. Use it when you need to read a DOM measurement (like `getBoundingClientRect()`) and immediately apply a style change — doing this in `useEffect` causes a visible flash because the paint happens between the read and the write. Default to `useEffect`; reach for `useLayoutEffect` only when you see flicker.
@@ -6955,11 +7365,11 @@ function useTheme() { /* theme only */ }
 
 **Q: What is `useDeferredValue` and how does it differ from `useTransition`?**
 
-| | `useDeferredValue` | `useTransition` |
-|---|---|---|
-| What you control | A *value* (you receive it from parent) | A *state update* (you own the setter) |
-| Use when | You can't modify the state setter (e.g., prop from parent) | You own the state and control when it changes |
-| Example | Deferring a search prop from a parent | Deferring tab switch inside a component |
+|                  | `useDeferredValue`                                         | `useTransition`                               |
+| ---------------- | ---------------------------------------------------------- | --------------------------------------------- |
+| What you control | A *value* (you receive it from parent)                     | A *state update* (you own the setter)         |
+| Use when         | You can't modify the state setter (e.g., prop from parent) | You own the state and control when it changes |
+| Example          | Deferring a search prop from a parent                      | Deferring tab switch inside a component       |
 
 ---
 
@@ -8491,13 +8901,13 @@ function Sidebar({ userRole }) {
 
 ### Data-Driven vs Config-Driven — Key Difference
 
-| | Data-Driven UI | Config-Driven UI |
-|---|---|---|
-| **Config source** | Server / API (runtime) | Developer / codebase (build time) |
-| **Who controls it** | Product/Marketing (via CMS or API) | Developer |
-| **Changes require deploy?** | ❌ No — server sends new data | ✅ Yes — config lives in code |
-| **Use case** | Homepage layouts, A/B testing, personalisation | Tables, forms, nav menus, dashboards |
-| **Examples** | Swiggy homepage, Netflix rows | Admin dashboard columns, form builders |
+|                             | Data-Driven UI                                 | Config-Driven UI                       |
+| --------------------------- | ---------------------------------------------- | -------------------------------------- |
+| **Config source**           | Server / API (runtime)                         | Developer / codebase (build time)      |
+| **Who controls it**         | Product/Marketing (via CMS or API)             | Developer                              |
+| **Changes require deploy?** | ❌ No — server sends new data                   | ✅ Yes — config lives in code           |
+| **Use case**                | Homepage layouts, A/B testing, personalisation | Tables, forms, nav menus, dashboards   |
+| **Examples**                | Swiggy homepage, Netflix rows                  | Admin dashboard columns, form builders |
 
 ---
 
@@ -8554,13 +8964,13 @@ function Sidebar({ userRole }) {
 
 ## Module 9 Summary
 
-| Concept                      | Key Takeaway                                                     |
-| ---------------------------- | ---------------------------------------------------------------- |
-| **SPA**                      | One HTML page; React Router swaps views without full page reload |
-| **Presentational/Container** | Split "what it looks like" from "how it works" for testability   |
-| **Lifting State Up**         | Shared state lives in the lowest common ancestor                 |
-| **Composition**              | Pass components as props/children instead of extending classes   |
-| **Data-Driven UI**           | Server controls layout via JSON; component is a generic renderer |
+| Concept                      | Key Takeaway                                                          |
+| ---------------------------- | --------------------------------------------------------------------- |
+| **SPA**                      | One HTML page; React Router swaps views without full page reload      |
+| **Presentational/Container** | Split "what it looks like" from "how it works" for testability        |
+| **Lifting State Up**         | Shared state lives in the lowest common ancestor                      |
+| **Composition**              | Pass components as props/children instead of extending classes        |
+| **Data-Driven UI**           | Server controls layout via JSON; component is a generic renderer      |
 | **Config-Driven UI**         | Config object drives tables, forms, navs — one component, many shapes |
 
 ---
@@ -9547,7 +9957,7 @@ function AddToCartButton({ product }) {
 | Setup boilerplate              | Low                           | Medium                           | Very low                 |
 | DevTools                       | None built-in                 | Excellent                        | Plugin available         |
 | Async handling                 | DIY                           | `createAsyncThunk`               | DIY or middleware        |
-| Performance (frequent updates) | ⚠️ Re-renders all consumers   | ✅ Selector-based                | ✅ Selector-based        |
+| Performance (frequent updates) | ⚠️ Re-renders all consumers    | ✅ Selector-based                 | ✅ Selector-based         |
 | Bundle size                    | 0 KB                          | ~15 KB                           | ~1 KB                    |
 | Best for                       | Theme, auth, infrequent state | Large apps, teams, complex flows | Medium apps, quick setup |
 
@@ -9557,14 +9967,14 @@ function AddToCartButton({ product }) {
 
 **Q: When should you use Redux instead of React Context?**
 
-| Scenario | Use Context | Use Redux |
-|---|---|---|
-| Theme / auth (rarely changes) | ✅ | Overkill |
-| High-frequency updates (every keystroke) | ❌ Re-renders all consumers | ✅ Selector-based updates |
-| Complex async flows (saga/thunk) | ❌ | ✅ |
-| DevTools (time-travel debugging) | ❌ | ✅ |
-| Team > 5 people, shared state across many features | ❌ Hard to scale | ✅ |
-| Medium app, want simplicity | Skip both — use Zustand | |
+| Scenario                                           | Use Context                | Use Redux                |
+| -------------------------------------------------- | -------------------------- | ------------------------ |
+| Theme / auth (rarely changes)                      | ✅                          | Overkill                 |
+| High-frequency updates (every keystroke)           | ❌ Re-renders all consumers | ✅ Selector-based updates |
+| Complex async flows (saga/thunk)                   | ❌                          | ✅                        |
+| DevTools (time-travel debugging)                   | ❌                          | ✅                        |
+| Team > 5 people, shared state across many features | ❌ Hard to scale            | ✅                        |
+| Medium app, want simplicity                        | Skip both — use Zustand    |                          |
 
 **Q: What is Redux Toolkit (RTK)? How is it different from classic Redux?**
 > Classic Redux: action types as strings, `switch` reducers, verbose action creators, manual Immer setup. RTK: `createSlice` generates action types + action creators + reducer from one object. `createAsyncThunk` handles async. Immer is built in (you can "mutate" in reducers — Immer produces a new state). RTK is the official recommended way — classic Redux is considered legacy.
@@ -9687,7 +10097,7 @@ function FeedPage() {
 
 ### What Error Boundaries DO and DON'T catch
 
-| Catches ✅                        | Does NOT catch ❌                             |
+| Catches ✅                         | Does NOT catch ❌                              |
 | --------------------------------- | --------------------------------------------- |
 | Errors in render                  | Errors in event handlers (use try/catch)      |
 | Errors in `useEffect` (partially) | Errors in async code (`setTimeout`, promises) |
@@ -10408,11 +10818,11 @@ describe("UserCard", () => {
 
 **Q: What is the difference between `getBy`, `queryBy`, and `findBy`?**
 
-| Query | Throws if not found | Async | Use when |
-|---|---|---|---|
-| `getBy...` | ✅ Yes | ❌ No | Element must exist right now |
-| `queryBy...` | ❌ No (returns null) | ❌ No | Asserting element is *absent* |
-| `findBy...` | ✅ Yes | ✅ Yes | Element appears after async operation |
+| Query        | Throws if not found | Async | Use when                              |
+| ------------ | ------------------- | ----- | ------------------------------------- |
+| `getBy...`   | ✅ Yes               | ❌ No  | Element must exist right now          |
+| `queryBy...` | ❌ No (returns null) | ❌ No  | Asserting element is *absent*         |
+| `findBy...`  | ✅ Yes               | ✅ Yes | Element appears after async operation |
 
 **Q: Why should you prefer `getByRole` over `getByTestId`?**
 > `getByRole` queries by ARIA role (button, textbox, heading) — the same way assistive technology reads the page. It tests that your component is accessible AND functional. `getByTestId` adds `data-testid` attributes that serve no purpose in production — it's a last resort when semantic queries aren't possible.
@@ -11116,16 +11526,16 @@ jobs:
 
 ### Environment Mapping Summary
 
-| File | Git? | Loaded when | Used for |
-|---|---|---|---|
-| `.env` | ✅ Yes | All modes | Shared defaults |
-| `.env.development` | ✅ Yes | `vite` / `npm run dev` | Local dev |
-| `.env.test` | ✅ Yes | `vitest --mode test` | Unit tests |
-| `.env.e2e` | ✅ Yes | `vite --mode e2e` | E2E test env |
-| `.env.staging` | ✅ Yes | `vite build --mode staging` | Staging deploy |
-| `.env.production` | ✅ Yes | `vite build` | Prod deploy (no secrets) |
-| `.env.local` | ❌ Never | Always (overrides all) | Personal dev overrides |
-| `.env.*.local` | ❌ Never | Mode-specific (overrides) | Personal mode overrides |
+| File               | Git?    | Loaded when                 | Used for                 |
+| ------------------ | ------- | --------------------------- | ------------------------ |
+| `.env`             | ✅ Yes   | All modes                   | Shared defaults          |
+| `.env.development` | ✅ Yes   | `vite` / `npm run dev`      | Local dev                |
+| `.env.test`        | ✅ Yes   | `vitest --mode test`        | Unit tests               |
+| `.env.e2e`         | ✅ Yes   | `vite --mode e2e`           | E2E test env             |
+| `.env.staging`     | ✅ Yes   | `vite build --mode staging` | Staging deploy           |
+| `.env.production`  | ✅ Yes   | `vite build`                | Prod deploy (no secrets) |
+| `.env.local`       | ❌ Never | Always (overrides all)      | Personal dev overrides   |
+| `.env.*.local`     | ❌ Never | Mode-specific (overrides)   | Personal mode overrides  |
 
 > **Security rule**: `.env` files committed to git must **never** contain real secrets (tokens, private keys, DB passwords). Only non-sensitive config (URLs, feature flags, public keys). Real secrets go in CI/CD environment secrets, which are injected at build time.
 
@@ -11454,14 +11864,14 @@ docker compose build --build-arg BUILD_MODE=e2e frontend
 
 ### Common Nginx Mistakes with React Apps
 
-| Mistake | Symptom | Fix |
-|---|---|---|
-| Missing `try_files` | Page refresh returns 404 | Add `try_files $uri $uri/ /index.html;` |
-| Caching `index.html` | Users don't get updates after deploy | `add_header Cache-Control "no-store"` on `index.html` |
-| Not caching static assets | Slow load on every visit | `expires 1y` + `immutable` on hashed assets |
-| Not enabling gzip | Large JS bundles slow on slow networks | `gzip on; gzip_types text/javascript application/javascript;` |
-| No HTTPS redirect | Mixed content warnings, SEO penalty | Redirect 80 → 443 |
-| Serving from wrong path | Blank page, 404 on assets | Check `root` matches where `dist/` is deployed |
+| Mistake                   | Symptom                                | Fix                                                           |
+| ------------------------- | -------------------------------------- | ------------------------------------------------------------- |
+| Missing `try_files`       | Page refresh returns 404               | Add `try_files $uri $uri/ /index.html;`                       |
+| Caching `index.html`      | Users don't get updates after deploy   | `add_header Cache-Control "no-store"` on `index.html`         |
+| Not caching static assets | Slow load on every visit               | `expires 1y` + `immutable` on hashed assets                   |
+| Not enabling gzip         | Large JS bundles slow on slow networks | `gzip on; gzip_types text/javascript application/javascript;` |
+| No HTTPS redirect         | Mixed content warnings, SEO penalty    | Redirect 80 → 443                                             |
+| Serving from wrong path   | Blank page, 404 on assets              | Check `root` matches where `dist/` is deployed                |
 
 ---
 
@@ -11510,14 +11920,14 @@ last 1 safari version
 
 **Common query presets:**
 
-| Query | Meaning |
-|---|---|
-| `> 0.5%` | Global usage > 0.5% (via caniuse data) |
-| `last 2 versions` | Last 2 releases of each browser |
-| `not dead` | Browsers with official support in last 24 months |
-| `not IE 11` | Explicitly drop Internet Explorer 11 |
-| `defaults` | Shorthand for `> 0.5%, last 2 versions, not dead` |
-| `supports es6-module` | Only browsers that support native ES modules |
+| Query                 | Meaning                                           |
+| --------------------- | ------------------------------------------------- |
+| `> 0.5%`              | Global usage > 0.5% (via caniuse data)            |
+| `last 2 versions`     | Last 2 releases of each browser                   |
+| `not dead`            | Browsers with official support in last 24 months  |
+| `not IE 11`           | Explicitly drop Internet Explorer 11              |
+| `defaults`            | Shorthand for `> 0.5%, last 2 versions, not dead` |
+| `supports es6-module` | Only browsers that support native ES modules      |
 
 ```bash
 # Check which browsers your query resolves to
@@ -11564,14 +11974,14 @@ const p = new Promise((res) => res(1));
 
 **Syntax transforms vs runtime polyfills** — Babel handles both but differently:
 
-| Feature | Type | Handled by |
-|---|---|---|
-| Arrow functions | Syntax | `@babel/preset-env` rewrites to `function(){}` |
-| `async / await` | Syntax | `@babel/preset-env` rewrites to generator/Promise |
-| Optional chaining `?.` | Syntax | `@babel/preset-env` rewrites to `&&` chain |
-| `Promise` | Runtime API | `core-js` injects the global |
-| `Array.prototype.flat` | Runtime API | `core-js` adds `.flat()` to `Array.prototype` |
-| `fetch` | Runtime API | NOT in `core-js` — use `whatwg-fetch` separately |
+| Feature                | Type        | Handled by                                         |
+| ---------------------- | ----------- | -------------------------------------------------- |
+| Arrow functions        | Syntax      | `@babel/preset-env` rewrites to `function(){}`     |
+| `async / await`        | Syntax      | `@babel/preset-env` rewrites to generator/Promise  |
+| Optional chaining `?.` | Syntax      | `@babel/preset-env` rewrites to `&&` chain         |
+| `Promise`              | Runtime API | `core-js` injects the global                       |
+| `Array.prototype.flat` | Runtime API | `core-js` adds `.flat()` to `Array.prototype`      |
+| `fetch`                | Runtime API | NOT in `core-js` — use `whatwg-fetch` separately   |
 | `IntersectionObserver` | Browser API | NOT polyfillable via Babel — use feature detection |
 
 ---
@@ -11734,15 +12144,15 @@ const canBluetooth = "bluetooth" in navigator;  // Web Bluetooth
 
 **Quick reference — common APIs and their support status:**
 
-| API | Chrome | Firefox | Safari | Need polyfill? |
-|---|---|---|---|---|
-| `fetch` | ✅ 42+ | ✅ 39+ | ✅ 10.1+ | No (or `whatwg-fetch` for old targets) |
-| `IntersectionObserver` | ✅ 51+ | ✅ 55+ | ✅ 12.1+ | `intersection-observer` polyfill for Safari <12 |
-| `ResizeObserver` | ✅ 64+ | ✅ 69+ | ✅ 13.1+ | `resize-observer-polyfill` for older Safari |
-| `CSS Grid` | ✅ 57+ | ✅ 52+ | ✅ 10.1+ | `@supports` fallback |
-| `CSS container queries` | ✅ 105+ | ✅ 110+ | ✅ 16+ | `@supports` fallback |
-| `Web Crypto` | ✅ 37+ | ✅ 34+ | ✅ 11+ | No — use HTTPS (required anyway) |
-| `CSS backdrop-filter` | ✅ 76+ | ✅ 103+ | ✅ 9+ (-webkit-) | autoprefixer handles the prefix |
+| API                     | Chrome | Firefox | Safari          | Need polyfill?                                  |
+| ----------------------- | ------ | ------- | --------------- | ----------------------------------------------- |
+| `fetch`                 | ✅ 42+  | ✅ 39+   | ✅ 10.1+         | No (or `whatwg-fetch` for old targets)          |
+| `IntersectionObserver`  | ✅ 51+  | ✅ 55+   | ✅ 12.1+         | `intersection-observer` polyfill for Safari <12 |
+| `ResizeObserver`        | ✅ 64+  | ✅ 69+   | ✅ 13.1+         | `resize-observer-polyfill` for older Safari     |
+| `CSS Grid`              | ✅ 57+  | ✅ 52+   | ✅ 10.1+         | `@supports` fallback                            |
+| `CSS container queries` | ✅ 105+ | ✅ 110+  | ✅ 16+           | `@supports` fallback                            |
+| `Web Crypto`            | ✅ 37+  | ✅ 34+   | ✅ 11+           | No — use HTTPS (required anyway)                |
+| `CSS backdrop-filter`   | ✅ 76+  | ✅ 103+  | ✅ 9+ (-webkit-) | autoprefixer handles the prefix                 |
 
 ---
 
@@ -11791,25 +12201,25 @@ npm install core-js@3
 
 ## Module 15 Summary
 
-| Concept                   | Key Takeaway                                                                 |
-| ------------------------- | ---------------------------------------------------------------------------- |
-| **Feature-based folders** | Co-locate related files; scale to large teams                                |
-| **Vite**                  | Instant dev server, fast HMR, simple config                                  |
-| **`@` alias**             | Clean imports: `@/components/Button` instead of `../../../components/Button` |
-| **`.env` hierarchy**      | `.env.local` > `.env.[mode].local` > `.env.[mode]` > `.env` |
-| **`VITE_` prefix**        | Required for browser-exposed vars; never store secrets in `.env` files |
-| **`config.ts` pattern**   | Single file reads all env vars — validate + type them once, import everywhere |
-| **Feature flags**         | `VITE_FEATURE_X=true/false` per env — ship dark code, roll out gradually |
-| **CI/CD injection**       | Secrets go in CI/CD secrets, written to `.env` at build time — never in git |
-| **Nginx `try_files`**     | The one critical rule — always serve `index.html` for unknown paths |
-| **Cache strategy**        | `index.html` = never cache. Hashed assets = cache forever (1y + immutable) |
-| **Nginx as proxy**        | Route `/api/*` to backend — eliminates CORS, single origin for browser |
-| **`.browserslistrc`** | Single source of truth for target browsers — read by Babel, autoprefixer, ESLint |
-| **`@babel/preset-env`** | Transforms modern JS syntax + injects `core-js` polyfills for target browsers |
-| **`@vitejs/plugin-legacy`** | Generates `type="module"` + `nomodule` dual bundles — modern perf, legacy support |
-| **autoprefixer** | PostCSS plugin — adds `-webkit-`, `-moz-` prefixes based on `.browserslistrc` |
-| **Feature detection** | `'IntersectionObserver' in window` — runtime guard before using unsupported APIs |
-| **`@supports`** | CSS-native feature detection — apply grid/container-query styles only if supported |
+| Concept                     | Key Takeaway                                                                       |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| **Feature-based folders**   | Co-locate related files; scale to large teams                                      |
+| **Vite**                    | Instant dev server, fast HMR, simple config                                        |
+| **`@` alias**               | Clean imports: `@/components/Button` instead of `../../../components/Button`       |
+| **`.env` hierarchy**        | `.env.local` > `.env.[mode].local` > `.env.[mode]` > `.env`                        |
+| **`VITE_` prefix**          | Required for browser-exposed vars; never store secrets in `.env` files             |
+| **`config.ts` pattern**     | Single file reads all env vars — validate + type them once, import everywhere      |
+| **Feature flags**           | `VITE_FEATURE_X=true/false` per env — ship dark code, roll out gradually           |
+| **CI/CD injection**         | Secrets go in CI/CD secrets, written to `.env` at build time — never in git        |
+| **Nginx `try_files`**       | The one critical rule — always serve `index.html` for unknown paths                |
+| **Cache strategy**          | `index.html` = never cache. Hashed assets = cache forever (1y + immutable)         |
+| **Nginx as proxy**          | Route `/api/*` to backend — eliminates CORS, single origin for browser             |
+| **`.browserslistrc`**       | Single source of truth for target browsers — read by Babel, autoprefixer, ESLint   |
+| **`@babel/preset-env`**     | Transforms modern JS syntax + injects `core-js` polyfills for target browsers      |
+| **`@vitejs/plugin-legacy`** | Generates `type="module"` + `nomodule` dual bundles — modern perf, legacy support  |
+| **autoprefixer**            | PostCSS plugin — adds `-webkit-`, `-moz-` prefixes based on `.browserslistrc`      |
+| **Feature detection**       | `'IntersectionObserver' in window` — runtime guard before using unsupported APIs   |
+| **`@supports`**             | CSS-native feature detection — apply grid/container-query styles only if supported |
 
 ---
 
@@ -11970,12 +12380,12 @@ eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjMifQ.SIGNATURE
 
 ### Token Storage: The Security Dilemma
 
-| Storage               | XSS Risk | CSRF Risk                | Accessible to JS     | Recommendation            |
-| --------------------- | -------- | ------------------------ | -------------------- | ------------------------- |
-| `localStorage`        | ❌ HIGH  | ✅ None                  | Yes                  | **Avoid** for auth tokens |
-| `sessionStorage`      | ❌ HIGH  | ✅ None                  | Yes                  | **Avoid** for auth tokens |
-| **`httpOnly` Cookie** | ✅ None  | ⚠️ Needs CSRF protection | No                   | **Recommended**           |
-| Memory (React state)  | ✅ None  | ✅ None                  | Yes (during session) | Good, but lost on refresh |
+| Storage               | XSS Risk | CSRF Risk               | Accessible to JS     | Recommendation            |
+| --------------------- | -------- | ----------------------- | -------------------- | ------------------------- |
+| `localStorage`        | ❌ HIGH   | ✅ None                  | Yes                  | **Avoid** for auth tokens |
+| `sessionStorage`      | ❌ HIGH   | ✅ None                  | Yes                  | **Avoid** for auth tokens |
+| **`httpOnly` Cookie** | ✅ None   | ⚠️ Needs CSRF protection | No                   | **Recommended**           |
+| Memory (React state)  | ✅ None   | ✅ None                  | Yes (during session) | Good, but lost on refresh |
 
 > **Why `localStorage` is dangerous for auth tokens**: Any JavaScript on your page can read `localStorage`. If an attacker injects malicious JavaScript (XSS), they steal the token instantly. `httpOnly` cookies cannot be read by any JavaScript — only sent automatically by the browser.
 
@@ -12070,13 +12480,13 @@ function SafeHtmlRenderer({ htmlContent }) {
 
 **Q: What is the difference between CSR, SSR, and SSG?**
 
-| | CSR | SSR | SSG |
-|---|---|---|---|
-| Rendered where | Browser | Server, per request | Server, at build time |
-| First HTML | Empty `<div id="root">` | Full HTML | Full HTML |
-| SEO | ❌ Poor | ✅ Good | ✅ Excellent |
-| Data freshness | Always fresh | Always fresh | Stale until redeploy |
-| Best for | Auth dashboards, SPAs | Public pages, e-commerce | Blogs, docs, marketing |
+|                | CSR                     | SSR                      | SSG                    |
+| -------------- | ----------------------- | ------------------------ | ---------------------- |
+| Rendered where | Browser                 | Server, per request      | Server, at build time  |
+| First HTML     | Empty `<div id="root">` | Full HTML                | Full HTML              |
+| SEO            | ❌ Poor                  | ✅ Good                   | ✅ Excellent            |
+| Data freshness | Always fresh            | Always fresh             | Stale until redeploy   |
+| Best for       | Auth dashboards, SPAs   | Public pages, e-commerce | Blogs, docs, marketing |
 
 **Q: What is hydration? What is a hydration mismatch?**
 > Hydration is React attaching event listeners and state to server-rendered HTML without re-creating DOM nodes. React renders the component tree client-side and matches it against the existing HTML — if they match, it just "wires up" interactivity. A **hydration mismatch** occurs when the server-rendered HTML differs from what React would render client-side (e.g., using `Math.random()`, `Date.now()`, or reading `window` during render). React must discard and re-render the mismatched subtree.
@@ -12576,11 +12986,11 @@ function LikeButton({ postId, initialLikes }) {
 
 **Q: What is the difference between debouncing and throttling?**
 
-| | Debounce | Throttle |
-|---|---|---|
-| Fires when | After N ms of *silence* (user stops) | At most once per N ms |
-| Use for | Search input, form autosave, resize-end | Scroll handler, mouse move, resize-ongoing |
-| Example | Fire API call 400ms after user stops typing | Update position every 200ms while dragging |
+|            | Debounce                                    | Throttle                                   |
+| ---------- | ------------------------------------------- | ------------------------------------------ |
+| Fires when | After N ms of *silence* (user stops)        | At most once per N ms                      |
+| Use for    | Search input, form autosave, resize-end     | Scroll handler, mouse move, resize-ongoing |
+| Example    | Fire API call 400ms after user stops typing | Update position every 200ms while dragging |
 
 **Q: What is TanStack Query? Why use it instead of `useEffect`+`useState` for data fetching?**
 > TanStack Query manages server state: caching, deduplication, background refetching, stale-while-revalidate, pagination, and optimistic updates — all automatically. With `useEffect`+`useState` you manually handle every case. With TanStack Query: `const { data, isLoading, error } = useQuery({ queryKey: ['user', id], queryFn: fetchUser })` — that's it. It also deduplicates — 10 components using the same query key share one network request.
@@ -13321,11 +13731,11 @@ export function reportWebVitals(metric) {
 
 **Q: What Core Web Vitals metrics matter for React apps?**
 
-| Metric | Stands for | Target | React impact |
-|---|---|---|---|
-| LCP | Largest Contentful Paint | < 2.5s | SSR/SSG for above-fold content |
-| CLS | Cumulative Layout Shift | < 0.1 | Avoid dynamic content insertion that shifts layout |
-| INP | Interaction to Next Paint | < 200ms | `useTransition` for expensive state updates |
+| Metric | Stands for                | Target  | React impact                                       |
+| ------ | ------------------------- | ------- | -------------------------------------------------- |
+| LCP    | Largest Contentful Paint  | < 2.5s  | SSR/SSG for above-fold content                     |
+| CLS    | Cumulative Layout Shift   | < 0.1   | Avoid dynamic content insertion that shifts layout |
+| INP    | Interaction to Next Paint | < 200ms | `useTransition` for expensive state updates        |
 
 **Q: What is the difference between `useMemo`, `useCallback`, and `React.memo`? (Comparison question)**
 > `React.memo` wraps a **component** — skips re-render if props didn't change. `useCallback` memoizes a **function reference** — stable reference across renders. `useMemo` memoizes a **computed value** — cached result of a calculation. They work together: `React.memo` is only effective if the props it receives are stable references — which requires `useCallback`/`useMemo` in the parent.
@@ -16277,12 +16687,12 @@ dayjs("03-28-2026 2:30pm", "MM-DD-YYYY h:mma"); // With time
 
 **Q: When would you use TanStack Query vs SWR vs raw `useEffect`?**
 
-| Scenario | Use |
-|---|---|
-| Simple read-only data, minimal config | SWR |
-| Full CRUD with mutations, optimistic updates, DevTools | TanStack Query |
-| One-off fetch, no caching needed | `useEffect` + `useState` |
-| Server state with background sync across tabs | TanStack Query |
+| Scenario                                               | Use                      |
+| ------------------------------------------------------ | ------------------------ |
+| Simple read-only data, minimal config                  | SWR                      |
+| Full CRUD with mutations, optimistic updates, DevTools | TanStack Query           |
+| One-off fetch, no caching needed                       | `useEffect` + `useState` |
+| Server state with background sync across tabs          | TanStack Query           |
 
 **Q: When would you use Zustand vs Jotai vs Redux Toolkit?**
 > Zustand: module-level store, simple `get`/`set` API, selector subscriptions, best general-purpose choice for global state without Redux ceremony. Jotai: atomic state (like Recoil) — fine-grained atoms that update only consumers of that exact atom, good for large apps with many independent state pieces. Redux Toolkit: when you need DevTools, time-travel debugging, complex middleware (saga/thunk), or team conventions.
@@ -16299,20 +16709,20 @@ dayjs("03-28-2026 2:30pm", "MM-DD-YYYY h:mma"); // With time
 
 | Library            | Category      | Star Rating | Best For                                      |
 | ------------------ | ------------- | ----------- | --------------------------------------------- |
-| **MUI**            | UI Components | ⭐⭐⭐⭐⭐  | Enterprise apps, design system out-of-the-box |
-| **shadcn/ui**      | UI Components | ⭐⭐⭐⭐⭐  | Full control, Tailwind-first, modern projects |
-| **Radix UI**       | Headless UI   | ⭐⭐⭐⭐⭐  | Accessible primitives, bring your own styles  |
-| **Axios**          | HTTP Client   | ⭐⭐⭐⭐⭐  | Large apps needing interceptors + auth        |
-| **SWR**            | Data Fetching | ⭐⭐⭐⭐    | Simple read-heavy apps                        |
-| **TanStack Query** | Data Fetching | ⭐⭐⭐⭐⭐  | Full CRUD, mutations, devtools                |
-| **Zod**            | Validation    | ⭐⭐⭐⭐⭐  | TypeScript schema + form + API validation     |
-| **Jotai**          | State         | ⭐⭐⭐⭐    | Atomic state, simpler than Redux              |
-| **Framer Motion**  | Animation     | ⭐⭐⭐⭐⭐  | Production animations, gestures, layout       |
-| **Recharts**       | Charts        | ⭐⭐⭐⭐    | Composable SVG charts in React                |
-| **TanStack Table** | Tables        | ⭐⭐⭐⭐⭐  | Headless, sortable, filterable data grids     |
-| **Socket.io**      | Real-time     | ⭐⭐⭐⭐⭐  | Chat, live updates, collaborative features    |
-| **dnd-kit**        | Drag & Drop   | ⭐⭐⭐⭐⭐  | Sortable lists, kanban boards                 |
-| **Day.js**         | Dates         | ⭐⭐⭐⭐⭐  | Lightweight Moment.js replacement             |
+| **MUI**            | UI Components | ⭐⭐⭐⭐⭐       | Enterprise apps, design system out-of-the-box |
+| **shadcn/ui**      | UI Components | ⭐⭐⭐⭐⭐       | Full control, Tailwind-first, modern projects |
+| **Radix UI**       | Headless UI   | ⭐⭐⭐⭐⭐       | Accessible primitives, bring your own styles  |
+| **Axios**          | HTTP Client   | ⭐⭐⭐⭐⭐       | Large apps needing interceptors + auth        |
+| **SWR**            | Data Fetching | ⭐⭐⭐⭐        | Simple read-heavy apps                        |
+| **TanStack Query** | Data Fetching | ⭐⭐⭐⭐⭐       | Full CRUD, mutations, devtools                |
+| **Zod**            | Validation    | ⭐⭐⭐⭐⭐       | TypeScript schema + form + API validation     |
+| **Jotai**          | State         | ⭐⭐⭐⭐        | Atomic state, simpler than Redux              |
+| **Framer Motion**  | Animation     | ⭐⭐⭐⭐⭐       | Production animations, gestures, layout       |
+| **Recharts**       | Charts        | ⭐⭐⭐⭐        | Composable SVG charts in React                |
+| **TanStack Table** | Tables        | ⭐⭐⭐⭐⭐       | Headless, sortable, filterable data grids     |
+| **Socket.io**      | Real-time     | ⭐⭐⭐⭐⭐       | Chat, live updates, collaborative features    |
+| **dnd-kit**        | Drag & Drop   | ⭐⭐⭐⭐⭐       | Sortable lists, kanban boards                 |
+| **Day.js**         | Dates         | ⭐⭐⭐⭐⭐       | Lightweight Moment.js replacement             |
 
 ---
 
@@ -17381,9 +17791,9 @@ const value = inputRef.current.value;
 | ------------------------ | ----------------------- | ---------------------------------- |
 | Source of truth          | React state             | DOM                                |
 | Validation timing        | On every change         | On submit only                     |
-| Instant feedback         | ✅                      | ❌                                 |
+| Instant feedback         | ✅                       | ❌                                  |
 | Re-renders per keystroke | Yes                     | No                                 |
-| File inputs              | ❌ (read-only)          | ✅ Always uncontrolled             |
+| File inputs              | ❌ (read-only)           | ✅ Always uncontrolled              |
 | Library support          | React Hook Form, Formik | React Hook Form (register pattern) |
 
 ---
@@ -18373,14 +18783,14 @@ export default [
 
 ### The Most Important React ESLint Rules
 
-| Rule | Severity | What it catches |
-|---|---|---|
-| `react-hooks/rules-of-hooks` | **error** | Hooks called conditionally, in loops, or outside components |
-| `react-hooks/exhaustive-deps` | **warn** | Missing dependencies in `useEffect`, `useMemo`, `useCallback` arrays |
-| `react/no-array-index-key` | warn | `key={index}` on dynamic lists — causes reconciliation bugs |
-| `@typescript-eslint/no-unused-vars` | error | Dead variables — common source of bugs |
-| `prefer-const` | error | `let` used where `const` would work |
-| `no-console` | warn | `console.log` left in production code |
+| Rule                                | Severity  | What it catches                                                      |
+| ----------------------------------- | --------- | -------------------------------------------------------------------- |
+| `react-hooks/rules-of-hooks`        | **error** | Hooks called conditionally, in loops, or outside components          |
+| `react-hooks/exhaustive-deps`       | **warn**  | Missing dependencies in `useEffect`, `useMemo`, `useCallback` arrays |
+| `react/no-array-index-key`          | warn      | `key={index}` on dynamic lists — causes reconciliation bugs          |
+| `@typescript-eslint/no-unused-vars` | error     | Dead variables — common source of bugs                               |
+| `prefer-const`                      | error     | `let` used where `const` would work                                  |
+| `no-console`                        | warn      | `console.log` left in production code                                |
 
 ### ESLint Scripts
 
@@ -18527,19 +18937,19 @@ git commit -m "feat: add login form"
 
 ### Types
 
-| Type | When to use |
-|---|---|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `refactor` | Code change that isn't a fix or feature |
-| `perf` | Performance improvement |
-| `test` | Adding or fixing tests |
-| `docs` | Documentation only |
-| `style` | Formatting, whitespace (no logic change) |
-| `chore` | Build process, dependency updates, tooling |
-| `ci` | CI/CD config changes |
-| `revert` | Reverts a previous commit |
-| `BREAKING CHANGE` | In footer — triggers major version bump |
+| Type              | When to use                                |
+| ----------------- | ------------------------------------------ |
+| `feat`            | New feature                                |
+| `fix`             | Bug fix                                    |
+| `refactor`        | Code change that isn't a fix or feature    |
+| `perf`            | Performance improvement                    |
+| `test`            | Adding or fixing tests                     |
+| `docs`            | Documentation only                         |
+| `style`           | Formatting, whitespace (no logic change)   |
+| `chore`           | Build process, dependency updates, tooling |
+| `ci`              | CI/CD config changes                       |
+| `revert`          | Reverts a previous commit                  |
+| `BREAKING CHANGE` | In footer — triggers major version bump    |
 
 ### Examples
 
@@ -18773,19 +19183,19 @@ jobs:
 
 ## Module 22 Summary
 
-| Tool | Purpose | Key File |
-|---|---|---|
-| **ESLint** | Static analysis — bugs, anti-patterns, hook rules | `eslint.config.js` |
-| **`react-hooks` plugin** | Enforces Rules of Hooks + exhaustive deps | Part of ESLint config |
-| **Prettier** | Auto-formatting — consistent code style | `.prettierrc` |
-| **`eslint-config-prettier`** | Disable ESLint rules that conflict with Prettier | Last in ESLint config |
-| **Husky** | Git hooks that run automatically for every developer | `.husky/pre-commit` |
-| **lint-staged** | Run linters only on staged files — keeps pre-commit fast | `package.json` |
-| **commitlint** | Validate commit message format | `commitlint.config.js` |
-| **Conventional Commits** | Readable git history + automated changelogs | Commit message format |
-| **`tsconfig.json` strict** | Maximum TypeScript type safety | `tsconfig.json` |
-| **`.editorconfig`** | Consistent whitespace across all editors | `.editorconfig` |
-| **CI quality gate** | Ensures linting/tests/build pass on every PR | `.github/workflows/` |
+| Tool                         | Purpose                                                  | Key File               |
+| ---------------------------- | -------------------------------------------------------- | ---------------------- |
+| **ESLint**                   | Static analysis — bugs, anti-patterns, hook rules        | `eslint.config.js`     |
+| **`react-hooks` plugin**     | Enforces Rules of Hooks + exhaustive deps                | Part of ESLint config  |
+| **Prettier**                 | Auto-formatting — consistent code style                  | `.prettierrc`          |
+| **`eslint-config-prettier`** | Disable ESLint rules that conflict with Prettier         | Last in ESLint config  |
+| **Husky**                    | Git hooks that run automatically for every developer     | `.husky/pre-commit`    |
+| **lint-staged**              | Run linters only on staged files — keeps pre-commit fast | `package.json`         |
+| **commitlint**               | Validate commit message format                           | `commitlint.config.js` |
+| **Conventional Commits**     | Readable git history + automated changelogs              | Commit message format  |
+| **`tsconfig.json` strict**   | Maximum TypeScript type safety                           | `tsconfig.json`        |
+| **`.editorconfig`**          | Consistent whitespace across all editors                 | `.editorconfig`        |
+| **CI quality gate**          | Ensures linting/tests/build pass on every PR             | `.github/workflows/`   |
 
 ---
 
@@ -18801,17 +19211,17 @@ jobs:
 
 ## 23.1 — Next.js vs Plain React (Vite)
 
-| Feature | Plain React (Vite) | Next.js |
-|---|---|---|
-| Routing | React Router (manual) | File-based (automatic) |
-| SSR/SSG | Manual (complex) | Built-in, per-route |
-| API endpoints | Separate Express/Node server | API Routes (same repo) |
-| Image optimization | Manual | `next/image` (automatic) |
-| Font optimization | Manual | `next/font` (automatic, zero CLS) |
-| SEO meta tags | React Helmet / manual | `export const metadata` |
-| Code splitting | Manual `React.lazy` | Automatic per page |
-| Server Components | Not supported | Built-in (App Router) |
-| Deployment | Any static host | Vercel (zero-config) or any Node host |
+| Feature            | Plain React (Vite)           | Next.js                               |
+| ------------------ | ---------------------------- | ------------------------------------- |
+| Routing            | React Router (manual)        | File-based (automatic)                |
+| SSR/SSG            | Manual (complex)             | Built-in, per-route                   |
+| API endpoints      | Separate Express/Node server | API Routes (same repo)                |
+| Image optimization | Manual                       | `next/image` (automatic)              |
+| Font optimization  | Manual                       | `next/font` (automatic, zero CLS)     |
+| SEO meta tags      | React Helmet / manual        | `export const metadata`               |
+| Code splitting     | Manual `React.lazy`          | Automatic per page                    |
+| Server Components  | Not supported                | Built-in (App Router)                 |
+| Deployment         | Any static host              | Vercel (zero-config) or any Node host |
 
 ---
 
@@ -18847,16 +19257,16 @@ my-next-app/
 
 ## 23.3 — File-Based Routing: Special Files
 
-| File | Purpose |
-|---|---|
-| `page.tsx` | UI for a route — makes the route publicly accessible |
-| `layout.tsx` | Shared UI that wraps child routes (persists across navigation) |
-| `loading.tsx` | Automatic Suspense fallback for the route segment |
-| `error.tsx` | Automatic Error Boundary for the route segment |
-| `not-found.tsx` | Rendered when `notFound()` is called |
-| `route.ts` | API endpoint (GET, POST, etc.) — no UI |
-| `middleware.ts` | Runs on the Edge before every request |
-| `template.tsx` | Like layout but re-mounts on every navigation |
+| File            | Purpose                                                        |
+| --------------- | -------------------------------------------------------------- |
+| `page.tsx`      | UI for a route — makes the route publicly accessible           |
+| `layout.tsx`    | Shared UI that wraps child routes (persists across navigation) |
+| `loading.tsx`   | Automatic Suspense fallback for the route segment              |
+| `error.tsx`     | Automatic Error Boundary for the route segment                 |
+| `not-found.tsx` | Rendered when `notFound()` is called                           |
+| `route.ts`      | API endpoint (GET, POST, etc.) — no UI                         |
+| `middleware.ts` | Runs on the Edge before every request                          |
+| `template.tsx`  | Like layout but re-mounts on every navigation                  |
 
 ### Dynamic Routes
 
@@ -19390,7 +19800,7 @@ async function DashboardPage() {
     if (!session) redirect("/login");
     return <h1>Welcome, {session.user?.name}</h1>;
 }
-```
+``****`
 
 ---
 
@@ -19505,16 +19915,16 @@ CMD ["node", "server.js"]
 
 **Q: What is the App Router? How is it different from the Pages Router?**
 
-| | Pages Router | App Router |
-|---|---|---|
-| Directory | `pages/` | `app/` |
-| React version | React 17+ | React 18+ (required for RSC) |
-| Server Components | ❌ All client | ✅ Default |
-| Data fetching | `getServerSideProps`, `getStaticProps` | `async/await` in component body |
-| Layouts | `_app.tsx` (whole app) | Nested `layout.tsx` per segment |
-| Loading UI | Manual | Automatic via `loading.tsx` + Suspense |
-| Error handling | `_error.tsx` | Automatic via `error.tsx` |
-| Server Actions | ❌ | ✅ `"use server"` functions |
+|                   | Pages Router                           | App Router                             |
+| ----------------- | -------------------------------------- | -------------------------------------- |
+| Directory         | `pages/`                               | `app/`                                 |
+| React version     | React 17+                              | React 18+ (required for RSC)           |
+| Server Components | ❌ All client                           | ✅ Default                              |
+| Data fetching     | `getServerSideProps`, `getStaticProps` | `async/await` in component body        |
+| Layouts           | `_app.tsx` (whole app)                 | Nested `layout.tsx` per segment        |
+| Loading UI        | Manual                                 | Automatic via `loading.tsx` + Suspense |
+| Error handling    | `_error.tsx`                           | Automatic via `error.tsx`              |
+| Server Actions    | ❌                                      | ✅ `"use server"` functions             |
 
 **Q: What is ISR (Incremental Static Regeneration)?**
 > ISR generates static pages at build time but allows them to be revalidated in the background after a set time interval. The first user after the revalidation period gets the stale page (and triggers a regeneration in the background); subsequent users get the fresh page. Best for: e-commerce product pages, blog posts, dashboards with data that changes every few minutes but doesn't need real-time freshness. Use `fetch(url, { next: { revalidate: 60 } })` in the App Router.
@@ -19524,13 +19934,13 @@ CMD ["node", "server.js"]
 
 **Q: When would you use a Server Component vs a Client Component in Next.js?**
 
-| Use Server Component when | Use Client Component when |
-|---|---|
-| Fetching data from DB/API | Using `useState`, `useEffect`, or other hooks |
+| Use Server Component when     | Use Client Component when                      |
+| ----------------------------- | ---------------------------------------------- |
+| Fetching data from DB/API     | Using `useState`, `useEffect`, or other hooks  |
 | Reading environment variables | Handling user interactions (onClick, onChange) |
-| Accessing the filesystem | Using browser APIs (localStorage, geolocation) |
-| Reducing JS bundle size | Using third-party libraries that use hooks |
-| SEO-critical content | Real-time updates (WebSocket, polling) |
+| Accessing the filesystem      | Using browser APIs (localStorage, geolocation) |
+| Reducing JS bundle size       | Using third-party libraries that use hooks     |
+| SEO-critical content          | Real-time updates (WebSocket, polling)         |
 
 **Q: What does `"use client"` do? Is the component rendered only in the browser?**
 > `"use client"` marks a component as a Client Component — it uses React features that require the browser (hooks, events). However, Next.js still renders it **on the server as HTML** (for the initial page load / SSR) AND sends the JavaScript to the browser for hydration. "Client" means "has client-side JS" — not "only runs in browser."
@@ -19542,22 +19952,22 @@ CMD ["node", "server.js"]
 
 ## Module 23 Summary
 
-| Concept | Key Takeaway |
-|---|---|
-| **App Router** | File-based routing in `app/` — `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx` |
-| **Server Components** | Default in App Router — no JS sent to client, direct DB access, can't use hooks |
-| **Client Components** | `"use client"` — interactive, use hooks, still SSR-rendered for initial HTML |
-| **Nested Layouts** | `layout.tsx` wraps child segments — persists across navigation without remount |
-| **Server Actions** | `"use server"` functions — form handling without API routes, type-safe, progressive |
-| **API Routes** | `route.ts` — REST endpoints in the same project (`GET`, `POST`, `DELETE` exports) |
-| **ISR** | `{ next: { revalidate: N } }` — static pages that refresh in the background |
-| **On-demand revalidation** | `revalidatePath()` / `revalidateTag()` — programmatic cache invalidation |
-| **Middleware** | Runs at the Edge before every request — auth guards, redirects, locale detection |
-| **`next/image`** | Auto WebP/AVIF, lazy loading, CLS prevention — use for all images |
-| **`next/font`** | Self-hosted fonts, zero CLS, no Google tracking |
-| **Metadata API** | `export const metadata` or `generateMetadata()` — typed SEO, OG tags |
-| **Auth.js** | Auth provider integration (GitHub, Google, Credentials) with session on server |
-| **Vercel** | Zero-config deployment — detects Next.js, handles ISR, CDN, preview URLs |
+| Concept                    | Key Takeaway                                                                        |
+| -------------------------- | ----------------------------------------------------------------------------------- |
+| **App Router**             | File-based routing in `app/` — `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx` |
+| **Server Components**      | Default in App Router — no JS sent to client, direct DB access, can't use hooks     |
+| **Client Components**      | `"use client"` — interactive, use hooks, still SSR-rendered for initial HTML        |
+| **Nested Layouts**         | `layout.tsx` wraps child segments — persists across navigation without remount      |
+| **Server Actions**         | `"use server"` functions — form handling without API routes, type-safe, progressive |
+| **API Routes**             | `route.ts` — REST endpoints in the same project (`GET`, `POST`, `DELETE` exports)   |
+| **ISR**                    | `{ next: { revalidate: N } }` — static pages that refresh in the background         |
+| **On-demand revalidation** | `revalidatePath()` / `revalidateTag()` — programmatic cache invalidation            |
+| **Middleware**             | Runs at the Edge before every request — auth guards, redirects, locale detection    |
+| **`next/image`**           | Auto WebP/AVIF, lazy loading, CLS prevention — use for all images                   |
+| **`next/font`**            | Self-hosted fonts, zero CLS, no Google tracking                                     |
+| **Metadata API**           | `export const metadata` or `generateMetadata()` — typed SEO, OG tags                |
+| **Auth.js**                | Auth provider integration (GitHub, Google, Credentials) with session on server      |
+| **Vercel**                 | Zero-config deployment — detects Next.js, handles ISR, CDN, preview URLs            |
 
 ---
 
