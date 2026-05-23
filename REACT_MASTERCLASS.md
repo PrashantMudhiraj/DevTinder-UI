@@ -10,218 +10,220 @@
 ### Core Concepts
 
 - [Module 1: The Foundation](#module-1-the-foundation)
-  - 1.0 UI Was Built with Pure JavaScript First
-    - 1.0.1 How a Web App is Built in HTML (`<script>` Tags)
-    - 1.0.2 Sync vs Async JS Loading (`defer`, `async`, `type="module"`)
-  - 1.1 Why Does React Exist?
-  - 1.2 JSX: Syntactic Sugar Over `React.createElement`
-  - 1.3 Props: The Contractual Interface of a Component
-  - 1.4 The Pure Component Philosophy
-  - 1.5 Component Tree & The Virtual DOM
-  - 1.6 How React Code Compiles and Builds (Full Pipeline)
-    - 1.6.1 Babel Deep Dive: Config, Presets, Polyfilling & Plugins
-    - 1.6.2 Bundlers: What They Are, Why They Exist & How They Work
-    - 1.6.3 Building a React App with Parcel (Zero-Config Bundler)
-    - 1.6.4 Types of React Components: Class vs Functional + Full Lifecycle
-  - 1.7 Conditional Rendering
-  - 1.8 Fragments
-  - [Module 1 — Interview Q&A](#module-1--interview-qa)
+    - 1.0 UI Was Built with Pure JavaScript First
+        - 1.0.1 How a Web App is Built in HTML (`<script>` Tags)
+        - 1.0.2 Sync vs Async JS Loading (`defer`, `async`, `type="module"`)
+    - 1.1 Why Does React Exist?
+    - 1.2 JSX: Syntactic Sugar Over `React.createElement`
+    - 1.3 Props: The Contractual Interface of a Component
+    - 1.4 The Pure Component Philosophy
+    - 1.5 Component Tree & The Virtual DOM
+    - 1.6 How React Code Compiles and Builds (Full Pipeline)
+        - 1.6.1 Babel Deep Dive: Config, Presets, Polyfilling & Plugins
+        - 1.6.2 Bundlers: What They Are, Why They Exist & How They Work
+        - 1.6.3 Building a React App with Parcel (Zero-Config Bundler)
+        - 1.6.4 Types of React Components: Class vs Functional + Full Lifecycle
+    - 1.7 Conditional Rendering
+    - 1.8 Fragments
+    - [Module 1 — Interview Q&A](#module-1--interview-qa)
 
 - [Module 2: State Mechanics](#module-2-state-mechanics)
-  - 2.1 Why Does State Exist?
-  - 2.2 `useState` Under the Hood: The Fiber Node
-  - 2.3 `useState` Batching
-  - 2.4 The Reconciliation Algorithm (Diffing)
-  - 2.5 State Mutation: Who Actually Changes It?
-  - 2.6 State as a Snapshot
-  - [Module 2 — Interview Q&A](#module-2--interview-qa)
+    - 2.1 Why Does State Exist?
+    - 2.2 `useState` Under the Hood: The Fiber Node
+    - 2.3 `useState` Batching
+    - 2.4 The Reconciliation Algorithm (Diffing)
+    - 2.5 State Mutation: Who Actually Changes It?
+    - 2.6 State as a Snapshot
+    - [Module 2 — Interview Q&A](#module-2--interview-qa)
 
 - [Module 3: Side Effects & Synchronization](#module-3-side-effects--synchronization)
-  - 3.1 The Why: What Is a Side Effect?
-  - 3.2 The Correct Mental Model
-  - 3.3 The `useEffect` Lifecycle
-  - 3.4 The Dependency Array
-  - 3.5 Code Lab: Data Fetching
-  - 3.6 Code Lab: Event Listeners & Subscriptions
-  - [Module 3 — Interview Q&A](#module-3--interview-qa)
+    - 3.1 The Why: What Is a Side Effect?
+    - 3.2 The Correct Mental Model
+    - 3.3 The `useEffect` Lifecycle
+    - 3.4 The Dependency Array
+    - 3.5 Code Lab: Data Fetching
+    - 3.6 Code Lab: Event Listeners & Subscriptions
+    - [Module 3 — Interview Q&A](#module-3--interview-qa)
 
 - [Module 4: Performance & Memoization](#module-4-performance--memoization)
-  - 4.1 The Default Behavior
-  - 4.2 `React.memo`: Skip Re-rendering a Component
-  - 4.3 `useMemo`: Memoize an Expensive Computation
-  - 4.4 The Internal Mechanics of Memoization
-  - 4.5 When NOT to Memoize
-  - [Module 4 — Interview Q&A](#module-4--interview-qa)
+    - 4.1 The Default Behavior
+    - 4.2 `React.memo`: Skip Re-rendering a Component
+    - 4.3 `useMemo`: Memoize an Expensive Computation
+    - 4.4 The Internal Mechanics of Memoization
+    - 4.5 When NOT to Memoize
+    - [Module 4 — Interview Q&A](#module-4--interview-qa)
 
 - [Module 5: Advanced Patterns](#module-5-advanced-patterns)
-  - 5.1 Compound Components
-  - 5.2 Render Props
-  - 5.3 Higher-Order Components (HOCs)
-  - 5.4 `React.Children` and `React.cloneElement`
-  - [Module 5 — Interview Q&A](#module-5--interview-qa)
+    - 5.1 Compound Components
+    - 5.2 Render Props
+    - 5.3 Higher-Order Components (HOCs)
+    - 5.4 `React.Children` and `React.cloneElement`
+    - [Module 5 — Interview Q&A](#module-5--interview-qa)
 
 - [Module 6: Modern Ecosystem](#module-6-modern-ecosystem)
-  - 6.1 React Server Components (RSC)
-  - 6.2 Suspense
-  - 6.3 Transitions (`useTransition`)
-  - 6.4 React 19: What's New (`use()`, `useActionState`, `useOptimistic`, ref-as-prop)
-  - [Module 6 — Interview Q&A](#module-6--interview-qa)
+    - 6.1 React Server Components (RSC)
+    - 6.2 Suspense
+    - 6.3 Transitions (`useTransition`)
+    - 6.4 React 19: What's New (`use()`, `useActionState`, `useOptimistic`, ref-as-prop)
+    - [Module 6 — Interview Q&A](#module-6--interview-qa)
 
 ### Hooks Deep Dive
 
 - [Module 7: Hooks — Complete Guide](#module-7-hooks--complete-guide)
-  - 7.1 `useReducer`: State Machine for Complex State
-  - 7.2 `useContext`: Dependency Injection for React
-  - 7.3 `useRef`: Mutable Container & DOM Access
-  - 7.4 `useImperativeHandle`: Controlled Ref Exposure
-  - 7.5 `useLayoutEffect`: Synchronous Post-DOM Effect
-  - 7.6 `useDeferredValue`: Debounce Without Timers
-  - 7.7 `useId`: Stable, Unique IDs for Accessibility
-  - 7.8 Custom Hooks: 15-Hook Library, Composition, Testing, Anti-patterns
-  - 7.9 `useDebugValue`: Custom Hook DevTools Labels
-  - 7.10 `useSyncExternalStore`: Safe External Subscriptions
-  - [Module 7 — Interview Q&A](#module-7--interview-qa)
+    - 7.1 `useReducer`: State Machine for Complex State
+    - 7.2 `useContext`: Dependency Injection for React
+    - 7.3 `useRef`: Mutable Container & DOM Access
+    - 7.4 `useImperativeHandle`: Controlled Ref Exposure
+    - 7.5 `useLayoutEffect`: Synchronous Post-DOM Effect
+    - 7.6 `useDeferredValue`: Debounce Without Timers
+    - 7.7 `useId`: Stable, Unique IDs for Accessibility
+    - 7.8 Custom Hooks: 15-Hook Library, Composition, Testing, Anti-patterns
+    - 7.9 `useDebugValue`: Custom Hook DevTools Labels
+    - 7.10 `useSyncExternalStore`: Safe External Subscriptions
+    - [Module 7 — Interview Q&A](#module-7--interview-qa)
 
 ### Building Real Apps
 
 - [Module 8: Event Handling & Forms](#module-8-event-handling--forms)
-  - 8.1 Event Handling in React (Event Delegation)
-  - 8.2 Controlled vs Uncontrolled Components
-  - 8.3 Forms: Building from Scratch
-  - 8.4 React Hook Form: Forms Without the Boilerplate
-  - 8.4 Interview: Build a 6-Digit OTP Input UI *(Flipkart · Swiggy · Razorpay)*
-  - [Module 8 — Interview Q&A](#module-8--interview-qa)
+    - 8.1 Event Handling in React (Event Delegation)
+    - 8.2 Controlled vs Uncontrolled Components
+    - 8.3 Forms: Building from Scratch
+    - 8.4 React Hook Form: Forms Without the Boilerplate
+    - 8.4 Interview: Build a 6-Digit OTP Input UI _(Flipkart · Swiggy · Razorpay)_
+    - [Module 8 — Interview Q&A](#module-8--interview-qa)
 
 - [Module 9: Component Design Patterns](#module-9-component-design-patterns)
-  - 9.1 Single Page Application (SPA)
-  - 9.2 Presentational vs Container Components
-  - 9.3 Lifting State Up
-  - 9.4 Composition vs Inheritance
-  - 9.5 Data-Driven UI & Config-Driven UI *(Swiggy Homepage pattern)*
-  - [Module 9 — Interview Q&A](#module-9--interview-qa)
+    - 9.1 Single Page Application (SPA)
+    - 9.2 Presentational vs Container Components
+    - 9.3 Lifting State Up
+    - 9.4 Composition vs Inheritance
+    - 9.5 Data-Driven UI & Config-Driven UI _(Swiggy Homepage pattern)_
+    - [Module 9 — Interview Q&A](#module-9--interview-qa)
 
 - [Module 10: Routing with React Router](#module-10-routing-with-react-router)
-  - 10.1–10.7 Route Config, Navigation, Dynamic Routes, Nested Routes, Protected Routes, Hooks
-  - 10.8 React Router v7: Data Mode (`createBrowserRouter`, loaders, actions)
-  - 10.9 v6 → v7 Key Differences
-  - 10.10 Alternate Routing Libraries (TanStack Router, Wouter, Next.js)
-  - [Module 10 — Interview Q&A](#module-10--interview-qa)
+    - 10.1–10.7 Route Config, Navigation, Dynamic Routes, Nested Routes, Protected Routes, Hooks
+    - 10.8 React Router v7: Data Mode (`createBrowserRouter`, loaders, actions)
+    - 10.9 v6 → v7 Key Differences
+    - 10.10 Alternate Routing Libraries (TanStack Router, Wouter, Next.js)
+    - [Module 10 — Interview Q&A](#module-10--interview-qa)
 
 - [Module 11: State Management](#module-11-state-management)
-  - 11.1 When Do You Need a State Management Library?
-  - 11.2 Redux Toolkit (RTK)
-  - 11.3 Zustand: Minimal Global State
-  - [Module 11 — Interview Q&A](#module-11--interview-qa)
+    - 11.1 When Do You Need a State Management Library?
+    - 11.2 Redux Toolkit (RTK)
+    - 11.3 Zustand: Minimal Global State
+    - [Module 11 — Interview Q&A](#module-11--interview-qa)
 
 ### Advanced Topics
 
 - [Module 12: Error Boundaries & Portals](#module-12-error-boundaries--portals)
-  - 12.1 Error Boundaries
-  - 12.2 Portals
-  - [Module 12 — Interview Q&A](#module-12--interview-qa)
+    - 12.1 Error Boundaries
+    - 12.2 Portals
+    - [Module 12 — Interview Q&A](#module-12--interview-qa)
 
 - [Module 13: Styling in React](#module-13-styling-in-react)
-  - 13.1 The Styling Landscape
-  - 13.2 CSS Modules
-  - 13.3 Tailwind CSS
-  - 13.4 Styled-components (CSS-in-JS)
-  - 13.5 Theming
-  - 13.6 `clsx` and `cn()`: Conditional Class Names
-  - [Module 13 — Interview Q&A](#module-13--interview-qa)
+    - 13.1 The Styling Landscape
+    - 13.2 CSS Modules
+    - 13.3 Tailwind CSS
+    - 13.4 Styled-components (CSS-in-JS)
+    - 13.5 Theming
+    - 13.6 `clsx` and `cn()`: Conditional Class Names
+    - [Module 13 — Interview Q&A](#module-13--interview-qa)
 
 - [Module 14: Testing](#module-14-testing)
-  - 14.1 The Why: What to Test and Why
-  - 14.2 Jest Basics
-  - 14.3 React Testing Library
-  - 14.4 Testing Async Components
-  - 14.5 RTL Query Cheat Sheet
-  - 14.6 Vitest: The Vite-Native Test Runner
-  - [Module 14 — Interview Q&A](#module-14--interview-qa)
+    - 14.1 The Why: What to Test and Why
+    - 14.2 Jest Basics
+    - 14.3 React Testing Library
+    - 14.4 Testing Async Components
+    - 14.5 RTL Query Cheat Sheet
+    - 14.6 Vitest: The Vite-Native Test Runner
+    - [Module 14 — Interview Q&A](#module-14--interview-qa)
 
 - [Module 15: Project Architecture & Build Tools](#module-15-project-architecture--build-tools)
-  - 15.1 Feature-Based Folder Structure
-  - 15.2 Vite Configuration
-  - 15.3 Environment Variables: Full Multi-Environment Setup (dev/test/e2e/staging/prod)
-  - 15.4 Nginx Configuration for Serving a React App
-  - 15.5 Browser Compatibility (`.browserslistrc`, Babel, `@vitejs/plugin-legacy`, autoprefixer, feature detection)
-  - [Module 15 — Interview Q&A](#module-15--interview-qa)
+    - 15.1 Feature-Based Folder Structure
+    - 15.2 Vite Configuration
+    - 15.3 Environment Variables: Full Multi-Environment Setup (dev/test/e2e/staging/prod)
+    - 15.4 Nginx Configuration for Serving a React App
+    - 15.5 Browser Compatibility (`.browserslistrc`, Babel, `@vitejs/plugin-legacy`, autoprefixer, feature detection)
+    - [Module 15 — Interview Q&A](#module-15--interview-qa)
 
 - [Module 16: SSR, SSG, Hydration & Auth Security](#module-16-ssr-ssg-hydration--auth-security)
-  - 16.1 Rendering Strategies (CSR / SSR / SSG)
-  - 16.2 Hydration
-  - 16.3 Auth & JWT Security
-  - [Module 16 — Interview Q&A](#module-16--interview-qa)
+    - 16.1 Rendering Strategies (CSR / SSR / SSG)
+    - 16.2 Hydration
+    - 16.3 Auth & JWT Security
+    - [Module 16 — Interview Q&A](#module-16--interview-qa)
 
 ### Production & Real-World
 
 - [Module 17: Real-World Concepts](#module-17-real-world-concepts)
-  - 17.1 Pagination
-  - 17.2 Infinite Scroll
-  - 17.3 Debounce & Throttle
-  - 17.4 TanStack Query
-  - 17.5 Optimistic UI
-  - [Module 17 — Interview Q&A](#module-17--interview-qa)
+    - 17.1 Pagination
+    - 17.2 Infinite Scroll
+    - 17.3 Debounce & Throttle
+    - 17.4 TanStack Query
+    - 17.5 Optimistic UI
+    - [Module 17 — Interview Q&A](#module-17--interview-qa)
 
 - [Module 18: Production, Scaling & Glossary](#module-18-production-scaling--glossary)
-  - 18.1 Production Error Handling Strategy
-  - 18.2 Performance Tracking & Core Web Vitals
-  - 18.3 Interview-Focused: Key Comparisons
-  - 18.4 Glossary
-  - [Module 18 — Interview Q&A](#module-18--interview-qa)
+    - 18.1 Production Error Handling Strategy
+    - 18.2 Performance Tracking & Core Web Vitals
+    - 18.3 Interview-Focused: Key Comparisons
+    - 18.4 Glossary
+    - [Module 18 — Interview Q&A](#module-18--interview-qa)
 
 ### Ecosystem Libraries
 
 - [Module 19: Essential React Ecosystem Libraries](#module-19-essential-react-ecosystem-libraries)
-  - MUI · shadcn/ui · Radix UI · Axios · SWR · TanStack Query · Zod · Jotai · Framer Motion · Recharts · TanStack Table · Socket.io · dnd-kit · Day.js
-  - [Module 19 — Interview Q&A](#module-19--interview-qa)
+    - MUI · shadcn/ui · Radix UI · Axios · SWR · TanStack Query · Zod · Jotai · Framer Motion · Recharts · TanStack Table · Socket.io · dnd-kit · Day.js
+    - [Module 19 — Interview Q&A](#module-19--interview-qa)
 
 ### Building From Scratch
 
 - [Module 20: Building From Scratch — Custom Router & UI Patterns](#module-20-building-from-scratch--custom-router--ui-patterns)
-  - 20.1 Manual Routing (pushState + popstate + Context)
-  - 20.2 Config-Driven Table, useSort, SortableTable
-  - 20.3 Click-Outside Detection, Modal Portal
-  - 20.4 Custom Hooks from Scratch
-  - [Module 20 — Interview Q&A](#module-20--interview-qa)
+    - 20.1 Manual Routing (pushState + popstate + Context)
+    - 20.2 Config-Driven Table, useSort, SortableTable
+    - 20.3 Click-Outside Detection, Modal Portal
+    - 20.4 Custom Hooks from Scratch
+    - [Module 20 — Interview Q&A](#module-20--interview-qa)
 
 ### MNC Interview Preparation
 
 - [Module 21: MNC React Interview Questions](#module-21-mnc-react-interview-questions)
-  - 21.1 Conceptual / Theory Questions (Fiber, Reconciliation, StrictMode, Context, Controlled vs Uncontrolled, setState in useEffect)
-  - 21.2 Coding / Machine Coding (Search+Debounce, Infinite Scroll, useFetch+Cache, Star Rating, useLocalStorage, ErrorBoundary, Stale Closure, Throttled Resize, Tabs)
-  - 21.3 System Design / Architecture (Performance Optimization, Auth Flow)
-  - 21.4 Quick-Fire Q&A *(Google · Meta · Amazon · Microsoft · Flipkart · Swiggy · Razorpay · Uber · Adobe · Atlassian)*
+    - 21.1 Conceptual / Theory Questions (Fiber, Reconciliation, StrictMode, Context, Controlled vs Uncontrolled, setState in useEffect, Rules of Hooks, Render vs Commit Phase, useState vs useReducer, React.lazy+Suspense, Custom Hooks, forwardRef, Virtual DOM vs Real DOM)
+    - 21.2 Coding / Machine Coding (Search+Debounce, Infinite Scroll, useFetch+Cache, Star Rating, useLocalStorage, ErrorBoundary, Stale Closure, Throttled Resize, Tabs)
+    - 21.3 System Design / Architecture (Performance Optimization, Auth Flow)
+    - 21.4 Quick-Fire Q&A _(Google · Meta · Amazon · Microsoft · Flipkart · Swiggy · Razorpay · Uber · Adobe · Atlassian)_
+    - 21.5 React 18 & 19 Concurrent Features (useTransition, useDeferredValue, Automatic Batching, use(), useOptimistic, React Compiler)
+    - 21.6 Additional Machine Coding (Typeahead/Autocomplete, Shopping Cart with useReducer, Global Toast System)
 
 ### Tooling & Frameworks
 
 - [Module 22: Tooling & Code Quality](#module-22-tooling--code-quality)
-  - 22.1 ESLint: Static Analysis for React (flat config, react-hooks plugin)
-  - 22.2 Prettier: Automatic Code Formatting
-  - 22.3 Husky + lint-staged: Git Hooks (pre-commit enforcement)
-  - 22.4 Conventional Commits + commitlint
-  - 22.5 TypeScript `tsconfig.json` for React (strict mode)
-  - 22.6 `.editorconfig`: Consistent Editor Settings
-  - 22.7 VSCode Workspace Settings & Extensions
-  - 22.8 CI Quality Gate (GitHub Actions: typecheck + lint + format + test + build)
-  - [Module 22 — Interview Q&A](#module-22--interview-qa)
+    - 22.1 ESLint: Static Analysis for React (flat config, react-hooks plugin)
+    - 22.2 Prettier: Automatic Code Formatting
+    - 22.3 Husky + lint-staged: Git Hooks (pre-commit enforcement)
+    - 22.4 Conventional Commits + commitlint
+    - 22.5 TypeScript `tsconfig.json` for React (strict mode)
+    - 22.6 `.editorconfig`: Consistent Editor Settings
+    - 22.7 VSCode Workspace Settings & Extensions
+    - 22.8 CI Quality Gate (GitHub Actions: typecheck + lint + format + test + build)
+    - [Module 22 — Interview Q&A](#module-22--interview-qa)
 
 - [Module 23: Next.js & Full-Stack React](#module-23-nextjs--full-stack-react)
-  - 23.1 Next.js vs Plain React (Vite)
-  - 23.2 Project Structure (App Router)
-  - 23.3 File-Based Routing: Special Files (`page`, `layout`, `loading`, `error`, `route`)
-  - 23.4 Layouts & Nested Routing
-  - 23.5 Server vs Client Components (`"use client"`)
-  - 23.6 Data Fetching Patterns (parallel fetch, `loading.tsx`, `error.tsx`)
-  - 23.7 Server Actions: Forms Without APIs
-  - 23.8 API Routes (`route.ts`)
-  - 23.9 Rendering Strategies per Route (Static, SSR, ISR, on-demand revalidation)
-  - 23.10 Middleware (Edge, auth guard, locale)
-  - 23.11 `next/image` and `next/font`
-  - 23.12 SEO with Metadata API
-  - 23.13 Authentication (Auth.js / NextAuth)
-  - 23.14 `next.config.ts`
-  - 23.15 Deployment (Vercel + Docker standalone)
-  - [Module 23 — Interview Q&A](#module-23--interview-qa)
+    - 23.1 Next.js vs Plain React (Vite)
+    - 23.2 Project Structure (App Router)
+    - 23.3 File-Based Routing: Special Files (`page`, `layout`, `loading`, `error`, `route`)
+    - 23.4 Layouts & Nested Routing
+    - 23.5 Server vs Client Components (`"use client"`)
+    - 23.6 Data Fetching Patterns (parallel fetch, `loading.tsx`, `error.tsx`)
+    - 23.7 Server Actions: Forms Without APIs
+    - 23.8 API Routes (`route.ts`)
+    - 23.9 Rendering Strategies per Route (Static, SSR, ISR, on-demand revalidation)
+    - 23.10 Middleware (Edge, auth guard, locale)
+    - 23.11 `next/image` and `next/font`
+    - 23.12 SEO with Metadata API
+    - 23.13 Authentication (Auth.js / NextAuth)
+    - 23.14 `next.config.ts`
+    - 23.15 Deployment (Vercel + Docker standalone)
+    - [Module 23 — Interview Q&A](#module-23--interview-qa)
 
 ---
 
@@ -235,7 +237,7 @@
 
 ## 1.0 — UI Was Built with Pure JavaScript First
 
-> Before React existed, every interactive UI was hand-crafted with vanilla JavaScript and direct DOM manipulation. Understanding this era is essential — it shows *exactly* what pain React was designed to eliminate.
+> Before React existed, every interactive UI was hand-crafted with vanilla JavaScript and direct DOM manipulation. Understanding this era is essential — it shows _exactly_ what pain React was designed to eliminate.
 
 ---
 
@@ -246,9 +248,9 @@ In the beginning, web pages were static HTML. When developers needed interactivi
 ```html
 <!-- HTML -->
 <div id="app">
-  <h1 id="title">Hello</h1>
-  <button id="btn">Click me</button>
-  <p id="counter">Count: 0</p>
+    <h1 id="title">Hello</h1>
+    <button id="btn">Click me</button>
+    <p id="counter">Count: 0</p>
 </div>
 ```
 
@@ -274,7 +276,7 @@ This works. For a single counter, it's fine. But as apps grew, this approach col
 
 ```js
 // Vanilla JS (verbose, inconsistent across IE/Chrome/Firefox)
-document.getElementById("btn").addEventListener("click", function() {
+document.getElementById("btn").addEventListener("click", function () {
     var el = document.getElementById("message");
     el.style.display = "block";
     el.innerHTML = "Hello!";
@@ -303,7 +305,9 @@ let user = { name: "Alice", isAdmin: true };
 // And UI spread across multiple places
 document.getElementById("username").textContent = user.name;
 document.getElementById("nav-username").textContent = user.name;
-document.getElementById("admin-badge").style.display = user.isAdmin ? "block" : "none";
+document.getElementById("admin-badge").style.display = user.isAdmin
+    ? "block"
+    : "none";
 document.getElementById("profile-name").textContent = user.name;
 
 // When user.name changes, you MANUALLY update every single DOM reference
@@ -429,6 +433,7 @@ This felt magical — but it came with a serious cost: **the digest cycle**. Ang
 React solved every problem in the pure JS era with three radical ideas:
 
 #### Idea 1 — Components (Reusability)
+
 ```jsx
 // One UserCard component, used everywhere — no copy-paste
 function UserCard({ user }) {
@@ -444,6 +449,7 @@ function UserCard({ user }) {
 ```
 
 #### Idea 2 — Declarative Rendering (Sync is Automatic)
+
 ```jsx
 // You describe WHAT the UI should look like for a given state.
 // React figures out HOW to update the DOM.
@@ -451,9 +457,10 @@ function UserCard({ user }) {
 function UserGreeting({ user }) {
     return (
         <div>
-            <h1>{user.name}</h1>                             {/* always in sync */}
-            <nav>{user.name}</nav>                           {/* always in sync */}
-            {user.isAdmin && <span className="badge">Admin</span>} {/* always in sync */}
+            <h1>{user.name}</h1> {/* always in sync */}
+            <nav>{user.name}</nav> {/* always in sync */}
+            {user.isAdmin && <span className="badge">Admin</span>}{" "}
+            {/* always in sync */}
         </div>
     );
 }
@@ -462,6 +469,7 @@ function UserGreeting({ user }) {
 ```
 
 #### Idea 3 — Unidirectional Data Flow (Predictability)
+
 ```
 State → Component renders → UI
          ↑
@@ -486,14 +494,14 @@ function addTodo(text) {
 }
 
 function toggleTodo(id) {
-    todos = todos.map(t => t.id === id ? { ...t, done: !t.done } : t);
+    todos = todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
     renderTodos(); // must manually call render
 }
 
 function renderTodos() {
     const list = document.getElementById("todo-list");
     list.innerHTML = ""; // wipe and re-render everything manually
-    todos.forEach(todo => {
+    todos.forEach((todo) => {
         const li = document.createElement("li");
         li.textContent = todo.text;
         li.style.textDecoration = todo.done ? "line-through" : "none";
@@ -516,17 +524,19 @@ function TodoList() {
     }
 
     function toggleTodo(id) {
-        setTodos(todos.map(t => t.id === id ? { ...t, done: !t.done } : t));
+        setTodos(todos.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
         // React re-renders automatically ✔
     }
 
     return (
         <ul>
-            {todos.map(todo => (
+            {todos.map((todo) => (
                 <li
                     key={todo.id}
                     onClick={() => toggleTodo(todo.id)}
-                    style={{ textDecoration: todo.done ? "line-through" : "none" }}
+                    style={{
+                        textDecoration: todo.done ? "line-through" : "none",
+                    }}
                 >
                     {todo.text}
                 </li>
@@ -572,22 +582,22 @@ The HTML file is the **entry point**. It wires the other two together.
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Web App</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Web App</title>
 
-    <!-- 1. CSS is linked in <head> — downloaded early, parsed before render -->
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <h1 id="title">Hello, World!</h1>
-    <button id="btn">Click me</button>
+        <!-- 1. CSS is linked in <head> — downloaded early, parsed before render -->
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <h1 id="title">Hello, World!</h1>
+        <button id="btn">Click me</button>
 
-    <!-- 2. JS is placed at the BOTTOM of <body> — a classic best practice -->
-    <!--    Reason: HTML above is already parsed; DOM nodes exist when JS runs -->
-    <script src="app.js"></script>
-  </body>
+        <!-- 2. JS is placed at the BOTTOM of <body> — a classic best practice -->
+        <!--    Reason: HTML above is already parsed; DOM nodes exist when JS runs -->
+        <script src="app.js"></script>
+    </body>
 </html>
 ```
 
@@ -637,19 +647,24 @@ sequenceDiagram
 ```html
 <!-- ❌ OLD BAD PATTERN: script in <head> -->
 <head>
-  <script src="app.js"></script>  <!-- Blocks HTML parsing immediately -->
-                                 <!-- DOM doesn't exist yet → getElementById returns null -->
+    <script src="app.js"></script>
+    <!-- Blocks HTML parsing immediately -->
+    <!-- DOM doesn't exist yet → getElementById returns null -->
 </head>
 <body>
-  <h1 id="title">Hello</h1>  <!-- Not parsed yet when app.js ran! -->
+    <h1 id="title">Hello</h1>
+    <!-- Not parsed yet when app.js ran! -->
 </body>
 
 <!-- ✅ OLD GOOD PATTERN: script at bottom of <body> -->
 <body>
-  <h1 id="title">Hello</h1>  <!-- Parsed ✔ -->
-  <button id="btn">Click</button>  <!-- Parsed ✔ -->
+    <h1 id="title">Hello</h1>
+    <!-- Parsed ✔ -->
+    <button id="btn">Click</button>
+    <!-- Parsed ✔ -->
 
-  <script src="app.js"></script>  <!-- DOM already exists → safe to query ✔ -->
+    <script src="app.js"></script>
+    <!-- DOM already exists → safe to query ✔ -->
 </body>
 ```
 
@@ -677,6 +692,7 @@ JS:                     ████████ (download + execute)
 ```
 
 **Behaviour**:
+
 1. HTML parser hits `<script>` → **immediately stops**.
 2. Browser fetches `app.js` from the network.
 3. Browser executes `app.js` synchronously.
@@ -702,11 +718,13 @@ JS:                ░░░░░░░░░████
 ```
 
 **Behaviour**:
+
 1. HTML parser continues normally while `analytics.js` downloads **in parallel**.
 2. The instant the download finishes, HTML parsing **pauses** and JS executes immediately.
 3. After execution, HTML parsing resumes.
 
 **Key characteristics**:
+
 - ✅ Download is non-blocking (parallel)
 - ❌ Execution order is **not guaranteed** — whichever script downloads first runs first
 - ❌ Execution still interrupts HTML parsing
@@ -738,12 +756,14 @@ JS:                ░░░░░░░░░░░░░░░░░░░░�
 ```
 
 **Behaviour**:
+
 1. HTML parser continues normally while script downloads **in parallel**.
 2. Script execution is **deferred** until the entire HTML document is parsed.
 3. Multiple `defer` scripts execute **in the order they appear** in the HTML.
 4. All `defer` scripts execute before the `DOMContentLoaded` event fires.
 
 **Key characteristics**:
+
 - ✅ Download is non-blocking (parallel)
 - ✅ Execution order is **guaranteed** (document order)
 - ✅ DOM is **fully built** when the script executes
@@ -754,11 +774,13 @@ JS:                ░░░░░░░░░░░░░░░░░░░░�
 ```html
 <!-- Modern best practice: defer in <head> -->
 <head>
-  <script src="utils.js" defer></script>   <!-- executes 1st -->
-  <script src="app.js" defer></script>     <!-- executes 2nd (guaranteed order) -->
+    <script src="utils.js" defer></script>
+    <!-- executes 1st -->
+    <script src="app.js" defer></script>
+    <!-- executes 2nd (guaranteed order) -->
 </head>
 <body>
-  <!-- HTML parsed fully before either script runs -->
+    <!-- HTML parsed fully before either script runs -->
 </body>
 ```
 
@@ -771,6 +793,7 @@ JS:                ░░░░░░░░░░░░░░░░░░░░�
 ```
 
 **Behaviour**:
+
 - **Always deferred by default** — behaves exactly like `defer`.
 - Enables native ES Module syntax (`import`/`export`) in the browser.
 - Each module has its own scope — no global variable pollution.
@@ -784,7 +807,7 @@ JS:                ░░░░░░░░░░░░░░░░░░░░�
 
 ```js
 // app.js — ES Module
-import { formatDate } from "./utils.js";  // native browser import ✔
+import { formatDate } from "./utils.js"; // native browser import ✔
 
 const today = formatDate(new Date());
 document.getElementById("date").textContent = today;
@@ -807,10 +830,10 @@ document.getElementById("date").textContent = today;
 
 | Attribute       | Download | Execution Timing      | Order Guaranteed | DOM Available | Use Case                           |
 | --------------- | -------- | --------------------- | ---------------- | ------------- | ---------------------------------- |
-| *(none)*        | Blocking | Immediately           | ✅ Yes            | ❌ No          | Inline critical scripts            |
-| `async`         | Parallel | As soon as downloaded | ❌ No             | ❌ Maybe       | Analytics, independent scripts     |
-| `defer`         | Parallel | After full HTML parse | ✅ Yes            | ✅ Yes         | App scripts (modern best practice) |
-| `type="module"` | Parallel | After full HTML parse | ✅ Yes            | ✅ Yes         | ES Module apps, Vite dev server    |
+| _(none)_        | Blocking | Immediately           | ✅ Yes           | ❌ No         | Inline critical scripts            |
+| `async`         | Parallel | As soon as downloaded | ❌ No            | ❌ Maybe      | Analytics, independent scripts     |
+| `defer`         | Parallel | After full HTML parse | ✅ Yes           | ✅ Yes        | App scripts (modern best practice) |
+| `type="module"` | Parallel | After full HTML parse | ✅ Yes           | ✅ Yes        | ES Module apps, Vite dev server    |
 
 ---
 
@@ -854,12 +877,12 @@ window.addEventListener("load", function () {
 <!-- Separate file → browser can cache it → subsequent page loads are instant -->
 ```
 
-|                     | Inline `<script>`      | External `<script src>`   |
-| ------------------- | ---------------------- | ------------------------- |
-| **Network request** | None                   | Yes (first visit)         |
-| **Browser cache**   | ❌ Never cached         | ✅ Cached on repeat visits |
+|                     | Inline `<script>`      | External `<script src>`    |
+| ------------------- | ---------------------- | -------------------------- |
+| **Network request** | None                   | Yes (first visit)          |
+| **Browser cache**   | ❌ Never cached        | ✅ Cached on repeat visits |
 | **`async`/`defer`** | Ignored                | ✅ Supported               |
-| **Best for**        | Critical tiny snippets | All application code      |
+| **Best for**        | Critical tiny snippets | All application code       |
 
 ---
 
@@ -870,38 +893,40 @@ When you run `npm create vite@latest`, the generated `index.html` looks like thi
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>   <!-- React mounts its entire tree here -->
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vite + React</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <!-- React mounts its entire tree here -->
 
-    <!-- type="module" → deferred + ES Module support -->
-    <!-- Vite injects: import React from 'react' etc. at the top of main.jsx -->
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+        <!-- type="module" → deferred + ES Module support -->
+        <!-- Vite injects: import React from 'react' etc. at the top of main.jsx -->
+        <script type="module" src="/src/main.jsx"></script>
+    </body>
 </html>
 ```
 
 ```jsx
 // src/main.jsx — React's entry point
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.jsx';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.jsx";
 
 // Find the <div id="root"> in index.html and take it over
-const root = createRoot(document.getElementById('root'));
+const root = createRoot(document.getElementById("root"));
 root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+    <StrictMode>
+        <App />
+    </StrictMode>,
 );
 ```
 
 **The full chain**:
+
 1. Browser loads `index.html`
 2. Hits `<script type="module" src="/src/main.jsx">` → defers download
 3. HTML parsing finishes (`<div id="root">` exists)
@@ -1107,13 +1132,17 @@ In development, React intentionally calls your render function **twice** to help
 
 ## 1.5 — Component Tree & The Virtual DOM
 
+### What Is the Component Tree?
+
+When React renders your app, it produces a **tree of components** — a parent-child hierarchy that mirrors how you nest JSX. This tree is the foundation of everything React does: data flows down it (via props), events bubble up through it, and React's reconciler walks it to figure out what changed.
+
 ```mermaid
 graph TD
     App["&lt;App /&gt;"]
     NavBar["&lt;NavBar /&gt;"]
     Feed["&lt;Feed /&gt;"]
-    UserCard1["&lt;UserCard user=A /&gt;"]
-    UserCard2["&lt;UserCard user=B /&gt;"]
+    UserCard1["&lt;UserCard user=Alice /&gt;"]
+    UserCard2["&lt;UserCard user=Bob /&gt;"]
     Footer["&lt;Footer /&gt;"]
 
     App --> NavBar
@@ -1122,6 +1151,191 @@ graph TD
     Feed --> UserCard1
     Feed --> UserCard2
 ```
+
+---
+
+### Three Distinct Trees React Maintains
+
+React doesn't just keep one tree — it maintains **three** at different levels of abstraction:
+
+```
+1. Component Tree   → what YOU think about (your JSX hierarchy)
+2. Element Tree     → plain JS objects returned by React.createElement()
+3. Fiber Tree       → React's internal work-in-progress linked list (Module 2)
+```
+
+```
+Component Tree (your mental model):       Element Tree (what React.createElement produces):
+
+<App>                                     { type: App, props: {} }
+  <Feed>                                    children: [
+    <UserCard user={alice} />                 { type: Feed, props: {} }
+    <UserCard user={bob} />                     children: [
+  </Feed>                                         { type: UserCard, props: { user: alice } }
+</App>                                            { type: UserCard, props: { user: bob } }
+                                                ]
+                                          ]
+```
+
+---
+
+### How the Tree is Built — Step by Step
+
+```jsx
+// 1. React calls App()
+function App() {
+    return (
+        <div>
+            <NavBar />
+            <Feed />
+            <Footer />
+        </div>
+    );
+}
+// → produces: { type: 'div', children: [NavBar element, Feed element, Footer element] }
+
+// 2. React calls Feed()
+function Feed() {
+    return (
+        <div>
+            <UserCard user={alice} />
+            <UserCard user={bob} />
+        </div>
+    );
+}
+// → React recursively expands until every leaf is a native DOM element (div, span, p...)
+
+// 3. Leaf level — no more components to call
+function UserCard({ user }) {
+    return <div className="card">{user.name}</div>;
+    // → { type: 'div', props: { className: 'card' }, children: [alice.name] }
+    // This is a native element — React turns this directly into a real DOM node.
+}
+```
+
+```
+Expansion order (depth-first):
+App → div → NavBar → (NavBar's children) → Feed → div → UserCard(alice)
+  → div → UserCard(bob) → div → Footer → (Footer's children)
+```
+
+---
+
+### Props Flow Down, Events Bubble Up
+
+The component tree defines two directional flows:
+
+```
+         ┌─────────────────────────────────┐
+         │            <App />              │
+         │    state: { user, theme }       │
+         └──────────┬──────────────────────┘
+                    │ props (data flows DOWN)
+         ┌──────────▼──────────────────────┐
+         │           <Feed />              │
+         │  props: { user }                │
+         └──────┬──────────────────────────┘
+                │ props (data flows DOWN)
+    ┌───────────▼──────────────────────────┐
+    │        <UserCard user={user} />      │
+    │  calls: onSwipe(direction) ← event  │
+    └──────────────────────────────────────┘
+                    │ callback fires UP
+         ┌──────────▲──────────────────────┐
+         │   App updates state             │
+         │   → triggers re-render DOWN     │
+         └─────────────────────────────────┘
+```
+
+> **Rule**: Data always flows **down** (parent → child via props). Events always flow **up** (child calls a callback passed by the parent). This one-directional flow is what makes React apps predictable.
+
+---
+
+### What Causes a Subtree to Re-render?
+
+When a component's state changes, React re-renders that component **and all its descendants** by default:
+
+```
+App (state changes here)
+├── NavBar        ← re-renders (even if its props didn't change)
+├── Feed          ← re-renders
+│   ├── UserCard  ← re-renders
+│   └── UserCard  ← re-renders
+└── Footer        ← re-renders
+```
+
+This is the default. You can stop unnecessary re-renders with:
+
+- `React.memo` — skip if props are shallowly equal
+- `useMemo` / `useCallback` — stabilise values and callbacks passed as props
+
+---
+
+### The Component Tree vs the DOM Tree
+
+The component tree and the actual DOM tree are **not the same**:
+
+```jsx
+// Component Tree (3 levels deep):
+<App>
+  <Feed>
+    <UserCard />
+  </Feed>
+</App>
+
+// DOM Tree React produces (may be flatter or deeper):
+<div id="root">
+  <nav>...</nav>
+  <main>
+    <div class="card">Alice</div>
+    <div class="card">Bob</div>
+  </main>
+  <footer>...</footer>
+</div>
+```
+
+Key differences:
+
+- Components with `return null` exist in the component tree but produce **nothing in the DOM**
+- `React.Fragment` (`<>...</>`) groups component children but adds **no DOM node**
+- Portals (`ReactDOM.createPortal`) put DOM nodes **outside their component tree position**
+
+---
+
+### Visualising the Tree in React DevTools
+
+The React DevTools browser extension lets you inspect the live component tree:
+
+```
+▼ <App>
+    ▼ <NavBar>
+        <Logo />
+        <UserAvatar user={alice} />
+    ▼ <Feed>
+        <UserCard user={alice} />   ← click to see props: { user: { name: "Alice", age: 26 } }
+        <UserCard user={bob} />
+    <Footer />
+```
+
+You can:
+
+- Click any component to see its current **props** and **state**
+- Edit state/props live and watch the UI update
+- Use the **Profiler** tab to record which components re-rendered and why
+
+---
+
+### Key Takeaways
+
+| Concept                        | What It Means                                                                                                  |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| **Component Tree**             | The parent-child hierarchy of your components — your mental model                                              |
+| **Element Tree**               | Plain JS objects (`React.createElement` output) — React's intermediate representation                          |
+| **Fiber Tree**                 | React's internal linked list used for reconciliation — explored in Module 2                                    |
+| **Data flows down**            | Parent passes data to children via props — never the other way directly                                        |
+| **Events flow up**             | Children call callbacks passed by the parent to communicate changes                                            |
+| **Re-render propagates down**  | A state change in a parent re-renders all its descendants by default                                           |
+| **`null` / Fragment / Portal** | Components can exist in the tree without producing DOM nodes, or produce DOM nodes outside their tree position |
 
 Each node in this tree corresponds to a **React Element** (plain JS object). React maintains a mirror of this tree internally called the **Fiber Tree**, which we'll explore deeply in Module 2.
 
@@ -1348,7 +1562,7 @@ Modern JavaScript uses `import`/`export` (ES Modules). Older browsers don't supp
 
 ```js
 // Your App.jsx imports from 5 files
-import { useState } from "react";          // node_modules/react
+import { useState } from "react"; // node_modules/react
 import { Router } from "react-router-dom"; // node_modules/react-router-dom
 import UserCard from "./components/UserCard";
 import { fetchUser } from "./api/users";
@@ -1370,8 +1584,8 @@ import _ from "lodash"; // Lives in node_modules/
 
 ```js
 import styles from "./Button.module.css"; // CSS inside JS?
-import logo from "./logo.svg";            // SVG inside JS?
-import data from "./config.json";         // JSON inside JS?
+import logo from "./logo.svg"; // SVG inside JS?
+import data from "./config.json"; // JSON inside JS?
 // None of these are valid JavaScript imports — a bundler handles them.
 ```
 
@@ -1414,7 +1628,9 @@ Every node in this graph becomes part of the output bundle. Files that are **nev
 ### What a Bundler Actually Does — Step by Step
 
 #### 1. Module Resolution
+
 Resolves every `import` to an actual file path:
+
 ```js
 import UserCard from "./components/UserCard";
 // → resolves to /project/src/components/UserCard.jsx  ✔
@@ -1427,7 +1643,9 @@ import styles from "./App.module.css";
 ```
 
 #### 2. Transformation (Loaders / Plugins)
+
 Each file type gets transformed before bundling:
+
 ```
 .jsx / .tsx   →  Babel/SWC transforms to plain JS
 .ts           →  TypeScript stripped to JS
@@ -1438,11 +1656,18 @@ Each file type gets transformed before bundling:
 ```
 
 #### 3. Tree Shaking (Dead Code Elimination)
+
 ```js
 // math.js — exports 3 functions
-export function add(a, b) { return a + b; }
-export function subtract(a, b) { return a - b; }
-export function multiply(a, b) { return a * b; }
+export function add(a, b) {
+    return a + b;
+}
+export function subtract(a, b) {
+    return a - b;
+}
+export function multiply(a, b) {
+    return a * b;
+}
 
 // App.jsx — only imports one
 import { add } from "./math";
@@ -1454,7 +1679,9 @@ import { add } from "./math";
 > **Tree shaking only works with ES Modules (`import`/`export`).** CommonJS (`require`/`module.exports`) is dynamic — bundlers can't statically analyse what's used, so nothing gets tree-shaken from CommonJS modules.
 
 #### 4. Code Splitting
+
 Instead of one giant bundle, the bundler splits output into multiple chunks:
+
 ```
 dist/
 ├── main.js          ← always downloaded (core app)
@@ -1466,6 +1693,7 @@ dist/
 This is what `React.lazy(() => import('./AdminPanel'))` triggers — the bundler sees the dynamic `import()` and automatically creates a separate chunk for `AdminPanel`.
 
 #### 5. Minification
+
 ```js
 // Before minification (readable source)
 function handleUserClick(userId) {
@@ -1476,12 +1704,18 @@ function handleUserClick(userId) {
 }
 
 // After minification (production build)
-function h(i){const u=g(i);if(u.a){r();}}
+function h(i) {
+    const u = g(i);
+    if (u.a) {
+        r();
+    }
+}
 // Variable names shortened, whitespace removed, dead branches eliminated
 // Typical reduction: 60–80% smaller file size
 ```
 
 #### 6. Hashing (Cache Busting)
+
 ```
 // Without hashing — browser caches main.js forever:
 dist/main.js         ← browser caches this; won't re-download after deploy
@@ -1504,11 +1738,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-    entry: "./src/index.jsx",          // Where Webpack starts the dependency graph
+    entry: "./src/index.jsx", // Where Webpack starts the dependency graph
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "[name].[contenthash].js", // Content hashing for cache busting
-        clean: true,                   // Clean dist/ before each build
+        clean: true, // Clean dist/ before each build
     },
     module: {
         rules: [
@@ -1538,18 +1772,20 @@ module.exports = {
     ],
     optimization: {
         splitChunks: {
-            chunks: "all",             // Split vendor code into separate chunk
+            chunks: "all", // Split vendor code into separate chunk
         },
     },
 };
 ```
 
 **Webpack's strengths:**
+
 - Massive plugin/loader ecosystem
 - Extremely configurable
 - Battle-tested in huge production apps (used by CRA, Next.js Pages Router)
 
 **Webpack's weaknesses:**
+
 - Config is notoriously complex
 - Dev server is slow — bundles everything upfront before serving
 - Cold start on large apps can take 30–60 seconds
@@ -1622,7 +1858,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 
 export default {
-    input: "src/index.ts",         // Library entry point
+    input: "src/index.ts", // Library entry point
     external: ["react", "react-dom"], // Don't bundle React — consumers bring their own
     output: [
         // ESM format — for modern bundlers (tree-shakeable)
@@ -1641,6 +1877,7 @@ export default {
 ### esbuild — The Speed Demon
 
 **esbuild** (2020) is written in Go and is 10–100× faster than Webpack. Vite uses esbuild internally for:
+
 - Pre-bundling `node_modules` during dev startup
 - Minification in production builds
 
@@ -1648,14 +1885,16 @@ export default {
 // esbuild can be used standalone too
 const esbuild = require("esbuild");
 
-esbuild.build({
-    entryPoints: ["src/index.jsx"],
-    bundle: true,
-    minify: true,
-    sourcemap: true,
-    target: ["chrome90", "safari14"],
-    outfile: "dist/bundle.js",
-}).catch(() => process.exit(1));
+esbuild
+    .build({
+        entryPoints: ["src/index.jsx"],
+        bundle: true,
+        minify: true,
+        sourcemap: true,
+        target: ["chrome90", "safari14"],
+        outfile: "dist/bundle.js",
+    })
+    .catch(() => process.exit(1));
 ```
 
 esbuild is intentionally limited — no HMR, minimal plugin API. It's used as a building block inside Vite, not as a standalone dev server.
@@ -1692,7 +1931,7 @@ Production code is minified and unreadable. **Source maps** are files (`.map`) t
 // vite.config.ts
 export default defineConfig({
     build: {
-        sourcemap: true,       // Generate .map files (upload to error tracker, don't serve to users)
+        sourcemap: true, // Generate .map files (upload to error tracker, don't serve to users)
         // sourcemap: 'hidden', // Generate maps but don't reference them in JS (security)
         // sourcemap: false,    // No maps (smallest build, undebuggable errors)
     },
@@ -1710,8 +1949,8 @@ export default defineConfig({
 | **Prod bundler**     | Webpack            | Rollup               | Rollup             | esbuild            | Parcel           |
 | **Config**           | Complex            | Minimal              | Moderate           | Minimal            | Zero             |
 | **Speed**            | Slow               | Very fast            | Fast               | Fastest            | Fast             |
-| **HMR**              | ✅ (slow)           | ✅ (instant)          | ❌                  | ❌                  | ✅                |
-| **Tree shaking**     | ✅ (ESM only)       | ✅                    | ✅ (best)           | ✅                  | ✅                |
+| **HMR**              | ✅ (slow)          | ✅ (instant)         | ❌                 | ❌                 | ✅               |
+| **Tree shaking**     | ✅ (ESM only)      | ✅                   | ✅ (best)          | ✅                 | ✅               |
 | **Plugin ecosystem** | Huge               | Good (Rollup compat) | Good               | Small              | Small            |
 | **Used by**          | CRA, older Next.js | New React apps       | npm libraries      | Vite internally    | Small projects   |
 
@@ -1778,20 +2017,20 @@ npm install --save-dev parcel
 ```json
 // package.json — add these scripts and the source field
 {
-  "name": "my-react-app",
-  "source": "src/index.html",
-  "scripts": {
-    "start": "parcel",
-    "build": "parcel build",
-    "clean": "rm -rf dist .parcel-cache"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "parcel": "^2.12.0"
-  }
+    "name": "my-react-app",
+    "source": "src/index.html",
+    "scripts": {
+        "start": "parcel",
+        "build": "parcel build",
+        "clean": "rm -rf dist .parcel-cache"
+    },
+    "dependencies": {
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "parcel": "^2.12.0"
+    }
 }
 ```
 
@@ -1799,16 +2038,16 @@ npm install --save-dev parcel
 <!-- src/index.html — Parcel's entry point -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My React App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <!-- Parcel detects this script, follows it, transforms everything -->
-    <script type="module" src="./index.jsx"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My React App</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <!-- Parcel detects this script, follows it, transforms everything -->
+        <script type="module" src="./index.jsx"></script>
+    </body>
 </html>
 ```
 
@@ -1978,12 +2217,12 @@ Clean import paths without long relative chains:
 ```json
 // package.json — add alias config
 {
-  "alias": {
-    "@": "./src",
-    "@components": "./src/components",
-    "@hooks": "./src/hooks",
-    "@utils": "./src/utils"
-  }
+    "alias": {
+        "@": "./src",
+        "@components": "./src/components",
+        "@hooks": "./src/hooks",
+        "@utils": "./src/utils"
+    }
 }
 ```
 
@@ -2014,6 +2253,7 @@ dist/
 ```
 
 Parcel automatically:
+
 - Minifies JS (using SWC) and CSS
 - Adds content hashes to filenames
 - Generates a `<link rel="preload">` for critical assets
@@ -2031,9 +2271,10 @@ Parcel automatically:
 | **Customisability** | Low–Medium                       | High                  | Low (eject only) |
 | **TypeScript**      | Auto-detected                    | Auto-detected         | Bundled          |
 | **Best for**        | Prototypes, learning, small apps | Production React apps | Legacy projects  |
-| **Maintained**      | ✅ Active                         | ✅ Very active         | ⚠️ Slow updates   |
+| **Maintained**      | ✅ Active                        | ✅ Very active        | ⚠️ Slow updates  |
 
 **Rule of thumb:**
+
 - **Learning / prototyping** → Parcel (zero friction, start coding immediately)
 - **Production app** → Vite (fastest dev experience, full control)
 - **Existing CRA project** → Keep or migrate to Vite
@@ -2131,21 +2372,26 @@ Babel is configured via one of two file formats. Both do the same thing — the 
 ```json
 // babel.config.json — the most common setup for a React app
 {
-  "presets": [
-    ["@babel/preset-env", { "targets": "> 0.5%, not dead", "useBuiltIns": "usage", "corejs": 3 }],
-    ["@babel/preset-react", { "runtime": "automatic" }],
-    "@babel/preset-typescript"
-  ],
-  "plugins": [
-    "babel-plugin-macros"
-  ]
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": "> 0.5%, not dead",
+                "useBuiltIns": "usage",
+                "corejs": 3
+            }
+        ],
+        ["@babel/preset-react", { "runtime": "automatic" }],
+        "@babel/preset-typescript"
+    ],
+    "plugins": ["babel-plugin-macros"]
 }
 ```
 
 ```json
 // .babelrc — scoped to a single package in a monorepo
 {
-  "presets": ["@babel/preset-react"]
+    "presets": ["@babel/preset-react"]
 }
 ```
 
@@ -2167,17 +2413,17 @@ npm install --save-dev @babel/preset-env
 
 ```json
 {
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "targets": "> 0.5%, last 2 versions, not dead",
-        // OR point to a .browserslistrc file — same syntax
-        "useBuiltIns": "usage",  // Automatically inject polyfills only for features you use
-        "corejs": 3              // Version of core-js to use for polyfills
-      }
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": "> 0.5%, last 2 versions, not dead",
+                // OR point to a .browserslistrc file — same syntax
+                "useBuiltIns": "usage", // Automatically inject polyfills only for features you use
+                "corejs": 3 // Version of core-js to use for polyfills
+            }
+        ]
     ]
-  ]
 }
 ```
 
@@ -2305,27 +2551,30 @@ Presets are bundles of plugins. You can also add individual plugins for specific
 
 ```json
 {
-  "plugins": [
-    // ---- COMMONLY USED PLUGINS ----
+    "plugins": [
+        // ---- COMMONLY USED PLUGINS ----
 
-    // Babel macros — enables compile-time code transforms (used by styled-components, twin.macro)
-    "babel-plugin-macros",
+        // Babel macros — enables compile-time code transforms (used by styled-components, twin.macro)
+        "babel-plugin-macros",
 
-    // Class properties (now in preset-env, but sometimes needed standalone)
-    "@babel/plugin-proposal-class-properties",
+        // Class properties (now in preset-env, but sometimes needed standalone)
+        "@babel/plugin-proposal-class-properties",
 
-    // Decorators (for MobX, Angular-style class decorators)
-    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+        // Decorators (for MobX, Angular-style class decorators)
+        ["@babel/plugin-proposal-decorators", { "legacy": true }],
 
-    // Module resolver — cleaner imports (maps '@/components' to './src/components')
-    ["module-resolver", {
-      "root": ["./src"],
-      "alias": { "@": "./src" }
-    }],
+        // Module resolver — cleaner imports (maps '@/components' to './src/components')
+        [
+            "module-resolver",
+            {
+                "root": ["./src"],
+                "alias": { "@": "./src" }
+            }
+        ],
 
-    // React hot loader for HMR (legacy; Vite's built-in HMR is preferred today)
-    "react-hot-loader/babel"
-  ]
+        // React hot loader for HMR (legacy; Vite's built-in HMR is preferred today)
+        "react-hot-loader/babel"
+    ]
 }
 ```
 
@@ -2342,7 +2591,9 @@ npm install babel-plugin-macros  # one-time setup in babel.config.json
 ```js
 // ---- styled-components/macro — adds display names + SSR class stability ----
 import styled from "styled-components/macro";
-const Button = styled.button`color: red;`; // Babel transforms at compile time
+const Button = styled.button`
+    color: red;
+`; // Babel transforms at compile time
 
 // ---- twin.macro — use Tailwind classes inside styled-components ----
 import tw from "twin.macro";
@@ -2364,8 +2615,8 @@ const buildTime = preval`module.exports = new Date().toISOString()`;
 | -------------------- | ------------------- | ------------------------- | ---------------------------- |
 | **Language**         | JavaScript          | TypeScript (Go internals) | Rust                         |
 | **Speed**            | Slow (JS)           | Medium                    | 20–70× faster than Babel     |
-| **Type checking**    | ❌                   | ✅                         | ❌                            |
-| **JSX support**      | ✅ via preset        | ✅ built-in                | ✅ built-in                   |
+| **Type checking**    | ❌                  | ✅                        | ❌                           |
+| **JSX support**      | ✅ via preset       | ✅ built-in               | ✅ built-in                  |
 | **Plugin ecosystem** | Huge                | Limited                   | Growing                      |
 | **Used by**          | CRA, older setups   | CI type checks            | Vite (default), Next.js 13+  |
 | **Config file**      | `babel.config.json` | `tsconfig.json`           | `.swcrc` or `vite.config.ts` |
@@ -2383,35 +2634,33 @@ Source (.tsx) → tsc --noEmit (type check in CI only, no output)
 
 ```json
 {
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "targets": "> 0.5%, last 2 versions, not dead",
-        "useBuiltIns": "usage",
-        "corejs": 3
-      }
-    ],
-    [
-      "@babel/preset-react",
-      {
-        "runtime": "automatic"
-      }
-    ],
-    "@babel/preset-typescript"
-  ],
-  "plugins": [
-    "babel-plugin-macros"
-  ],
-  "env": {
-    "test": {
-      "presets": [
-        ["@babel/preset-env", { "targets": { "node": "current" } }],
-        ["@babel/preset-react", { "runtime": "automatic" }],
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": "> 0.5%, last 2 versions, not dead",
+                "useBuiltIns": "usage",
+                "corejs": 3
+            }
+        ],
+        [
+            "@babel/preset-react",
+            {
+                "runtime": "automatic"
+            }
+        ],
         "@babel/preset-typescript"
-      ]
+    ],
+    "plugins": ["babel-plugin-macros"],
+    "env": {
+        "test": {
+            "presets": [
+                ["@babel/preset-env", { "targets": { "node": "current" } }],
+                ["@babel/preset-react", { "runtime": "automatic" }],
+                "@babel/preset-typescript"
+            ]
+        }
     }
-  }
 }
 ```
 
@@ -2450,7 +2699,7 @@ import React, { Component } from "react";
 class Counter extends Component {
     constructor(props) {
         super(props);
-        this.state = { count: 0 };          // state lives on `this`
+        this.state = { count: 0 }; // state lives on `this`
     }
 
     increment = () => {
@@ -2473,7 +2722,7 @@ class Counter extends Component {
 import { useState } from "react";
 
 function Counter() {
-    const [count, setCount] = useState(0);  // state via hooks
+    const [count, setCount] = useState(0); // state via hooks
 
     return (
         <div>
@@ -2498,7 +2747,7 @@ import React, { Component } from "react";
 class UserProfile extends Component {
     // ---- 1. Constructor: initialise state and bind methods ----
     constructor(props) {
-        super(props);           // MUST call super(props) — passes props to React.Component
+        super(props); // MUST call super(props) — passes props to React.Component
         this.state = {
             user: null,
             isLoading: true,
@@ -2513,9 +2762,9 @@ class UserProfile extends Component {
     // Runs ONCE after the component mounts to the DOM
     componentDidMount() {
         fetch(`/api/users/${this.props.userId}`)
-            .then(res => res.json())
-            .then(user => this.setState({ user, isLoading: false }))
-            .catch(error => this.setState({ error, isLoading: false }));
+            .then((res) => res.json())
+            .then((user) => this.setState({ user, isLoading: false }))
+            .catch((error) => this.setState({ error, isLoading: false }));
     }
 
     // Runs after every update (prev props/state available for comparison)
@@ -2524,8 +2773,8 @@ class UserProfile extends Component {
         if (prevProps.userId !== this.props.userId) {
             this.setState({ isLoading: true });
             fetch(`/api/users/${this.props.userId}`)
-                .then(res => res.json())
-                .then(user => this.setState({ user, isLoading: false }));
+                .then((res) => res.json())
+                .then((user) => this.setState({ user, isLoading: false }));
         }
     }
 
@@ -2537,8 +2786,11 @@ class UserProfile extends Component {
 
     // ---- 3. Event Handlers (class fields = auto-bound to `this`) ----
     handleFollow = () => {
-        this.setState(prevState => ({
-            user: { ...prevState.user, isFollowing: !prevState.user.isFollowing }
+        this.setState((prevState) => ({
+            user: {
+                ...prevState.user,
+                isFollowing: !prevState.user.isFollowing,
+            },
         }));
     };
 
@@ -2617,7 +2869,7 @@ This phase runs **once** when the component is first added to the DOM.
 class UserProfile extends Component {
     constructor(props) {
         super(props); // ← ALWAYS required. Passes props to React.Component base class.
-                      // Without this, this.props is undefined inside the constructor.
+        // Without this, this.props is undefined inside the constructor.
 
         // ✅ DO: Initialise state here
         this.state = {
@@ -2639,6 +2891,7 @@ class UserProfile extends Component {
 ```
 
 > **Modern alternative**: With class fields syntax (now standard), you don't need a constructor for state or binding:
+>
 > ```jsx
 > class UserProfile extends Component {
 >     state = { user: null, isLoading: true }; // No constructor needed
@@ -2662,8 +2915,8 @@ class ControlledSlider extends Component {
         // If the parent changed `props.value`, sync our internal state to it
         if (props.value !== state.lastPropValue) {
             return {
-                value: props.value,          // update state
-                lastPropValue: props.value,  // track which prop we synced from
+                value: props.value, // update state
+                lastPropValue: props.value, // track which prop we synced from
             };
         }
         return null; // ← return null to change nothing
@@ -2968,13 +3221,13 @@ These methods existed in older React versions and were **deprecated in React 16.
 // ❌ DEPRECATED — do NOT use in new code
 class LegacyComponent extends Component {
     // Was called before mounting — replaced by constructor + getDerivedStateFromProps
-    UNSAFE_componentWillMount() { }
+    UNSAFE_componentWillMount() {}
 
     // Was called when new props arrived — replaced by getDerivedStateFromProps + componentDidUpdate
-    UNSAFE_componentWillReceiveProps(nextProps) { }
+    UNSAFE_componentWillReceiveProps(nextProps) {}
 
     // Was called before updating — replaced by getSnapshotBeforeUpdate
-    UNSAFE_componentWillUpdate(nextProps, nextState) { }
+    UNSAFE_componentWillUpdate(nextProps, nextState) {}
 }
 ```
 
@@ -2986,16 +3239,16 @@ class LegacyComponent extends Component {
 
 | Lifecycle Method           | Can call `setState()`? | Effect                                         |
 | -------------------------- | ---------------------- | ---------------------------------------------- |
-| `constructor`              | ❌ No                   | Use `this.state = {}` instead                  |
-| `getDerivedStateFromProps` | ❌ No                   | Return state object directly                   |
-| `render`                   | ❌ No                   | Infinite loop                                  |
-| `componentDidMount`        | ✅ Yes                  | Triggers second render before browser paints   |
-| `shouldComponentUpdate`    | ❌ No                   | Undefined behaviour                            |
-| `getSnapshotBeforeUpdate`  | ❌ No                   | Undefined behaviour                            |
-| `componentDidUpdate`       | ✅ Yes (with guard)     | Must be inside `if` condition or infinite loop |
-| `componentWillUnmount`     | ❌ No                   | Component is destroyed — React warns           |
-| `getDerivedStateFromError` | ❌ No (static)          | Return new state object directly               |
-| `componentDidCatch`        | ✅ Yes                  | Used to update error state                     |
+| `constructor`              | ❌ No                  | Use `this.state = {}` instead                  |
+| `getDerivedStateFromProps` | ❌ No                  | Return state object directly                   |
+| `render`                   | ❌ No                  | Infinite loop                                  |
+| `componentDidMount`        | ✅ Yes                 | Triggers second render before browser paints   |
+| `shouldComponentUpdate`    | ❌ No                  | Undefined behaviour                            |
+| `getSnapshotBeforeUpdate`  | ❌ No                  | Undefined behaviour                            |
+| `componentDidUpdate`       | ✅ Yes (with guard)    | Must be inside `if` condition or infinite loop |
+| `componentWillUnmount`     | ❌ No                  | Component is destroyed — React warns           |
+| `getDerivedStateFromError` | ❌ No (static)         | Return new state object directly               |
+| `componentDidCatch`        | ✅ Yes                 | Used to update error state                     |
 
 ---
 
@@ -3030,9 +3283,9 @@ class DataDashboard extends Component {
 
     // ---- UNMOUNTING ----
     componentWillUnmount() {
-        clearInterval(this.refreshTimer);        // stop auto-refresh
+        clearInterval(this.refreshTimer); // stop auto-refresh
         window.removeEventListener("scroll", this.handleScroll); // remove listener
-        this.currentFetch?.abort();              // cancel in-flight request
+        this.currentFetch?.abort(); // cancel in-flight request
     }
 
     fetchData = () => {
@@ -3040,9 +3293,15 @@ class DataDashboard extends Component {
         fetch(`/api/datasets/${this.props.datasetId}`, {
             signal: this.currentFetch.signal,
         })
-            .then(r => r.json())
-            .then(data => this.setState({ data, isLoading: false, lastUpdated: new Date() }))
-            .catch(error => {
+            .then((r) => r.json())
+            .then((data) =>
+                this.setState({
+                    data,
+                    isLoading: false,
+                    lastUpdated: new Date(),
+                }),
+            )
+            .catch((error) => {
                 if (error.name !== "AbortError") {
                     this.setState({ error, isLoading: false });
                 }
@@ -3098,8 +3357,12 @@ class Fix1 extends Component {
         super(props);
         this.handleClick = this.handleClick.bind(this); // explicit bind
     }
-    handleClick() { console.log(this.state.count); }
-    render() { return <button onClick={this.handleClick}>Click</button>; }
+    handleClick() {
+        console.log(this.state.count);
+    }
+    render() {
+        return <button onClick={this.handleClick}>Click</button>;
+    }
 }
 
 // ✅ FIX 2: Class field arrow function (most common modern approach)
@@ -3108,13 +3371,19 @@ class Fix2 extends Component {
     handleClick = () => {
         console.log(this.state.count); // ✔ always works
     };
-    render() { return <button onClick={this.handleClick}>Click</button>; }
+    render() {
+        return <button onClick={this.handleClick}>Click</button>;
+    }
 }
 
 // ✅ FIX 3: Inline arrow in JSX (creates new function every render — avoid for perf)
 class Fix3 extends Component {
-    handleClick() { console.log(this.state.count); }
-    render() { return <button onClick={() => this.handleClick()}>Click</button>; }
+    handleClick() {
+        console.log(this.state.count);
+    }
+    render() {
+        return <button onClick={() => this.handleClick()}>Click</button>;
+    }
 }
 ```
 
@@ -3155,9 +3424,9 @@ Every class lifecycle method has a functional hook equivalent:
 | `componentDidUpdate`       | `useEffect(() => { ... }, [dep])`                 |
 | `componentWillUnmount`     | `useEffect(() => { return () => cleanup() }, [])` |
 | `shouldComponentUpdate`    | `React.memo` + `useMemo`                          |
-| `getDerivedStateFromError` | ❌ No hook — must use class Error Boundary         |
-| `componentDidCatch`        | ❌ No hook — must use class Error Boundary         |
-| `getSnapshotBeforeUpdate`  | ❌ No hook equivalent                              |
+| `getDerivedStateFromError` | ❌ No hook — must use class Error Boundary        |
+| `componentDidCatch`        | ❌ No hook — must use class Error Boundary        |
+| `getSnapshotBeforeUpdate`  | ❌ No hook equivalent                             |
 
 ```jsx
 // Class: componentDidMount + componentDidUpdate + componentWillUnmount
@@ -3176,8 +3445,8 @@ class DataFetcher extends Component {
     fetch(userId) {
         this.controller = new AbortController();
         fetch(`/api/users/${userId}`, { signal: this.controller.signal })
-            .then(r => r.json())
-            .then(user => this.setState({ user }));
+            .then((r) => r.json())
+            .then((user) => this.setState({ user }));
     }
 }
 
@@ -3188,7 +3457,7 @@ function DataFetcher({ userId }) {
     useEffect(() => {
         const controller = new AbortController();
         fetch(`/api/users/${userId}`, { signal: controller.signal })
-            .then(r => r.json())
+            .then((r) => r.json())
             .then(setUser);
         return () => controller.abort(); // cleanup = componentWillUnmount
     }, [userId]); // dependency = componentDidUpdate check
@@ -3217,7 +3486,7 @@ const UserAvatar = React.memo(
     function UserAvatar({ user }) {
         return <img src={user.avatar} alt={user.name} />;
     },
-    (prevProps, nextProps) => prevProps.user.id === nextProps.user.id
+    (prevProps, nextProps) => prevProps.user.id === nextProps.user.id,
     // return true = skip re-render, return false = re-render
 );
 ```
@@ -3228,7 +3497,10 @@ const UserAvatar = React.memo(
 // A functional component that can accept a ref from its parent
 import { forwardRef } from "react";
 
-const TextInput = forwardRef(function TextInput({ placeholder, ...props }, ref) {
+const TextInput = forwardRef(function TextInput(
+    { placeholder, ...props },
+    ref,
+) {
     return <input ref={ref} placeholder={placeholder} {...props} />;
 });
 
@@ -3267,7 +3539,7 @@ const HeavyChart = React.lazy(() => import("./HeavyChart"));
 // Must be wrapped in Suspense
 <Suspense fallback={<Spinner />}>
     <HeavyChart data={data} />
-</Suspense>
+</Suspense>;
 ```
 
 #### 5. Server Component (React 18+ / Next.js App Router)
@@ -3295,10 +3567,10 @@ async function ProductPage({ id }) {
 | **Code reuse**       | HOCs, Render Props (verbose)                    | Custom hooks (clean)           |
 | **Boilerplate**      | High (constructor, bind, render)                | Minimal                        |
 | **Performance**      | Slightly heavier                                | Slightly lighter               |
-| **Error boundaries** | ✅ Supported                                     | ❌ Not supported                |
+| **Error boundaries** | ✅ Supported                                    | ❌ Not supported               |
 | **Testing**          | Harder (class instances, `this`)                | Easier (pure functions)        |
 | **React DevTools**   | Good                                            | Excellent (hook names visible) |
-| **Recommended**      | ❌ Legacy (avoid in new code)                    | ✅ Modern standard              |
+| **Recommended**      | ❌ Legacy (avoid in new code)                   | ✅ Modern standard             |
 
 > **The one exception**: Error Boundaries **must** be class components. React has not (as of React 18) provided hook equivalents for `getDerivedStateFromError` / `componentDidCatch`. Use `react-error-boundary` to avoid writing class components yourself.
 
@@ -3336,8 +3608,8 @@ class SearchBox extends Component {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
             fetch(`/api/search?q=${query}`)
-                .then(r => r.json())
-                .then(results => this.setState({ results }));
+                .then((r) => r.json())
+                .then((results) => this.setState({ results }));
         }, 300);
     };
 
@@ -3345,7 +3617,11 @@ class SearchBox extends Component {
         return (
             <div>
                 <input value={this.state.query} onChange={this.handleChange} />
-                <ul>{this.state.results.map(r => <li key={r.id}>{r.title}</li>)}</ul>
+                <ul>
+                    {this.state.results.map((r) => (
+                        <li key={r.id}>{r.title}</li>
+                    ))}
+                </ul>
             </div>
         );
     }
@@ -3369,7 +3645,7 @@ function SearchBox() {
         clearTimeout(timerRef.current);
         timerRef.current = setTimeout(() => {
             fetch(`/api/search?q=${q}`)
-                .then(r => r.json())
+                .then((r) => r.json())
                 .then(setResults);
         }, 300);
     }
@@ -3377,7 +3653,11 @@ function SearchBox() {
     return (
         <div>
             <input value={query} onChange={handleChange} />
-            <ul>{results.map(r => <li key={r.id}>{r.title}</li>)}</ul>
+            <ul>
+                {results.map((r) => (
+                    <li key={r.id}>{r.title}</li>
+                ))}
+            </ul>
         </div>
     );
 }
@@ -3527,10 +3807,12 @@ function DefinitionList({ terms }) {
 ## Module 1 — Interview Q&A
 
 **Q: What is JSX and what does it compile to?**
+
 > JSX is syntactic sugar — `<Button color="blue">Click</Button>` compiles to `React.createElement(Button, { color: "blue" }, "Click")`. The result is a plain JS object (React element) describing what to render. Babel/SWC handles this transform.
 
 **Q: What is the Virtual DOM? Is it faster than the real DOM?**
-> The Virtual DOM is a tree of plain JS objects that mirrors the real DOM. It's not inherently faster — manipulating real DOM nodes is always the final step. What it does is *minimize* real DOM operations by diffing the old and new virtual trees first, then applying only the differences (reconciliation). The speed win comes from batching and minimizing DOM mutations.
+
+> The Virtual DOM is a tree of plain JS objects that mirrors the real DOM. It's not inherently faster — manipulating real DOM nodes is always the final step. What it does is _minimize_ real DOM operations by diffing the old and new virtual trees first, then applying only the differences (reconciliation). The speed win comes from batching and minimizing DOM mutations.
 
 **Q: What is the difference between class components and functional components?**
 
@@ -3539,23 +3821,28 @@ function DefinitionList({ terms }) {
 | State            | `this.state` + `this.setState()`             | `useState()` hook    |
 | Lifecycle        | Lifecycle methods (`componentDidMount` etc.) | `useEffect()` hook   |
 | `this` binding   | Required, error-prone                        | Not needed           |
-| Error boundaries | ✅ Can be error boundaries                    | ❌ Cannot (yet)       |
+| Error boundaries | ✅ Can be error boundaries                   | ❌ Cannot (yet)      |
 | Boilerplate      | More                                         | Less                 |
 | Recommended      | Legacy codebases                             | All new code         |
 
 **Q: What is a pure component? Why does React require purity?**
+
 > A pure component always produces the same output for the same input and has no side effects during render. React requires purity because it may call your render function multiple times (StrictMode, Concurrent Mode) — side effects in render would fire unpredictably. Use `useEffect` for side effects, never in the render function body.
 
 **Q: What is `$$typeof: Symbol(react.element)` on a React element?**
+
 > It's a security feature. JSON cannot contain Symbol values, so an attacker who injects JSON into your page can't craft a fake React element that would be rendered as real JSX. React checks for this Symbol before rendering — if it's missing, the element is rejected.
 
 **Q: What does Babel do in a React project? What is SWC?**
+
 > Babel transpiles modern JS (ES2022+) and JSX to browser-compatible ES5 using presets (`@babel/preset-env`, `@babel/preset-react`). SWC is a Rust-based replacement — 20× faster, same output. Vite uses SWC by default via `@vitejs/plugin-react-swc`.
 
 **Q: What is tree shaking?**
+
 > Tree shaking is a bundler feature (Rollup, Vite, Webpack) that removes unused exported code from the final bundle. It relies on ES module `import/export` syntax (which is statically analyzable). `require()` (CommonJS) cannot be tree-shaken.
 
 **Q: What happens when the browser encounters a `<script>` tag?**
+
 > By default, the HTML parser **stops completely** — it halts parsing, waits for the JS file to download over the network, executes it synchronously, and only then resumes parsing HTML. This is called **parser-blocking** or **render-blocking** behaviour. It's why a large `<script>` in `<head>` can cause a blank page flash.
 
 **Q: What is the difference between `async` and `defer` on a `<script>` tag?**
@@ -3564,25 +3851,30 @@ function DefinitionList({ terms }) {
 | -------------------- | ----------------------------------------------- | ---------------------------------- |
 | **Download**         | Parallel (non-blocking)                         | Parallel (non-blocking)            |
 | **Execution timing** | As soon as downloaded (interrupts HTML parsing) | After full HTML document is parsed |
-| **Order guaranteed** | ❌ No — whichever downloads first runs first     | ✅ Yes — document order             |
-| **DOM available**    | ❌ Not necessarily                               | ✅ Always                           |
+| **Order guaranteed** | ❌ No — whichever downloads first runs first    | ✅ Yes — document order            |
+| **DOM available**    | ❌ Not necessarily                              | ✅ Always                          |
 | **Best for**         | Independent analytics / tracking scripts        | All application scripts            |
 
 > **One-line rule**: Use `defer` for your app code (order matters, DOM needed). Use `async` for independent third-party scripts like analytics.
 
 **Q: What is render-blocking JavaScript?**
+
 > Any `<script>` without `async` or `defer` is render-blocking. The browser cannot display anything below that script tag until it finishes downloading and executing the JS. This directly impacts **First Contentful Paint (FCP)** and **Largest Contentful Paint (LCP)** — Core Web Vitals metrics.
 
 **Q: What does `<script type="module">` do?**
+
 > It tells the browser to treat the script as an **ES Module**. This has three effects: (1) it is automatically **deferred** — executes after HTML is parsed; (2) it enables native `import`/`export` syntax in the browser; (3) the script runs in **strict mode** automatically and has its own module scope — no global variable leakage.
 
 **Q: What is the difference between `DOMContentLoaded` and `load`?**
+
 > `DOMContentLoaded` fires when the HTML is fully parsed and all `defer` scripts have executed — but images, stylesheets, and fonts may still be loading. `load` fires when **everything** (HTML, CSS, images, fonts, iframes) is fully downloaded and rendered. Use `DOMContentLoaded` for DOM manipulation and app initialisation; use `load` for measurements that depend on image sizes or total load time.
 
 **Q: Why does React's `index.html` use `<script type="module">` instead of a plain `<script>`?**
+
 > Because `type="module"` gives React/Vite two critical features for free: (1) **deferred execution** — the DOM (`<div id="root">`) is guaranteed to exist when `main.jsx` runs, so `document.getElementById('root')` never returns `null`; (2) **ES Module support** — `main.jsx` can use `import` statements that the browser (in dev) or Vite/Rollup (in prod) resolves into the correct files.
 
 **Q: Why does placing `<script>` at the bottom of `<body>` work? Is it still the best practice?**
+
 > Placing the script at the bottom works because by the time the parser reaches it, all the HTML above has already been parsed — so DOM nodes exist and `getElementById` works. However, it is **no longer the recommended approach**. `defer` is strictly better: the script starts downloading immediately (as soon as the browser sees the tag in `<head>`), and execution is still deferred until parsing completes. With the bottom-of-body approach, the download only starts after all the HTML is parsed — wasting time.
 
 ---
@@ -4045,7 +4337,7 @@ So even in RTK, you are never actually mutating — Immer creates a new object. 
 
 ### Quick Reference — Immutable Update Cheat Sheet
 
-| Operation            | ❌ Mutating         | ✅ Immutable                              |
+| Operation            | ❌ Mutating        | ✅ Immutable                             |
 | -------------------- | ------------------ | ---------------------------------------- |
 | Update object field  | `obj.x = 1`        | `{ ...obj, x: 1 }`                       |
 | Add to array         | `arr.push(x)`      | `[...arr, x]`                            |
@@ -4155,14 +4447,16 @@ useEffect(() => {
 |                     | Props                               | State                           |
 | ------------------- | ----------------------------------- | ------------------------------- |
 | Owned by            | Parent component                    | The component itself            |
-| Mutable?            | ❌ Read-only                         | ✅ via setter                    |
+| Mutable?            | ❌ Read-only                        | ✅ via setter                   |
 | Flow                | Downward (parent → child)           | Local to component              |
 | Triggers re-render? | Parent's re-render pushes new props | `setState()` triggers re-render |
 
 **Q: What is automatic batching in React 18?**
+
 > Before React 18, multiple `setState` calls inside `setTimeout`, Promises, and native event handlers each triggered a separate re-render. React 18 batches all of them by default into a single re-render. Use `flushSync()` from `react-dom` if you need to opt out and force a synchronous render.
 
 **Q: Why shouldn't you mutate state directly?**
+
 ```jsx
 // ❌ WRONG — React uses Object.is() to detect changes
 // state.count++ mutates the same reference → Object.is(old, new) = true → no re-render
@@ -4172,15 +4466,19 @@ setState(state);
 // ✅ CORRECT — new reference → React sees a change → re-render
 setState({ ...state, count: state.count + 1 });
 ```
+
 > React detects state changes via reference equality (`Object.is`). Mutating the existing object keeps the same reference, so React thinks nothing changed and skips the re-render.
 
 **Q: What is "state as a snapshot"?**
+
 > When a component renders, React "snapshots" all state values. The component function and all event handlers created during that render close over those snapshot values — they don't change mid-render. If you call `setCount(count + 1)` three times in one event handler, all three calls see the same `count` snapshot. Fix: use the functional updater `setCount(prev => prev + 1)`.
 
 **Q: What is the `key` prop and why should you never use array index as key for dynamic lists?**
+
 > `key` tells React which Fiber to reuse when reconciling lists. If you use array index: deleting item at index 0 shifts all remaining items' indices — React matches the wrong Fibers, causing corrupted input state, broken animations, and wrong component instances being reused. Use a stable unique ID from your data instead.
 
 **Q: How does the reconciliation diffing algorithm achieve O(n)?**
+
 > Two heuristics: (1) If root element types differ → tear down and rebuild the whole subtree (no cross-type comparison). (2) Use `key` to match children by identity instead of position. These two rules let React skip full tree comparison and process each node once — O(n).
 
 ---
@@ -4449,7 +4747,8 @@ function WindowSize() {
 ## Module 3 — Interview Q&A
 
 **Q: What is a side effect in React? Give examples.**
-> A side effect is anything that reaches *outside* the component's render function — changing something in the external world or reading from it. Examples: `fetch()` API calls, setting `document.title`, subscribing to WebSocket events, setting up `setInterval`, reading/writing `localStorage`. All of these go in `useEffect`, never in the render body.
+
+> A side effect is anything that reaches _outside_ the component's render function — changing something in the external world or reading from it. Examples: `fetch()` API calls, setting `document.title`, subscribing to WebSocket events, setting up `setInterval`, reading/writing `localStorage`. All of these go in `useEffect`, never in the render body.
 
 **Q: Explain the three modes of `useEffect`'s dependency array.**
 
@@ -4460,9 +4759,11 @@ function WindowSize() {
 | Omitted           | After every render                               |
 
 **Q: Why do you return a cleanup function from `useEffect`?**
+
 > React calls the cleanup function (1) before the component unmounts, and (2) before re-running the effect when dependencies change. Without cleanup: event listeners stack up, intervals keep firing after unmount, WebSocket connections leak, and stale fetch callbacks can update state on an unmounted component (memory leak warning). Always clean up timers, subscriptions, and async operations.
 
 **Q: What is a race condition in `useEffect` data fetching, and how do you fix it?**
+
 ```jsx
 // Race condition: user types fast → two fetches in flight
 // The slower first fetch resolves AFTER the faster second fetch
@@ -4472,14 +4773,17 @@ function WindowSize() {
 useEffect(() => {
     const ctrl = new AbortController();
     fetch(url, { signal: ctrl.signal })
-        .then(r => r.json())
+        .then((r) => r.json())
         .then(setData)
-        .catch(e => { if (e.name !== 'AbortError') setError(e.message); });
+        .catch((e) => {
+            if (e.name !== "AbortError") setError(e.message);
+        });
     return () => ctrl.abort(); // cancels previous fetch before next effect runs
 }, [url]);
 ```
 
 **Q: What happens if you don't include a dependency in the `useEffect` dependency array?**
+
 > The effect closes over the initial (stale) value of that variable. On subsequent renders, the effect doesn't re-run, so it always uses the value from when the component first mounted. ESLint's `react-hooks/exhaustive-deps` rule catches this. Fix: add the variable to the dependency array, or use `useRef` if you need the latest value without re-running the effect.
 
 ---
@@ -4704,6 +5008,7 @@ function Component() {
 ## Module 4 — Interview Q&A
 
 **Q: What is `React.memo` and when should you use it?**
+
 > `React.memo` wraps a component and shallow-compares its props. If props haven't changed (by reference), React skips calling the component function and reuses the last rendered output. Use it when: the component is expensive to render AND its parent re-renders frequently AND it receives stable props. Without stable props (via `useCallback`/`useMemo`), `React.memo` is useless.
 
 **Q: What is the difference between `useMemo` and `useCallback`?**
@@ -4716,9 +5021,11 @@ function Component() {
 | Equivalent | `useMemo(() => fn(), deps)`        | `useCallback(fn, deps)` = `useMemo(() => fn, deps)`       |
 
 **Q: When should you NOT use `useMemo`/`useCallback`?**
-> When the computation is trivial. `useMemo` itself has a cost — React stores the previous value + deps array and runs a comparison every render. For `const x = a + b`, this overhead *exceeds* the savings. Only memoize when: (1) you've measured a real performance problem with React Profiler, or (2) you need referential stability (passing to `React.memo` child or `useEffect` deps).
+
+> When the computation is trivial. `useMemo` itself has a cost — React stores the previous value + deps array and runs a comparison every render. For `const x = a + b`, this overhead _exceeds_ the savings. Only memoize when: (1) you've measured a real performance problem with React Profiler, or (2) you need referential stability (passing to `React.memo` child or `useEffect` deps).
 
 **Q: What causes unnecessary re-renders? How do you debug them?**
+
 > Main causes: (1) Parent re-renders — all children re-render by default. (2) Unstable object/array/function references passed as props (new reference every render even if logically equal). (3) Context value changes — all consumers re-render. Debug with React DevTools Profiler: record an interaction, look for components highlighted in flame graph with large render times or high render counts.
 
 ---
@@ -4965,18 +5272,23 @@ const ProtectedSettings = withAuth(Settings);
 ## Module 5 — Interview Q&A
 
 **Q: What is the Compound Components pattern? Why use it over a single component with many props?**
+
 > Compound Components share implicit state via Context. The parent manages state; sub-components consume it. The result is a flexible, expressive API where consumers control structure. Example: `<Tabs>` + `<Tabs.List>` + `<Tabs.Panel>` vs a `<Tabs items={...} activeTab={...} onChange={...} />` mega-prop component. Compound components are more composable — you can add wrappers, conditionally include panels, reorder tabs — without changing the component's API.
 
 **Q: What is a Higher-Order Component (HOC)? Give a real example.**
+
 > A HOC is a function that takes a component and returns a new component with added behavior. Example: `withAuth(Component)` — wraps any component with an auth check, redirecting to login if unauthenticated. Today, custom hooks mostly replace HOCs for logic sharing, but HOCs still appear in third-party library integrations (Redux `connect`, React Router `withRouter`).
 
 **Q: What is the Render Props pattern? Why did custom hooks largely replace it?**
+
 > Render Props pass a function as a prop; the parent calls that function to let the child control what gets rendered. Example: `<MouseTracker render={(pos) => <Tooltip x={pos.x} y={pos.y} />} />`. Custom hooks replaced it because hooks extract the same stateful logic without wrapper component nesting ("wrapper hell") and are simpler to compose.
 
 **Q: What does `React.cloneElement` do? When would you use it?**
+
 > `React.cloneElement(element, extraProps)` creates a copy of a React element with merged props. Used in component libraries where a parent needs to inject props into children it doesn't own. Example: a `<RadioGroup>` that injects `name` and `onChange` into every `<Radio>` child. Warning: using `cloneElement` creates implicit contracts — newer alternatives (Context, compound components) are preferred.
 
 **Q: Why are hooks preferred over HOCs and Render Props today?**
+
 > (1) No wrapper nesting — HOC stacking creates deeply nested component trees in DevTools. (2) Cleaner composition — multiple custom hooks in one component vs multiple HOC wraps. (3) No naming conflicts — HOC-injected props can collide. (4) Easier to type in TypeScript. (5) Logic is co-located with the component that uses it.
 
 ---
@@ -5431,12 +5743,15 @@ graph TD
 > One-line: "SSR ships a full JS bundle and hydrates it. RSC ships zero JS for server components — only Client Components (`'use client'`) ship JavaScript."
 
 **Q: What is `Suspense` and what problems does it solve?**
+
 > `Suspense` is a declarative loading boundary. It catches components that aren't ready yet (lazy-loaded code, async data) and shows a `fallback` UI until they are. Without Suspense: you scatter `isLoading` checks across every component. With Suspense: loading states are colocated with the layout, not the data-fetching logic.
 
 **Q: What is `useTransition`? When would you use it?**
+
 > `useTransition` marks a state update as "non-urgent". React prioritizes urgent updates (keystrokes, clicks) and defers the transition update until the browser is idle. Use it when a state change triggers an expensive re-render that would make the UI feel sluggish — e.g., filtering a large list, navigating between tabs with heavy components. The UI stays responsive; the expensive update happens in the background.
 
 **Q: What's the most important new feature in React 19?**
+
 > The `use()` hook — it can read a Promise directly in render (React suspends until it resolves), and read Context anywhere (not just in component bodies). Plus `useActionState` for form state management, `useOptimistic` for instant UI feedback before server confirmation, and ref-as-prop (no more `forwardRef` boilerplate).
 
 ---
@@ -6027,12 +6342,12 @@ function Sidebar({ children }) {
 
 ### Context vs. State Management Libraries
 
-| Factor                             | Context                     | Redux/Zustand             |
-| ---------------------------------- | --------------------------- | ------------------------- |
+| Factor                             | Context                      | Redux/Zustand              |
+| ---------------------------------- | ---------------------------- | -------------------------- |
 | Frequent updates (every keystroke) | ❌ Can cause many re-renders | ✅ Optimized subscriptions |
-| Infrequent updates (theme, auth)   | ✅ Perfect fit               | Overkill                  |
+| Infrequent updates (theme, auth)   | ✅ Perfect fit               | Overkill                   |
 | Complex async logic                | ❌ DIY                       | ✅ Built-in middleware     |
-| Bundle size                        | ✅ Zero cost                 | Small cost                |
+| Bundle size                        | ✅ Zero cost                 | Small cost                 |
 
 ---
 
@@ -6573,7 +6888,7 @@ graph TD
 | ------------------------------------------ | ----------------------------------------------------------------- |
 | Name **must** start with `use`             | ESLint's `react-hooks` plugin applies Rules of Hooks checks to it |
 | Can call any hooks (built-in or custom)    | They're just functions — full hook API available                  |
-| Each component gets **own isolated state** | Hooks share *logic*, not state instances                          |
+| Each component gets **own isolated state** | Hooks share _logic_, not state instances                          |
 | Can accept any params, return anything     | Tuple, object, single value, functions — your choice              |
 | Must follow Rules of Hooks inside them     | No conditionals around hook calls                                 |
 
@@ -6582,11 +6897,12 @@ graph TD
 ### Return Patterns: Tuple vs Object
 
 **Tuple** (like `useState`) — use when there are only 2 values and consumers will rename them:
+
 ```jsx
 // Tuple — consumer picks their own names (like useState)
 function useToggle(initial = false) {
     const [on, setOn] = useState(initial);
-    const toggle = useCallback(() => setOn(v => !v), []);
+    const toggle = useCallback(() => setOn((v) => !v), []);
     return [on, toggle]; // ← tuple
 }
 
@@ -6596,6 +6912,7 @@ const [isVisible, toggleVisible] = useToggle(true);
 ```
 
 **Object** — use when there are 3+ values or consumers pick only what they need:
+
 ```jsx
 // Object — consumer picks what they need (no ordering issues)
 function useFetch(url) {
@@ -6635,9 +6952,14 @@ function useFetch(url) {
         const ctrl = new AbortController();
         setIsLoading(true);
         fetch(url, { signal: ctrl.signal })
-            .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+            .then((r) => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json();
+            })
             .then(setData)
-            .catch(e => { if (e.name !== "AbortError") setError(e.message); })
+            .catch((e) => {
+                if (e.name !== "AbortError") setError(e.message);
+            })
             .finally(() => setIsLoading(false));
         return () => ctrl.abort();
     }, [url]);
@@ -6647,7 +6969,7 @@ function useFetch(url) {
 // ---- useSearchResults: COMPOSES both primitives ----
 // This hook would need 20+ lines of boilerplate without composition
 function useSearchResults(query) {
-    const debouncedQuery = useDebounce(query, 400);   // ← calls custom hook
+    const debouncedQuery = useDebounce(query, 400); // ← calls custom hook
     const url = debouncedQuery
         ? `/api/search?q=${encodeURIComponent(debouncedQuery)}`
         : null;
@@ -6668,10 +6990,12 @@ function SearchPage() {
 
     return (
         <>
-            <input value={query} onChange={e => setQuery(e.target.value)} />
+            <input value={query} onChange={(e) => setQuery(e.target.value)} />
             {isIdle && <p>Start typing to search…</p>}
             {isLoading && <Spinner />}
-            {results.map(r => <ResultCard key={r.id} result={r} />)}
+            {results.map((r) => (
+                <ResultCard key={r.id} result={r} />
+            ))}
         </>
     );
 }
@@ -6687,9 +7011,9 @@ function SearchPage() {
 // ============================================================
 function useToggle(initial = false) {
     const [on, setOn] = useState(initial);
-    const toggle    = useCallback(() => setOn(v => !v), []);
-    const turnOn    = useCallback(() => setOn(true), []);
-    const turnOff   = useCallback(() => setOn(false), []);
+    const toggle = useCallback(() => setOn((v) => !v), []);
+    const turnOn = useCallback(() => setOn(true), []);
+    const turnOff = useCallback(() => setOn(false), []);
     return [on, toggle, { turnOn, turnOff }];
 }
 
@@ -6711,15 +7035,19 @@ function useLocalStorage(key, initialValue) {
         }
     });
 
-    const setValue = useCallback((value) => {
-        try {
-            const valueToStore = value instanceof Function ? value(storedValue) : value;
-            setStoredValue(valueToStore);
-            window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        } catch (error) {
-            console.error(`useLocalStorage: failed to set "${key}"`, error);
-        }
-    }, [key, storedValue]);
+    const setValue = useCallback(
+        (value) => {
+            try {
+                const valueToStore =
+                    value instanceof Function ? value(storedValue) : value;
+                setStoredValue(valueToStore);
+                window.localStorage.setItem(key, JSON.stringify(valueToStore));
+            } catch (error) {
+                console.error(`useLocalStorage: failed to set "${key}"`, error);
+            }
+        },
+        [key, storedValue],
+    );
 
     const removeValue = useCallback(() => {
         setStoredValue(initialValue);
@@ -6740,14 +7068,22 @@ function useFetch(url) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!url) { setIsLoading(false); return; }
+        if (!url) {
+            setIsLoading(false);
+            return;
+        }
         const ctrl = new AbortController();
         setIsLoading(true);
         setError(null);
         fetch(url, { signal: ctrl.signal })
-            .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+            .then((r) => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json();
+            })
             .then(setData)
-            .catch(e => { if (e.name !== "AbortError") setError(e.message); })
+            .catch((e) => {
+                if (e.name !== "AbortError") setError(e.message);
+            })
             .finally(() => setIsLoading(false));
         return () => ctrl.abort();
     }, [url]);
@@ -6784,10 +7120,13 @@ function useThrottle(value, limit = 200) {
             lastUpdated.current = now;
             setThrottledValue(value);
         } else {
-            const timer = setTimeout(() => {
-                lastUpdated.current = Date.now();
-                setThrottledValue(value);
-            }, limit - (now - lastUpdated.current));
+            const timer = setTimeout(
+                () => {
+                    lastUpdated.current = Date.now();
+                    setThrottledValue(value);
+                },
+                limit - (now - lastUpdated.current),
+            );
             return () => clearTimeout(timer);
         }
     }, [value, limit]);
@@ -6807,7 +7146,8 @@ function useWindowSize() {
     });
 
     useEffect(() => {
-        const handler = () => setSize({ width: window.innerWidth, height: window.innerHeight });
+        const handler = () =>
+            setSize({ width: window.innerWidth, height: window.innerHeight });
         window.addEventListener("resize", handler);
         return () => window.removeEventListener("resize", handler);
     }, []);
@@ -6827,7 +7167,9 @@ function Layout() {
 // 7. useMediaQuery — CSS media query in JS
 // ============================================================
 function useMediaQuery(query) {
-    const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+    const [matches, setMatches] = useState(
+        () => window.matchMedia(query).matches,
+    );
     useEffect(() => {
         const mq = window.matchMedia(query);
         const handler = (e) => setMatches(e.matches);
@@ -6837,8 +7179,8 @@ function useMediaQuery(query) {
     return matches;
 }
 
-const isMobile  = useMediaQuery("(max-width: 767px)");
-const isTablet  = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
+const isMobile = useMediaQuery("(max-width: 767px)");
+const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)");
 const prefersDark = useMediaQuery("(prefers-color-scheme: dark)");
 ```
 
@@ -6865,7 +7207,10 @@ function useOnClickOutside(ref, handler) {
 function Dropdown() {
     const [isOpen, setIsOpen] = useState(false);
     const ref = useRef(null);
-    useOnClickOutside(ref, useCallback(() => setIsOpen(false), []));
+    useOnClickOutside(
+        ref,
+        useCallback(() => setIsOpen(false), []),
+    );
     return <div ref={ref}>{isOpen && <Menu />}</div>;
 }
 ```
@@ -6876,7 +7221,9 @@ function Dropdown() {
 // ============================================================
 function usePrevious(value) {
     const ref = useRef(undefined);
-    useEffect(() => { ref.current = value; }); // runs after every render
+    useEffect(() => {
+        ref.current = value;
+    }); // runs after every render
     return ref.current; // returns value from BEFORE this render
 }
 
@@ -6884,7 +7231,11 @@ function usePrevious(value) {
 function PriceDisplay({ price }) {
     const prevPrice = usePrevious(price);
     const direction = price > prevPrice ? "↑" : price < prevPrice ? "↓" : "—";
-    return <span>{price} {direction}</span>;
+    return (
+        <span>
+            {price} {direction}
+        </span>
+    );
 }
 ```
 
@@ -6918,7 +7269,9 @@ function LazyImage({ src, alt }) {
 function InfiniteList({ onLoadMore }) {
     const sentinelRef = useRef(null);
     const isAtBottom = useIntersectionObserver(sentinelRef);
-    useEffect(() => { if (isAtBottom) onLoadMore(); }, [isAtBottom]);
+    useEffect(() => {
+        if (isAtBottom) onLoadMore();
+    }, [isAtBottom]);
     return (
         <ul>
             {/* list items */}
@@ -6935,15 +7288,18 @@ function InfiniteList({ onLoadMore }) {
 function useCopyToClipboard(resetDelay = 2000) {
     const [copied, setCopied] = useState(false);
 
-    const copy = useCallback(async (text) => {
-        try {
-            await navigator.clipboard.writeText(text);
-            setCopied(true);
-            setTimeout(() => setCopied(false), resetDelay);
-        } catch (err) {
-            console.error("Failed to copy:", err);
-        }
-    }, [resetDelay]);
+    const copy = useCallback(
+        async (text) => {
+            try {
+                await navigator.clipboard.writeText(text);
+                setCopied(true);
+                setTimeout(() => setCopied(false), resetDelay);
+            } catch (err) {
+                console.error("Failed to copy:", err);
+            }
+        },
+        [resetDelay],
+    );
 
     return [copied, copy];
 }
@@ -6965,7 +7321,9 @@ function ShareButton({ url }) {
 // ============================================================
 function useEventListener(eventName, handler, element = window) {
     const savedHandler = useRef(handler);
-    useEffect(() => { savedHandler.current = handler; }, [handler]);
+    useEffect(() => {
+        savedHandler.current = handler;
+    }, [handler]);
 
     useEffect(() => {
         if (!element?.addEventListener) return;
@@ -6978,7 +7336,10 @@ function useEventListener(eventName, handler, element = window) {
 // Usage
 function KeyboardShortcuts() {
     useEventListener("keydown", (e) => {
-        if (e.ctrlKey && e.key === "s") { e.preventDefault(); save(); }
+        if (e.ctrlKey && e.key === "s") {
+            e.preventDefault();
+            save();
+        }
         if (e.key === "Escape") closeModal();
     });
     return null;
@@ -6991,37 +7352,49 @@ function KeyboardShortcuts() {
 // ============================================================
 function useAsync(asyncFn, immediate = false) {
     const [status, setStatus] = useState("idle"); // idle | loading | success | error
-    const [data,   setData]   = useState(null);
-    const [error,  setError]  = useState(null);
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
 
-    const execute = useCallback(async (...args) => {
-        setStatus("loading");
-        setError(null);
-        try {
-            const result = await asyncFn(...args);
-            setData(result);
-            setStatus("success");
-            return result;
-        } catch (err) {
-            setError(err.message);
-            setStatus("error");
-            throw err;
-        }
-    }, [asyncFn]);
+    const execute = useCallback(
+        async (...args) => {
+            setStatus("loading");
+            setError(null);
+            try {
+                const result = await asyncFn(...args);
+                setData(result);
+                setStatus("success");
+                return result;
+            } catch (err) {
+                setError(err.message);
+                setStatus("error");
+                throw err;
+            }
+        },
+        [asyncFn],
+    );
 
-    useEffect(() => { if (immediate) execute(); }, [immediate]);
+    useEffect(() => {
+        if (immediate) execute();
+    }, [immediate]);
 
-    return { execute, status, data, error,
-        isIdle:    status === "idle",
+    return {
+        execute,
+        status,
+        data,
+        error,
+        isIdle: status === "idle",
         isLoading: status === "loading",
         isSuccess: status === "success",
-        isError:   status === "error",
+        isError: status === "error",
     };
 }
 
 // Usage — submit a form
 async function submitForm(data) {
-    const res = await fetch("/api/submit", { method: "POST", body: JSON.stringify(data) });
+    const res = await fetch("/api/submit", {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
     if (!res.ok) throw new Error("Submit failed");
     return res.json();
 }
@@ -7037,7 +7410,9 @@ function ContactForm() {
     return (
         <form onSubmit={handleSubmit}>
             {error && <p className="error">{error}</p>}
-            <button disabled={isLoading}>{isLoading ? "Sending…" : "Send"}</button>
+            <button disabled={isLoading}>
+                {isLoading ? "Sending…" : "Send"}
+            </button>
         </form>
     );
 }
@@ -7047,23 +7422,45 @@ function ContactForm() {
 // ============================================================
 // 14. useCounter — counter with min/max bounds
 // ============================================================
-function useCounter({ initial = 0, min = -Infinity, max = Infinity, step = 1 } = {}) {
+function useCounter({
+    initial = 0,
+    min = -Infinity,
+    max = Infinity,
+    step = 1,
+} = {}) {
     const [count, setCount] = useState(initial);
-    const increment = useCallback(() => setCount(c => Math.min(c + step, max)), [step, max]);
-    const decrement = useCallback(() => setCount(c => Math.max(c - step, min)), [step, min]);
-    const reset     = useCallback(() => setCount(initial), [initial]);
-    const set       = useCallback((v) => setCount(Math.min(Math.max(v, min), max)), [min, max]);
+    const increment = useCallback(
+        () => setCount((c) => Math.min(c + step, max)),
+        [step, max],
+    );
+    const decrement = useCallback(
+        () => setCount((c) => Math.max(c - step, min)),
+        [step, min],
+    );
+    const reset = useCallback(() => setCount(initial), [initial]);
+    const set = useCallback(
+        (v) => setCount(Math.min(Math.max(v, min), max)),
+        [min, max],
+    );
     return { count, increment, decrement, reset, set };
 }
 
 // Usage — quantity selector in a cart
 function QuantitySelector({ maxStock }) {
-    const { count, increment, decrement } = useCounter({ initial: 1, min: 1, max: maxStock });
+    const { count, increment, decrement } = useCounter({
+        initial: 1,
+        min: 1,
+        max: maxStock,
+    });
     return (
         <div>
-            <button onClick={decrement} disabled={count === 1}>−</button>
+            <button onClick={decrement} disabled={count === 1}>
+                −
+            </button>
             <span>{count}</span>
-            <button onClick={increment} disabled={count === maxStock}>+</button>
+            <button onClick={increment} disabled={count === maxStock}>
+                +
+            </button>
         </div>
     );
 }
@@ -7098,7 +7495,14 @@ function useScrollPosition() {
 function Navbar() {
     const { direction } = useScrollPosition();
     return (
-        <nav style={{ transform: direction === "down" ? "translateY(-100%)" : "translateY(0)" }}>
+        <nav
+            style={{
+                transform:
+                    direction === "down"
+                        ? "translateY(-100%)"
+                        : "translateY(0)",
+            }}
+        >
             {/* nav content */}
         </nav>
     );
@@ -7112,18 +7516,26 @@ function Navbar() {
 ```tsx
 // Generic useFetch with TypeScript
 function useFetch<T>(url: string | null) {
-    const [data,      setData]      = useState<T | null>(null);
+    const [data, setData] = useState<T | null>(null);
     const [isLoading, setIsLoading] = useState(!!url);
-    const [error,     setError]     = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!url) { setIsLoading(false); return; }
+        if (!url) {
+            setIsLoading(false);
+            return;
+        }
         const ctrl = new AbortController();
         setIsLoading(true);
         fetch(url, { signal: ctrl.signal })
-            .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() as Promise<T>; })
+            .then((r) => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json() as Promise<T>;
+            })
             .then(setData)
-            .catch((e: Error) => { if (e.name !== "AbortError") setError(e.message); })
+            .catch((e: Error) => {
+                if (e.name !== "AbortError") setError(e.message);
+            })
             .finally(() => setIsLoading(false));
         return () => ctrl.abort();
     }, [url]);
@@ -7136,7 +7548,10 @@ const { data: user } = useFetch<User>("/api/me");
 //      ^ User | null  ✔
 
 // useLocalStorage with TypeScript
-function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
+function useLocalStorage<T>(
+    key: string,
+    initialValue: T,
+): [T, (value: T | ((prev: T) => T)) => void] {
     // ...
 }
 ```
@@ -7161,14 +7576,15 @@ function useIsAdmin() {
 // ✅ Worth extracting — meaningful logic, used in 3+ components
 function useAuth() {
     const { user, isLoading } = useContext(AuthContext);
-    const isAdmin    = user?.role === "admin";
+    const isAdmin = user?.role === "admin";
     const isLoggedIn = Boolean(user);
-    const canEdit    = isAdmin || user?.permissions?.includes("edit");
+    const canEdit = isAdmin || user?.permissions?.includes("edit");
     return { user, isLoading, isAdmin, isLoggedIn, canEdit };
 }
 ```
 
 **Rule of thumb: extract a custom hook when:**
+
 1. The same `useState`+`useEffect` pattern appears in 2+ components
 2. The logic is complex enough that it obscures what the component renders
 3. You want to unit-test the logic independently of any component
@@ -7198,7 +7614,9 @@ describe("useCounter", () => {
     });
 
     test("respects max bound", () => {
-        const { result } = renderHook(() => useCounter({ initial: 9, max: 10 }));
+        const { result } = renderHook(() =>
+            useCounter({ initial: 9, max: 10 }),
+        );
         act(() => result.current.increment());
         act(() => result.current.increment()); // should not go past 10
         expect(result.current.count).toBe(10);
@@ -7299,9 +7717,15 @@ function useEverything() {
 }
 
 // ✅ 4. Single responsibility — one hook, one concern
-function useAuth() { /* auth only */ }
-function useCart() { /* cart only */ }
-function useTheme() { /* theme only */ }
+function useAuth() {
+    /* auth only */
+}
+function useCart() {
+    /* cart only */
+}
+function useTheme() {
+    /* theme only */
+}
 ```
 
 ---
@@ -7343,31 +7767,35 @@ function useTheme() { /* theme only */ }
 ## Module 7 — Interview Q&A
 
 **Q: When do you use `useReducer` instead of `useState`?**
+
 > Use `useReducer` when: (1) state has multiple related sub-fields that change together (e.g., `{ data, isLoading, error }`), (2) the next state depends on complex logic based on the previous state, (3) there are multiple different action types that each update state differently. For a single boolean or counter, `useState` is simpler.
 
 **Q: What are the performance pitfalls of React Context?**
+
 > Every component that calls `useContext(MyContext)` re-renders whenever the context value reference changes — even if the specific field it reads didn't change. Common fix: (1) split contexts by update frequency (auth context rarely changes; cart context changes often), (2) memoize the context value with `useMemo`. For high-frequency updates (every keystroke), use Zustand/Redux instead.
 
 **Q: What is `useRef` and how does it differ from `useState`?**
 
 |                          | `useRef`                                   | `useState`       |
 | ------------------------ | ------------------------------------------ | ---------------- |
-| Triggers re-render?      | ❌ No                                       | ✅ Yes            |
-| Mutable?                 | ✅ `ref.current = x`                        | Via setter only  |
+| Triggers re-render?      | ❌ No                                      | ✅ Yes           |
+| Mutable?                 | ✅ `ref.current = x`                       | Via setter only  |
 | Use for                  | DOM access, instance variables, prev value | UI-driving state |
-| Persists across renders? | ✅ Yes                                      | ✅ Yes            |
+| Persists across renders? | ✅ Yes                                     | ✅ Yes           |
 
 **Q: What is `useLayoutEffect` and when should you use it over `useEffect`?**
-> `useLayoutEffect` fires synchronously *after* React updates the DOM but *before* the browser paints. Use it when you need to read a DOM measurement (like `getBoundingClientRect()`) and immediately apply a style change — doing this in `useEffect` causes a visible flash because the paint happens between the read and the write. Default to `useEffect`; reach for `useLayoutEffect` only when you see flicker.
+
+> `useLayoutEffect` fires synchronously _after_ React updates the DOM but _before_ the browser paints. Use it when you need to read a DOM measurement (like `getBoundingClientRect()`) and immediately apply a style change — doing this in `useEffect` causes a visible flash because the paint happens between the read and the write. Default to `useEffect`; reach for `useLayoutEffect` only when you see flicker.
 
 **Q: What is a custom hook? What rules must it follow?**
-> A custom hook is a function whose name starts with `use` and that calls other React hooks internally. Rules: (1) name must start with `use` (enables lint enforcement), (2) can only call hooks at the top level — no conditional calls, (3) each component that calls the same custom hook gets its own isolated state (hooks share *logic*, not *state*). Used to extract duplicated `useState`+`useEffect` patterns into reusable, testable units.
+
+> A custom hook is a function whose name starts with `use` and that calls other React hooks internally. Rules: (1) name must start with `use` (enables lint enforcement), (2) can only call hooks at the top level — no conditional calls, (3) each component that calls the same custom hook gets its own isolated state (hooks share _logic_, not _state_). Used to extract duplicated `useState`+`useEffect` patterns into reusable, testable units.
 
 **Q: What is `useDeferredValue` and how does it differ from `useTransition`?**
 
 |                  | `useDeferredValue`                                         | `useTransition`                               |
 | ---------------- | ---------------------------------------------------------- | --------------------------------------------- |
-| What you control | A *value* (you receive it from parent)                     | A *state update* (you own the setter)         |
+| What you control | A _value_ (you receive it from parent)                     | A _state update_ (you own the setter)         |
 | Use when         | You can't modify the state setter (e.g., prop from parent) | You own the state and control when it changes |
 | Example          | Deferring a search prop from a parent                      | Deferring tab switch inside a component       |
 
@@ -7587,6 +8015,268 @@ graph TD
     E --> F[Your onClick function is called]
     F --> G[SyntheticEvent is pooled/released]
 ```
+
+---
+
+### Event Bubbling — The Full Picture
+
+#### What Is Event Bubbling?
+
+When you click an element, the browser doesn't just fire the event on that element. It fires it on **every ancestor** all the way up to the top of the document. This propagation **upward through the DOM** is called **bubbling** — like a bubble rising from the bottom of a glass to the surface.
+
+```
+DOM Tree:                     Event fires on <button> click:
+
+  document                      5. document  ← bubbles here last
+    └── div#root                4. div#root
+          └── div.card          3. div.card   ← fires here too!
+                └── button      1. button     ← fires here first (target)
+                                2. div.card
+```
+
+The event travels in **three phases**:
+
+```
+Phase 1 — CAPTURE (top → target)   window → document → div#root → div.card → button
+Phase 2 — TARGET                   button  ← event actually happened here
+Phase 3 — BUBBLE (target → top)    button → div.card → div#root → document → window
+```
+
+> React's synthetic event system uses the **bubble phase** by default. Capture-phase handlers use `onClickCapture`, `onChangeCapture`, etc.
+
+---
+
+#### Seeing Bubbling in Action
+
+```jsx
+function BubblingDemo() {
+    return (
+        <div
+            onClick={() => console.log("3. div clicked")}
+            style={{ padding: 20, background: "lightblue" }}
+        >
+            <p onClick={() => console.log("2. p clicked")}>
+                <button onClick={() => console.log("1. button clicked")}>
+                    Click me
+                </button>
+            </p>
+        </div>
+    );
+}
+
+// Output when the button is clicked:
+// 1. button clicked   ← target fires first
+// 2. p clicked        ← bubbles up to <p>
+// 3. div clicked      ← bubbles up to <div>
+```
+
+The button's handler fires first, then the event bubbles outward to each ancestor.
+
+---
+
+#### `event.stopPropagation()` — Stop the Bubble
+
+Call `stopPropagation()` on the event object to prevent it from bubbling further up the tree:
+
+```jsx
+function Card({ onCardClick }) {
+    return (
+        <div onClick={onCardClick} className="card">
+            <p>Card content</p>
+
+            {/* ✅ stopPropagation: button click won't reach the card's onClick */}
+            <button
+                onClick={(e) => {
+                    e.stopPropagation(); // bubble stops here — onCardClick never fires
+                    console.log("Delete button clicked");
+                }}
+            >
+                Delete
+            </button>
+        </div>
+    );
+}
+```
+
+```
+Without stopPropagation:   button click → div.card → ... → root   (both handlers fire)
+With stopPropagation:      button click → STOPS HERE             (only button handler fires)
+```
+
+---
+
+#### `event.preventDefault()` — Stop Default Browser Behaviour
+
+This is **not** about bubbling. `preventDefault()` cancels the browser's built-in response to the event — it does **not** stop propagation:
+
+```jsx
+// <a> tags navigate the page — preventDefault blocks that
+<a href="/dashboard" onClick={(e) => {
+  e.preventDefault();  // Don't navigate
+  handleCustomNavigation(); // Do your SPA routing instead
+}}>
+  Go to Dashboard
+</a>
+
+// <form> submits via HTTP — preventDefault blocks the page reload
+<form onSubmit={(e) => {
+  e.preventDefault();  // Don't reload the page
+  handleSubmit();      // Handle it in React state instead
+}}>
+  <button type="submit">Submit</button>
+</form>
+```
+
+| Method                         | What it stops                                           | Bubbling continues?    |
+| ------------------------------ | ------------------------------------------------------- | ---------------------- |
+| `e.stopPropagation()`          | Event travelling up the DOM tree                        | ❌ No — stops here     |
+| `e.preventDefault()`           | Browser's default action (navigate, submit, etc.)       | ✅ Yes — still bubbles |
+| `e.stopImmediatePropagation()` | Both propagation AND other handlers on the same element | ❌ No                  |
+
+---
+
+#### Event Delegation — Why React Uses One Listener
+
+Event bubbling is what makes **event delegation** possible. Instead of attaching a listener to every `<li>` in a 1000-item list, you attach **one listener to the parent** and let events bubble up:
+
+```jsx
+// ❌ Naive: 1000 event listeners (one per item)
+items.map((item) => (
+    <li key={item.id} onClick={() => handleClick(item.id)}>
+        {item.name}
+    </li>
+));
+
+// ✅ Event delegation: 1 listener on the parent handles all clicks
+function List({ items }) {
+    function handleClick(e) {
+        const id = e.target.dataset.id; // read from the element that was clicked
+        if (id) console.log("Clicked item:", id);
+    }
+
+    return (
+        <ul onClick={handleClick}>
+            {items.map((item) => (
+                <li key={item.id} data-id={item.id}>
+                    {item.name}
+                </li>
+            ))}
+        </ul>
+    );
+}
+```
+
+**React takes this further** — it attaches a **single listener at the React root** (`<div id="root">`) for every event type across your entire app. When you click anything, the native event bubbles up to the root listener, and React walks the Fiber tree to find the matching `onClick` handler and call it.
+
+---
+
+#### Capture Phase — Catching Events Before They Reach the Target
+
+By default all React handlers use the bubble phase. Use the `Capture` suffix to listen in the capture phase (fires top-down **before** the target):
+
+```jsx
+<div
+    onClickCapture={() => console.log("A. capture on div")} // fires FIRST
+    onClick={() => console.log("C. bubble on div")} // fires LAST
+>
+    <button
+        onClick={() => console.log("B. bubble on button")} // fires SECOND
+    >
+        Click
+    </button>
+</div>
+
+// Output:
+// A. capture on div   ← capture fires top-down first
+// B. bubble on button ← target
+// C. bubble on div    ← bubble fires bottom-up last
+```
+
+**Use case**: Implementing a "click outside to close" dropdown — attach a capture listener on the document so it fires before the dropdown's own handlers have a chance to `stopPropagation`.
+
+---
+
+#### React's Bubbling Follows the Component Tree, Not the DOM Tree
+
+This is a subtle but important point — React bubbles events through the **React component tree**, which can differ from the DOM tree when you use **Portals**:
+
+```jsx
+// A modal rendered via Portal lives in <body> in the DOM,
+// but React treats it as a child of the component that rendered it.
+
+function App() {
+    return (
+        <div onClick={() => console.log("App caught the click")}>
+            <Modal>
+                {" "}
+                {/* Portal renders this into document.body */}
+                <button onClick={() => console.log("Button inside modal")}>
+                    Click
+                </button>
+            </Modal>
+        </div>
+    );
+}
+
+// When button is clicked:
+// "Button inside modal"   ← target
+// "App caught the click"  ← bubbles through React component tree to App's div
+// (Even though in the real DOM, the button is in <body>, not inside App's div)
+```
+
+---
+
+#### Common Bubbling Pitfalls
+
+```jsx
+// ❌ PITFALL 1: Parent's onClick fires when clicking the child
+function PhotoGallery() {
+  return (
+    <div onClick={() => openLightbox()}>       {/* fires even on button click! */}
+      <img src="photo.jpg" alt="photo" />
+      <button onClick={() => deletePhoto()}>   {/* also fires openLightbox */}
+        Delete
+      </button>
+    </div>
+  );
+}
+
+// ✅ FIX: Stop propagation on the button
+<button onClick={(e) => { e.stopPropagation(); deletePhoto(); }}>Delete</button>
+
+
+// ❌ PITFALL 2: Nested clickable elements — both fire
+<tr onClick={() => selectRow(id)}>
+  <td>
+    <a href="/detail" onClick={() => trackClick()}>View</a>  {/* also fires selectRow */}
+  </td>
+</tr>
+
+// ✅ FIX:
+<a href="/detail" onClick={(e) => { e.stopPropagation(); trackClick(); }}>View</a>
+
+
+// ❌ PITFALL 3: stopPropagation breaks other code listening on ancestors
+// If some analytics library listens on document for all clicks,
+// calling stopPropagation in your handler silently breaks their tracking.
+// Prefer: check event.target in the ancestor instead of stopping propagation.
+```
+
+---
+
+#### Event Bubbling — Quick Reference
+
+| Concept                 | Key Point                                                                  |
+| ----------------------- | -------------------------------------------------------------------------- |
+| **Bubbling**            | Event fires on target, then travels up through every ancestor to the root  |
+| **Capture phase**       | Event travels down (root → target) before bubbling — use `onClickCapture`  |
+| **`stopPropagation()`** | Stops the event from travelling further up (or down in capture)            |
+| **`preventDefault()`**  | Cancels browser default action (navigate, submit) — does NOT stop bubbling |
+| **Event delegation**    | One listener on a parent handles events from many children via bubbling    |
+| **React's delegation**  | Single root listener catches all events for the entire app                 |
+| **Portals**             | React bubbles through the component tree, not the DOM tree                 |
+
+---
 
 ### Code Lab: Event Handling Patterns
 
@@ -8161,18 +8851,23 @@ const reset = () => {
 ## Module 8 — Interview Q&A
 
 **Q: How does React handle events? What is event delegation?**
+
 > React doesn't attach event listeners to individual DOM nodes. Instead it attaches a **single listener at the React root** (`document` in React 16, root container in React 17+). When you click a button, the event bubbles up to the root listener, which dispatches it to the correct handler via a synthetic event. This is event delegation — one listener for thousands of elements, which is more memory-efficient and works with dynamic elements.
 
 **Q: What is a Synthetic Event?**
+
 > A cross-browser wrapper around the native DOM event. It normalizes behavior differences across browsers (e.g., `event.target`, `event.preventDefault()`). In React 17+, synthetic events are no longer pooled (old gotcha of `event.persist()` is gone).
 
 **Q: What is the difference between `value` and `defaultValue` in a form input?**
+
 > `value` creates a **controlled input** — React state owns the value, you must provide `onChange`. `defaultValue` creates an **uncontrolled input** — the DOM owns the value, React sets it only on initial mount. Mixing `value` without `onChange` creates a read-only input and a console warning.
 
 **Q: Why use React Hook Form instead of manual `useState` for forms?**
+
 > React Hook Form registers inputs via refs (uncontrolled), so typing doesn't trigger React re-renders on every keystroke. For a 20-field form: manual `useState` = 20 re-renders per keystroke; RHF = 0 re-renders during typing, 1 on submit. Also provides built-in validation, error state, `isDirty`/`isSubmitting` states, and integrates with Zod/Yup schema validation.
 
-**Q: How would you build a 6-digit OTP input?** *(asked at Flipkart, Swiggy, Razorpay)*
+**Q: How would you build a 6-digit OTP input?** _(asked at Flipkart, Swiggy, Razorpay)_
+
 > State: `string[]` of length 6. Refs: `useRef([])` array to imperatively focus cells. On keydown: if digit, fill current cell and move focus to next. If Backspace, clear current and move focus to previous. On paste: split clipboard string across cells and focus last filled. This is a pure keyboard navigation + controlled input problem.
 
 ---
@@ -8456,7 +9151,7 @@ const DangerButton = (props) => <Button variant="danger" {...props} />;
 
 **Data-Driven UI** means the UI is entirely determined by the data that arrives from the server — not hardcoded in the component. The component is a generic renderer; the shape and content of the UI come from data.
 
-**The core idea:** Your server returns a payload that describes *what* to show. Your React app renders *whatever* that payload describes.
+**The core idea:** Your server returns a payload that describes _what_ to show. Your React app renders _whatever_ that payload describes.
 
 ```mermaid
 graph LR
@@ -8493,7 +9188,7 @@ function Homepage() {
 function Homepage({ pageData }) {
     return (
         <div>
-            {pageData.sections.map(section => (
+            {pageData.sections.map((section) => (
                 <DynamicSection key={section.id} config={section} />
             ))}
         </div>
@@ -8569,7 +9264,7 @@ function Homepage() {
 
     useEffect(() => {
         fetch("/api/homepage")
-            .then(r => r.json())
+            .then((r) => r.json())
             .then(setPageData);
     }, []);
 
@@ -8577,7 +9272,7 @@ function Homepage() {
 
     return (
         <div className="homepage">
-            {pageData.sections.map(section => (
+            {pageData.sections.map((section) => (
                 <DynamicSection key={section.id} config={section} />
             ))}
         </div>
@@ -8609,6 +9304,7 @@ function PromoStrip({ text }) {
 **Config-Driven UI** is a specific form of data-driven UI where a **configuration object** (usually defined by the developer, not the server) drives the structure, behaviour, and rendering of a component. The component is a generic engine — the config is its instructions.
 
 **The most common use cases:**
+
 - Tables (column definitions drive the entire table)
 - Forms (field definitions drive the entire form)
 - Navigation menus (menu config drives the entire nav)
@@ -8634,9 +9330,11 @@ Instead of writing `<th>Name</th><td>{user.name}</td>` for every column, you wri
 // 1. Define column config — this is the "config" that drives the table
 const USER_TABLE_COLUMNS = [
     {
-        label: "Name",               // Header text
-        key: "name",                 // Data key
-        render: (user) => (          // Custom render function (optional)
+        label: "Name", // Header text
+        key: "name", // Data key
+        render: (
+            user, // Custom render function (optional)
+        ) => (
             <div className="user-cell">
                 <img src={user.avatar} alt={user.name} className="avatar" />
                 <span>{user.name}</span>
@@ -8683,7 +9381,7 @@ function Table({ columns, data, context = {} }) {
         <table>
             <thead>
                 <tr>
-                    {columns.map(col => (
+                    {columns.map((col) => (
                         <th key={col.key}>{col.label}</th>
                     ))}
                 </tr>
@@ -8691,11 +9389,12 @@ function Table({ columns, data, context = {} }) {
             <tbody>
                 {data.map((row, rowIndex) => (
                     <tr key={row.id ?? rowIndex}>
-                        {columns.map(col => (
+                        {columns.map((col) => (
                             <td key={col.key}>
-                                {col.render
-                                    ? col.render(row, context)   // Custom render
-                                    : row[col.key]               // Plain value fallback
+                                {
+                                    col.render
+                                        ? col.render(row, context) // Custom render
+                                        : row[col.key] // Plain value fallback
                                 }
                             </td>
                         ))}
@@ -8721,7 +9420,11 @@ function UsersPage({ users, onEdit, onDelete }) {
 const ORDERS_TABLE_COLUMNS = [
     { label: "Order ID", key: "id" },
     { label: "Total", key: "total", render: (order) => `₹${order.total}` },
-    { label: "Status", key: "status", render: (order) => <StatusBadge status={order.status} /> },
+    {
+        label: "Status",
+        key: "status",
+        render: (order) => <StatusBadge status={order.status} />,
+    },
 ];
 
 function OrdersPage({ orders }) {
@@ -8775,25 +9478,32 @@ const REGISTER_FORM_CONFIG = [
 function DynamicForm({ config, onSubmit }) {
     const [values, setValues] = useState(
         // Initialise state from config — no hardcoding field names
-        Object.fromEntries(config.map(field => [field.name, ""]))
+        Object.fromEntries(config.map((field) => [field.name, ""])),
     );
     const [errors, setErrors] = useState({});
 
     function handleChange(name, value) {
-        setValues(prev => ({ ...prev, [name]: value }));
+        setValues((prev) => ({ ...prev, [name]: value }));
     }
 
     function validate() {
         const newErrors = {};
-        config.forEach(field => {
+        config.forEach((field) => {
             const value = values[field.name];
             if (field.validation?.required && !value) {
                 newErrors[field.name] = `${field.label} is required`;
             }
-            if (field.validation?.minLength && value.length < field.validation.minLength) {
-                newErrors[field.name] = `${field.label} must be at least ${field.validation.minLength} characters`;
+            if (
+                field.validation?.minLength &&
+                value.length < field.validation.minLength
+            ) {
+                newErrors[field.name] =
+                    `${field.label} must be at least ${field.validation.minLength} characters`;
             }
-            if (field.validation?.pattern && !field.validation.pattern.test(value)) {
+            if (
+                field.validation?.pattern &&
+                !field.validation.pattern.test(value)
+            ) {
                 newErrors[field.name] = `${field.label} is invalid`;
             }
         });
@@ -8812,7 +9522,7 @@ function DynamicForm({ config, onSubmit }) {
 
     return (
         <form onSubmit={handleSubmit}>
-            {config.map(field => (
+            {config.map((field) => (
                 <div key={field.name} className="form-field">
                     <label htmlFor={field.name}>{field.label}</label>
 
@@ -8820,11 +9530,15 @@ function DynamicForm({ config, onSubmit }) {
                         <select
                             id={field.name}
                             value={values[field.name]}
-                            onChange={e => handleChange(field.name, e.target.value)}
+                            onChange={(e) =>
+                                handleChange(field.name, e.target.value)
+                            }
                         >
                             <option value="">Select...</option>
-                            {field.options.map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            {field.options.map((opt) => (
+                                <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                </option>
                             ))}
                         </select>
                     ) : (
@@ -8833,7 +9547,9 @@ function DynamicForm({ config, onSubmit }) {
                             type={field.type}
                             placeholder={field.placeholder}
                             value={values[field.name]}
-                            onChange={e => handleChange(field.name, e.target.value)}
+                            onChange={(e) =>
+                                handleChange(field.name, e.target.value)
+                            }
                         />
                     )}
 
@@ -8849,13 +9565,25 @@ function DynamicForm({ config, onSubmit }) {
 
 // Usage — swap config to get a completely different form
 function RegisterPage() {
-    return <DynamicForm config={REGISTER_FORM_CONFIG} onSubmit={handleRegister} />;
+    return (
+        <DynamicForm config={REGISTER_FORM_CONFIG} onSubmit={handleRegister} />
+    );
 }
 
 // Reuse for login — completely different form, same engine
 const LOGIN_FORM_CONFIG = [
-    { name: "email", label: "Email", type: "email", validation: { required: true } },
-    { name: "password", label: "Password", type: "password", validation: { required: true } },
+    {
+        name: "email",
+        label: "Email",
+        type: "email",
+        validation: { required: true },
+    },
+    {
+        name: "password",
+        label: "Password",
+        type: "password",
+        validation: { required: true },
+    },
 ];
 
 function LoginPage() {
@@ -8872,19 +9600,31 @@ function LoginPage() {
 const NAV_CONFIG = [
     { label: "Home", path: "/", icon: "🏠", roles: ["user", "admin"] },
     { label: "Orders", path: "/orders", icon: "📦", roles: ["user", "admin"] },
-    { label: "Products", path: "/products", icon: "🛒", roles: ["user", "admin"] },
+    {
+        label: "Products",
+        path: "/products",
+        icon: "🛒",
+        roles: ["user", "admin"],
+    },
     { label: "Analytics", path: "/analytics", icon: "📊", roles: ["admin"] },
     { label: "Users", path: "/users", icon: "👥", roles: ["admin"] },
-    { label: "Settings", path: "/settings", icon: "⚙️", roles: ["user", "admin"] },
+    {
+        label: "Settings",
+        path: "/settings",
+        icon: "⚙️",
+        roles: ["user", "admin"],
+    },
 ];
 
 // ---- Generic Nav Component ----
 function Sidebar({ userRole }) {
-    const visibleLinks = NAV_CONFIG.filter(item => item.roles.includes(userRole));
+    const visibleLinks = NAV_CONFIG.filter((item) =>
+        item.roles.includes(userRole),
+    );
 
     return (
         <nav className="sidebar">
-            {visibleLinks.map(item => (
+            {visibleLinks.map((item) => (
                 <NavLink key={item.path} to={item.path} className="nav-item">
                     <span className="icon">{item.icon}</span>
                     <span className="label">{item.label}</span>
@@ -8905,7 +9645,7 @@ function Sidebar({ userRole }) {
 | --------------------------- | ---------------------------------------------- | -------------------------------------- |
 | **Config source**           | Server / API (runtime)                         | Developer / codebase (build time)      |
 | **Who controls it**         | Product/Marketing (via CMS or API)             | Developer                              |
-| **Changes require deploy?** | ❌ No — server sends new data                   | ✅ Yes — config lives in code           |
+| **Changes require deploy?** | ❌ No — server sends new data                  | ✅ Yes — config lives in code          |
 | **Use case**                | Homepage layouts, A/B testing, personalisation | Tables, forms, nav menus, dashboards   |
 | **Examples**                | Swiggy homepage, Netflix rows                  | Admin dashboard columns, form builders |
 
@@ -8934,6 +9674,7 @@ function Sidebar({ userRole }) {
 > **"How would you build the Swiggy homepage?"**
 
 **Answer structure:**
+
 1. Fetch a page config from `/api/homepage` that describes sections as an array of `{ id, type, data }` objects
 2. Build a component registry (`COMPONENT_MAP`) mapping type strings to React components
 3. Build a `DynamicSection` renderer that looks up the component and passes `data` as props
@@ -8946,18 +9687,23 @@ function Sidebar({ userRole }) {
 ## Module 9 — Interview Q&A
 
 **Q: What is "lifting state up"? When do you do it?**
+
 > When two sibling components need to share state, move the state to their closest common ancestor. The parent holds the state and passes it down as props along with a setter callback. This is React's answer to sibling communication — no library needed. If state needs to be shared across many unrelated components, lift it all the way to Context.
 
 **Q: What is the difference between composition and inheritance in React?**
+
 > React recommends composition over inheritance. Composition = passing components as `children` or explicit props instead of extending a class. Example: `<Modal><LoginForm /></Modal>` — Modal doesn't know what's inside it, it just renders `props.children`. Inheritance would be `class LoginModal extends Modal` — React's team has never found a case where inheritance was necessary.
 
 **Q: What is the Container/Presentational (Smart/Dumb) pattern?**
+
 > Split components into two types: **Container** (smart) — fetches data, manages state, connects to Redux/Context, no JSX styling. **Presentational** (dumb) — pure visual component, receives everything via props, no data fetching. Benefit: presentational components are easily testable (pure, no network), reusable (works with any data source), and can be previewed in Storybook.
 
 **Q: What is config-driven UI? Give an example.**
+
 > Config-driven UI uses a data structure (JSON/object) to describe what to render, instead of hardcoding JSX. A `COMPONENT_MAP` maps type strings to components; a generic renderer iterates the config and renders the right component for each entry. Example: Swiggy's homepage layout comes from the API — the server controls which sections appear, in what order, without a frontend deploy. Used for tables (column config), forms (field config), navbars (menu item config with RBAC).
 
 **Q: In an interview, how would you describe your approach to designing a new component?**
+
 > (1) Identify what data it needs (props/state). (2) Decide if it's pure presentational or needs side effects. (3) Consider reusability — should it be generic (accept `children`) or specific? (4) Plan the API — what props does the consumer need to provide? (5) Consider edge cases: loading, empty, error states. (6) Add Suspense/ErrorBoundary wrappers at the right level.
 
 ---
@@ -9583,12 +10329,15 @@ app/
 ## Module 10 — Interview Q&A
 
 **Q: How does React Router know to re-render when the URL changes?**
+
 > React Router's `BrowserRouter` listens for the browser's `popstate` event (back/forward) and subscribes to `history.pushState`/`replaceState` calls. When the URL changes, it updates a Context value with the new location — all `<Route>` components and hooks (`useLocation`, `useParams`) are consumers of that Context and re-render accordingly.
 
 **Q: What is the difference between `<Link>` and a regular `<a>` tag?**
+
 > `<a>` causes a full page reload — the browser fetches a new HTML document. `<Link>` calls `history.pushState()` to update the URL without a network request, then updates React Router's location Context — only the matching route component re-renders. The page never reloads, making navigation feel instant.
 
 **Q: How do you implement a protected route?**
+
 ```jsx
 function ProtectedRoute({ children }) {
     const { user } = useContext(AuthContext);
@@ -9600,14 +10349,17 @@ function ProtectedRoute({ children }) {
 ```
 
 **Q: What is the difference between `useNavigate` and `<Link>`?**
+
 > `<Link>` is declarative — a rendered anchor element the user clicks. `useNavigate()` is imperative — a function you call programmatically in event handlers (after form submit, after API success, after logout). Rule: use `<Link>` for navigation UI; use `useNavigate` for programmatic redirects.
 
 **Q: What is React Router's "Data Mode" (`createBrowserRouter`)?**
+
 > Data Mode uses an object-based config (instead of JSX `<Routes>`) and adds `loader` (fetch data before rendering) and `action` (handle form submissions) to each route. `useLoaderData()` reads the data — no `useEffect`+`useState` needed for initial data fetching. Also adds per-route `errorElement` for error boundaries. This is React Router v6.4+ and v7.
 
 **Q: How do you lazy-load a route in React?**
+
 ```jsx
-const Settings = React.lazy(() => import('./pages/Settings'));
+const Settings = React.lazy(() => import("./pages/Settings"));
 
 <Route
     path="/settings"
@@ -9616,7 +10368,7 @@ const Settings = React.lazy(() => import('./pages/Settings'));
             <Settings />
         </Suspense>
     }
-/>
+/>;
 // The Settings bundle is only downloaded when the user navigates to /settings
 ```
 
@@ -9957,7 +10709,7 @@ function AddToCartButton({ product }) {
 | Setup boilerplate              | Low                           | Medium                           | Very low                 |
 | DevTools                       | None built-in                 | Excellent                        | Plugin available         |
 | Async handling                 | DIY                           | `createAsyncThunk`               | DIY or middleware        |
-| Performance (frequent updates) | ⚠️ Re-renders all consumers    | ✅ Selector-based                 | ✅ Selector-based         |
+| Performance (frequent updates) | ⚠️ Re-renders all consumers   | ✅ Selector-based                | ✅ Selector-based        |
 | Bundle size                    | 0 KB                          | ~15 KB                           | ~1 KB                    |
 | Best for                       | Theme, auth, infrequent state | Large apps, teams, complex flows | Medium apps, quick setup |
 
@@ -9967,29 +10719,33 @@ function AddToCartButton({ product }) {
 
 **Q: When should you use Redux instead of React Context?**
 
-| Scenario                                           | Use Context                | Use Redux                |
-| -------------------------------------------------- | -------------------------- | ------------------------ |
-| Theme / auth (rarely changes)                      | ✅                          | Overkill                 |
+| Scenario                                           | Use Context                 | Use Redux                 |
+| -------------------------------------------------- | --------------------------- | ------------------------- |
+| Theme / auth (rarely changes)                      | ✅                          | Overkill                  |
 | High-frequency updates (every keystroke)           | ❌ Re-renders all consumers | ✅ Selector-based updates |
 | Complex async flows (saga/thunk)                   | ❌                          | ✅                        |
 | DevTools (time-travel debugging)                   | ❌                          | ✅                        |
 | Team > 5 people, shared state across many features | ❌ Hard to scale            | ✅                        |
-| Medium app, want simplicity                        | Skip both — use Zustand    |                          |
+| Medium app, want simplicity                        | Skip both — use Zustand     |                           |
 
 **Q: What is Redux Toolkit (RTK)? How is it different from classic Redux?**
+
 > Classic Redux: action types as strings, `switch` reducers, verbose action creators, manual Immer setup. RTK: `createSlice` generates action types + action creators + reducer from one object. `createAsyncThunk` handles async. Immer is built in (you can "mutate" in reducers — Immer produces a new state). RTK is the official recommended way — classic Redux is considered legacy.
 
 **Q: What is Zustand and how does it differ from Redux?**
+
 > Zustand is a minimal global state library (~1KB). No actions, no reducers, no dispatching — you call setter functions directly on the store. Selector-based subscriptions mean components only re-render when the specific slice of state they select changes. Best for: medium-sized apps that want global state without Redux's boilerplate. Redux is better when you need DevTools, time-travel debugging, or complex async middleware.
 
 **Q: What is the Zustand selector pattern and why does it matter?**
+
 ```jsx
 // ❌ Without selector: re-renders on ANY store change
 const { count, user, cart } = useStore();
 
 // ✅ With selector: re-renders ONLY when count changes
-const count = useStore(state => state.count);
+const count = useStore((state) => state.count);
 ```
+
 > Without a selector, every state change in the store causes all consumers to re-render. With a selector, Zustand compares the selected value — component only re-renders if that specific value changed.
 
 ---
@@ -10097,7 +10853,7 @@ function FeedPage() {
 
 ### What Error Boundaries DO and DON'T catch
 
-| Catches ✅                         | Does NOT catch ❌                              |
+| Catches ✅                        | Does NOT catch ❌                             |
 | --------------------------------- | --------------------------------------------- |
 | Errors in render                  | Errors in event handlers (use try/catch)      |
 | Errors in `useEffect` (partially) | Errors in async code (`setTimeout`, promises) |
@@ -10183,15 +10939,19 @@ function ProductPage() {
 ## Module 12 — Interview Q&A
 
 **Q: What is an Error Boundary? Why must it be a class component?**
+
 > An Error Boundary catches JavaScript errors during rendering, in lifecycle methods, and in constructors of child components. It uses `getDerivedStateFromError` (to update state on error) and `componentDidCatch` (to log to error monitoring services). These lifecycle methods have no functional component / hook equivalent, so Error Boundaries must be class components. The `react-error-boundary` library wraps this in a hook-friendly API.
 
 **Q: What errors does an Error Boundary NOT catch?**
-> (1) Errors in **event handlers** — use `try/catch` there. (2) Errors in **async code** (`setTimeout`, Promises). (3) **SSR** errors. (4) Errors thrown by the **boundary itself**. Only synchronous render-phase errors in *descendant* components are caught.
+
+> (1) Errors in **event handlers** — use `try/catch` there. (2) Errors in **async code** (`setTimeout`, Promises). (3) **SSR** errors. (4) Errors thrown by the **boundary itself**. Only synchronous render-phase errors in _descendant_ components are caught.
 
 **Q: What is a React Portal? When would you use one?**
+
 > `ReactDOM.createPortal(children, domNode)` renders a component into a different DOM node than its parent, while keeping it in the React component tree (events still bubble through the React tree). Use for: modals, tooltips, and dropdowns that need to appear above everything — they escape `overflow: hidden` and z-index stacking context issues by rendering directly into `<body>` or a dedicated overlay container.
 
 **Q: Portals render outside the parent DOM node — do events still bubble through the React tree?**
+
 > Yes. Event bubbling follows the React component tree, not the DOM tree. A click inside a Portal modal will bubble up through the modal's React parent component — even though the DOM node is elsewhere. This is why Portal modals work correctly with React event delegation.
 
 ---
@@ -10466,15 +11226,19 @@ function ThemeProvider({ children }) {
 ## Module 13 — Interview Q&A
 
 **Q: What are CSS Modules and what problem do they solve?**
+
 > CSS Modules scope class names to the component that imports them. The build tool transforms `.button` into a unique hash like `Button_button__3xQP8`. No global namespace collisions, no need for BEM naming conventions. The CSS stays in `.module.css` files, not in JS. Zero runtime cost (vs CSS-in-JS).
 
 **Q: When would you choose Tailwind CSS over CSS Modules?**
+
 > Tailwind: when you want to move fast with a utility-first approach, have a design system already encoded in `tailwind.config.js`, and want to avoid context-switching between files. CSS Modules: when you need complex custom styles, have designers who write CSS, or want to avoid long className strings in JSX. Many teams use both — Tailwind for layout/spacing/typography, CSS Modules for complex component-specific styles.
 
 **Q: What is CSS-in-JS and what is its main trade-off?**
+
 > CSS-in-JS (styled-components, Emotion) writes CSS inside JavaScript template literals, enabling dynamic styles based on props. Trade-off: runtime cost — styles are generated and injected into the DOM at runtime, which can cause a flash of unstyled content on SSR and adds CPU overhead. Zero-runtime alternatives (Vanilla Extract, linaria) compile to static CSS at build time.
 
 **Q: What is the `cn()` utility and why is it used with Tailwind?**
+
 > `cn()` combines `clsx` (conditional class logic) + `tailwind-merge` (conflict resolution). Tailwind uses utility classes, so you might have both `p-4` and `p-8` applied — `tailwind-merge` keeps only the last one. `cn()` is generated by shadcn/ui and is the standard pattern in Tailwind-first projects.
 
 ---
@@ -10814,23 +11578,27 @@ describe("UserCard", () => {
 ## Module 14 — Interview Q&A
 
 **Q: What is the core philosophy of React Testing Library?**
+
 > "Test what the user sees and can do, not implementation details." RTL doesn't expose state, refs, or component internals. You query by role, text, and label — exactly how a real user or screen reader finds elements. This makes tests resilient to refactoring: if you rename a state variable but the UI is the same, the test still passes.
 
 **Q: What is the difference between `getBy`, `queryBy`, and `findBy`?**
 
-| Query        | Throws if not found | Async | Use when                              |
-| ------------ | ------------------- | ----- | ------------------------------------- |
+| Query        | Throws if not found  | Async  | Use when                              |
+| ------------ | -------------------- | ------ | ------------------------------------- |
 | `getBy...`   | ✅ Yes               | ❌ No  | Element must exist right now          |
-| `queryBy...` | ❌ No (returns null) | ❌ No  | Asserting element is *absent*         |
+| `queryBy...` | ❌ No (returns null) | ❌ No  | Asserting element is _absent_         |
 | `findBy...`  | ✅ Yes               | ✅ Yes | Element appears after async operation |
 
 **Q: Why should you prefer `getByRole` over `getByTestId`?**
+
 > `getByRole` queries by ARIA role (button, textbox, heading) — the same way assistive technology reads the page. It tests that your component is accessible AND functional. `getByTestId` adds `data-testid` attributes that serve no purpose in production — it's a last resort when semantic queries aren't possible.
 
 **Q: How do you test an async component that fetches data?**
+
 > Mock `fetch` globally (`global.fetch = vi.fn(...)` or use MSW), render the component, use `waitFor` or `findBy` queries to wait for async content to appear, then assert. Use `act()` from RTL when manually triggering state updates. `afterEach(() => vi.clearAllMocks())` to reset mocks between tests.
 
 **Q: What is Vitest? How is it different from Jest?**
+
 > Vitest is the test runner built for Vite projects. API-compatible with Jest (same `describe`/`it`/`expect`/`vi.fn()`), but runs inside Vite's transform pipeline — no separate Babel config, same TypeScript/alias support as app code, near-instant startup via native ESM. Typically 3-5× faster than Jest for Vite projects.
 
 ---
@@ -11286,17 +12054,17 @@ VITE_MOCK_AUTH=true
 
 ```json
 {
-  "scripts": {
-    "dev":       "vite",                              // loads .env.development
-    "dev:e2e":   "vite --mode e2e",                   // loads .env.e2e
-    "dev:staging":"vite --mode staging",              // loads .env.staging
-    "build":     "vite build",                        // loads .env.production
-    "build:staging": "vite build --mode staging",     // loads .env.staging
-    "build:e2e": "vite build --mode e2e",             // loads .env.e2e
-    "test":      "vitest --mode test",                // loads .env.test
-    "e2e":       "playwright test",                   // Playwright reads .env.e2e separately
-    "preview":   "vite preview"                       // preview production build locally
-  }
+    "scripts": {
+        "dev": "vite", // loads .env.development
+        "dev:e2e": "vite --mode e2e", // loads .env.e2e
+        "dev:staging": "vite --mode staging", // loads .env.staging
+        "build": "vite build", // loads .env.production
+        "build:staging": "vite build --mode staging", // loads .env.staging
+        "build:e2e": "vite build --mode e2e", // loads .env.e2e
+        "test": "vitest --mode test", // loads .env.test
+        "e2e": "playwright test", // Playwright reads .env.e2e separately
+        "preview": "vite preview" // preview production build locally
+    }
 }
 ```
 
@@ -11309,18 +12077,18 @@ VITE_MOCK_AUTH=true
 // Only variables prefixed with VITE_ are exposed to the browser bundle.
 
 const config = {
-    apiUrl:    import.meta.env.VITE_API_URL,
-    wsUrl:     import.meta.env.VITE_WS_URL,
-    appName:   import.meta.env.VITE_APP_NAME,
-    logLevel:  import.meta.env.VITE_LOG_LEVEL,
+    apiUrl: import.meta.env.VITE_API_URL,
+    wsUrl: import.meta.env.VITE_WS_URL,
+    appName: import.meta.env.VITE_APP_NAME,
+    logLevel: import.meta.env.VITE_LOG_LEVEL,
     sentryDsn: import.meta.env.VITE_SENTRY_DSN,
 };
 
 // Built-in Vite variables (no VITE_ prefix needed):
-import.meta.env.MODE     // "development" | "production" | "staging" | "e2e" | "test"
-import.meta.env.DEV      // true in development mode
-import.meta.env.PROD     // true in production mode
-import.meta.env.SSR      // true when running server-side
+import.meta.env.MODE; // "development" | "production" | "staging" | "e2e" | "test"
+import.meta.env.DEV; // true in development mode
+import.meta.env.PROD; // true in production mode
+import.meta.env.SSR; // true when running server-side
 ```
 
 ---
@@ -11333,14 +12101,14 @@ import.meta.env.SSR      // true when running server-side
 // src/config/config.ts — the ONLY place that reads import.meta.env
 
 interface AppConfig {
-    apiUrl:     string;
-    wsUrl:      string;
-    appName:    string;
-    logLevel:   "debug" | "warn" | "error";
-    sentryDsn:  string;
+    apiUrl: string;
+    wsUrl: string;
+    appName: string;
+    logLevel: "debug" | "warn" | "error";
+    sentryDsn: string;
     isMockAuth: boolean;
     features: {
-        darkMode:  boolean;
+        darkMode: boolean;
         analytics: boolean;
     };
 }
@@ -11360,14 +12128,15 @@ function requireEnv(key: string): string {
 }
 
 export const config: AppConfig = {
-    apiUrl:    requireEnv("VITE_API_URL"),
-    wsUrl:     import.meta.env.VITE_WS_URL ?? "",
-    appName:   import.meta.env.VITE_APP_NAME ?? "MyApp",
-    logLevel:  (import.meta.env.VITE_LOG_LEVEL ?? "error") as AppConfig["logLevel"],
+    apiUrl: requireEnv("VITE_API_URL"),
+    wsUrl: import.meta.env.VITE_WS_URL ?? "",
+    appName: import.meta.env.VITE_APP_NAME ?? "MyApp",
+    logLevel: (import.meta.env.VITE_LOG_LEVEL ??
+        "error") as AppConfig["logLevel"],
     sentryDsn: import.meta.env.VITE_SENTRY_DSN ?? "",
     isMockAuth: parseBoolean(import.meta.env.VITE_MOCK_AUTH),
     features: {
-        darkMode:  parseBoolean(import.meta.env.VITE_FEATURE_DARK_MODE, true),
+        darkMode: parseBoolean(import.meta.env.VITE_FEATURE_DARK_MODE, true),
         analytics: parseBoolean(import.meta.env.VITE_FEATURE_ANALYTICS, false),
     },
 };
@@ -11399,10 +12168,10 @@ Feature flags let you ship code that is "off" in production but "on" for testing
 import { config } from "./config";
 
 export const features = {
-    darkMode:        config.features.darkMode,
-    analytics:       config.features.analytics,
+    darkMode: config.features.darkMode,
+    analytics: config.features.analytics,
     newCheckoutFlow: parseBoolean(import.meta.env.VITE_FEATURE_NEW_CHECKOUT),
-    betaDashboard:   parseBoolean(import.meta.env.VITE_FEATURE_BETA_DASHBOARD),
+    betaDashboard: parseBoolean(import.meta.env.VITE_FEATURE_BETA_DASHBOARD),
 };
 ```
 
@@ -11442,12 +12211,18 @@ For production-grade apps, validate all environment variables at startup using Z
 import { z } from "zod";
 
 const envSchema = z.object({
-    VITE_API_URL:              z.string().url("VITE_API_URL must be a valid URL"),
-    VITE_APP_NAME:             z.string().min(1),
-    VITE_LOG_LEVEL:            z.enum(["debug", "warn", "error"]).default("error"),
-    VITE_MOCK_AUTH:            z.string().transform(v => v === "true").default("false"),
-    VITE_FEATURE_ANALYTICS:    z.string().transform(v => v === "true").default("false"),
-    VITE_SENTRY_DSN:           z.string().optional(),
+    VITE_API_URL: z.string().url("VITE_API_URL must be a valid URL"),
+    VITE_APP_NAME: z.string().min(1),
+    VITE_LOG_LEVEL: z.enum(["debug", "warn", "error"]).default("error"),
+    VITE_MOCK_AUTH: z
+        .string()
+        .transform((v) => v === "true")
+        .default("false"),
+    VITE_FEATURE_ANALYTICS: z
+        .string()
+        .transform((v) => v === "true")
+        .default("false"),
+    VITE_SENTRY_DSN: z.string().optional(),
 });
 
 // Parse and validate at module load time — fails fast with a clear message
@@ -11468,30 +12243,30 @@ In a real CI/CD pipeline, env files are **NOT committed** to the repo (for secre
 name: Deploy to Staging
 
 on:
-  push:
-    branches: [staging]
+    push:
+        branches: [staging]
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      # Write environment file from GitHub Secrets
-      - name: Create .env.staging
-        run: |
-          echo "VITE_API_URL=${{ secrets.STAGING_API_URL }}" >> .env.staging
-          echo "VITE_SENTRY_DSN=${{ secrets.STAGING_SENTRY_DSN }}" >> .env.staging
-          echo "VITE_RAZORPAY_KEY=${{ secrets.STAGING_RAZORPAY_KEY }}" >> .env.staging
+            # Write environment file from GitHub Secrets
+            - name: Create .env.staging
+              run: |
+                  echo "VITE_API_URL=${{ secrets.STAGING_API_URL }}" >> .env.staging
+                  echo "VITE_SENTRY_DSN=${{ secrets.STAGING_SENTRY_DSN }}" >> .env.staging
+                  echo "VITE_RAZORPAY_KEY=${{ secrets.STAGING_RAZORPAY_KEY }}" >> .env.staging
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Build for staging
-        run: npm run build:staging     # vite build --mode staging → reads .env.staging
+            - name: Build for staging
+              run: npm run build:staging # vite build --mode staging → reads .env.staging
 
-      - name: Deploy to S3/Nginx
-        run: aws s3 sync dist/ s3://myapp-staging/
+            - name: Deploy to S3/Nginx
+              run: aws s3 sync dist/ s3://myapp-staging/
 ```
 
 ```yaml
@@ -11499,35 +12274,35 @@ jobs:
 name: Deploy to Production
 
 on:
-  push:
-    branches: [main]
+    push:
+        branches: [main]
 
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - name: Create .env.production
-        run: |
-          echo "VITE_API_URL=${{ secrets.PROD_API_URL }}" >> .env.production
-          echo "VITE_SENTRY_DSN=${{ secrets.PROD_SENTRY_DSN }}" >> .env.production
-          echo "VITE_RAZORPAY_KEY=${{ secrets.PROD_RAZORPAY_KEY }}" >> .env.production
-          echo "VITE_FEATURE_ANALYTICS=true" >> .env.production
+            - name: Create .env.production
+              run: |
+                  echo "VITE_API_URL=${{ secrets.PROD_API_URL }}" >> .env.production
+                  echo "VITE_SENTRY_DSN=${{ secrets.PROD_SENTRY_DSN }}" >> .env.production
+                  echo "VITE_RAZORPAY_KEY=${{ secrets.PROD_RAZORPAY_KEY }}" >> .env.production
+                  echo "VITE_FEATURE_ANALYTICS=true" >> .env.production
 
-      - name: Build
-        run: npm run build     # vite build → reads .env.production
+            - name: Build
+              run: npm run build # vite build → reads .env.production
 
-      - name: Deploy
-        run: aws s3 sync dist/ s3://myapp-production/ --delete
+            - name: Deploy
+              run: aws s3 sync dist/ s3://myapp-production/ --delete
 ```
 
 ---
 
 ### Environment Mapping Summary
 
-| File               | Git?    | Loaded when                 | Used for                 |
-| ------------------ | ------- | --------------------------- | ------------------------ |
+| File               | Git?     | Loaded when                 | Used for                 |
+| ------------------ | -------- | --------------------------- | ------------------------ |
 | `.env`             | ✅ Yes   | All modes                   | Shared defaults          |
 | `.env.development` | ✅ Yes   | `vite` / `npm run dev`      | Local dev                |
 | `.env.test`        | ✅ Yes   | `vitest --mode test`        | Unit tests               |
@@ -11715,10 +12490,12 @@ server {
 ```
 
 **With this config:**
+
 ```
 Browser → GET https://myapp.com/api/users  →  Nginx  →  http://backend:3001/users
 Browser → GET https://myapp.com/dashboard  →  Nginx  →  /index.html (React handles routing)
 ```
+
 No CORS headers needed. Single origin for everything.
 
 ---
@@ -11780,7 +12557,7 @@ Sometimes your React app isn't at the root `/` but at `/app/` or `/admin/`.
 ```jsx
 // vite.config.ts — set base path
 export default defineConfig({
-    base: "/admin/",   // All asset paths will be prefixed with /admin/
+    base: "/admin/", // All asset paths will be prefixed with /admin/
 });
 ```
 
@@ -11828,29 +12605,29 @@ CMD ["nginx", "-g", "daemon off;"]
 version: "3.9"
 
 services:
-  frontend:
-    build:
-      context: .
-      args:
-        BUILD_MODE: production    # or staging, e2e
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/certs:/etc/letsencrypt    # SSL certs
-    depends_on:
-      - backend
+    frontend:
+        build:
+            context: .
+            args:
+                BUILD_MODE: production # or staging, e2e
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./nginx/certs:/etc/letsencrypt # SSL certs
+        depends_on:
+            - backend
 
-  backend:
-    image: myapp-api:latest
-    expose:
-      - "3001"     # Not published externally — only Nginx can reach it
-    environment:
-      NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL}
+    backend:
+        image: myapp-api:latest
+        expose:
+            - "3001" # Not published externally — only Nginx can reach it
+        environment:
+            NODE_ENV: production
+            DATABASE_URL: ${DATABASE_URL}
 
-  # Build for staging:
-  # docker compose build --build-arg BUILD_MODE=staging frontend
+    # Build for staging:
+    # docker compose build --build-arg BUILD_MODE=staging frontend
 ```
 
 ```bash
@@ -11878,6 +12655,7 @@ docker compose build --build-arg BUILD_MODE=e2e frontend
 ## 15.5 — Browser Compatibility
 
 Making a React app work across different browsers means handling two separate problems:
+
 1. **JavaScript compatibility** — older browsers don't support modern JS syntax/APIs
 2. **CSS compatibility** — some CSS properties need vendor prefixes in certain browsers
 
@@ -11948,13 +12726,16 @@ npm install core-js@3          # runtime polyfills (save, not devDependency)
 ```json
 // babel.config.json
 {
-  "presets": [
-    ["@babel/preset-env", {
-      "targets": "defaults",   // reads .browserslistrc
-      "useBuiltIns": "usage",  // inject polyfills only for APIs you actually use
-      "corejs": 3
-    }]
-  ]
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": "defaults", // reads .browserslistrc
+                "useBuiltIns": "usage", // inject polyfills only for APIs you actually use
+                "corejs": 3
+            }
+        ]
+    ]
 }
 ```
 
@@ -11966,8 +12747,8 @@ const result = [1, [2, 3]].flat();
 const p = new Promise((res) => res(1));
 
 // BABEL OUTPUT (for a browser that lacks Array.flat and Promise)
-import "core-js/modules/es.array.flat.js";   // ← auto-injected
-import "core-js/modules/es.promise.js";       // ← auto-injected
+import "core-js/modules/es.array.flat.js"; // ← auto-injected
+import "core-js/modules/es.promise.js"; // ← auto-injected
 const result = [1, [2, 3]].flat();
 const p = new Promise((res) => res(1));
 ```
@@ -12002,7 +12783,7 @@ export default defineConfig({
     build: {
         // Default: ["es2020", "edge88", "firefox78", "chrome87", "safari14"]
         // Override if you want stricter targets:
-        target: "es2015",  // transpile down to ES2015 for slightly older browsers
+        target: "es2015", // transpile down to ES2015 for slightly older browsers
     },
 });
 ```
@@ -12023,7 +12804,7 @@ export default defineConfig({
     plugins: [
         react(),
         legacy({
-            targets: ["defaults", "not IE 11"],  // reads .browserslistrc if omitted
+            targets: ["defaults", "not IE 11"], // reads .browserslistrc if omitted
             additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
         }),
     ],
@@ -12034,8 +12815,10 @@ export default defineConfig({
 
 ```html
 <!-- index.html after build — two bundles, browser picks the right one -->
-<script type="module" src="/assets/index-abc123.js"></script>         <!-- modern -->
-<script nomodule src="/assets/index-legacy-def456.js"></script>       <!-- legacy (Babel-compiled) -->
+<script type="module" src="/assets/index-abc123.js"></script>
+<!-- modern -->
+<script nomodule src="/assets/index-legacy-def456.js"></script>
+<!-- legacy (Babel-compiled) -->
 ```
 
 Modern browsers execute the `type="module"` script and ignore `nomodule`. Legacy browsers (no ES module support) ignore `type="module"` and execute the `nomodule` script. Zero runtime overhead for modern users.
@@ -12054,12 +12837,13 @@ npm install -D autoprefixer postcss
 // postcss.config.js
 export default {
     plugins: {
-        autoprefixer: {},  // reads .browserslistrc automatically
+        autoprefixer: {}, // reads .browserslistrc automatically
     },
 };
 ```
 
 **Input CSS:**
+
 ```css
 .card {
     display: flex;
@@ -12069,6 +12853,7 @@ export default {
 ```
 
 **autoprefixer output (for targets including older Safari):**
+
 ```css
 .card {
     display: -webkit-box;
@@ -12112,9 +12897,9 @@ if ("IntersectionObserver" in window) {
 const supportsGrid = CSS.supports("display", "grid");
 
 // Web APIs: check before using
-const canShare = "share" in navigator;          // Web Share API
-const canVibrate = "vibrate" in navigator;      // Vibration API
-const canBluetooth = "bluetooth" in navigator;  // Web Bluetooth
+const canShare = "share" in navigator; // Web Share API
+const canVibrate = "vibrate" in navigator; // Vibration API
+const canBluetooth = "bluetooth" in navigator; // Web Bluetooth
 ```
 
 ```css
@@ -12144,15 +12929,15 @@ const canBluetooth = "bluetooth" in navigator;  // Web Bluetooth
 
 **Quick reference — common APIs and their support status:**
 
-| API                     | Chrome | Firefox | Safari          | Need polyfill?                                  |
-| ----------------------- | ------ | ------- | --------------- | ----------------------------------------------- |
-| `fetch`                 | ✅ 42+  | ✅ 39+   | ✅ 10.1+         | No (or `whatwg-fetch` for old targets)          |
-| `IntersectionObserver`  | ✅ 51+  | ✅ 55+   | ✅ 12.1+         | `intersection-observer` polyfill for Safari <12 |
-| `ResizeObserver`        | ✅ 64+  | ✅ 69+   | ✅ 13.1+         | `resize-observer-polyfill` for older Safari     |
-| `CSS Grid`              | ✅ 57+  | ✅ 52+   | ✅ 10.1+         | `@supports` fallback                            |
-| `CSS container queries` | ✅ 105+ | ✅ 110+  | ✅ 16+           | `@supports` fallback                            |
-| `Web Crypto`            | ✅ 37+  | ✅ 34+   | ✅ 11+           | No — use HTTPS (required anyway)                |
-| `CSS backdrop-filter`   | ✅ 76+  | ✅ 103+  | ✅ 9+ (-webkit-) | autoprefixer handles the prefix                 |
+| API                     | Chrome  | Firefox | Safari           | Need polyfill?                                  |
+| ----------------------- | ------- | ------- | ---------------- | ----------------------------------------------- |
+| `fetch`                 | ✅ 42+  | ✅ 39+  | ✅ 10.1+         | No (or `whatwg-fetch` for old targets)          |
+| `IntersectionObserver`  | ✅ 51+  | ✅ 55+  | ✅ 12.1+         | `intersection-observer` polyfill for Safari <12 |
+| `ResizeObserver`        | ✅ 64+  | ✅ 69+  | ✅ 13.1+         | `resize-observer-polyfill` for older Safari     |
+| `CSS Grid`              | ✅ 57+  | ✅ 52+  | ✅ 10.1+         | `@supports` fallback                            |
+| `CSS container queries` | ✅ 105+ | ✅ 110+ | ✅ 16+           | `@supports` fallback                            |
+| `Web Crypto`            | ✅ 37+  | ✅ 34+  | ✅ 11+           | No — use HTTPS (required anyway)                |
+| `CSS backdrop-filter`   | ✅ 76+  | ✅ 103+ | ✅ 9+ (-webkit-) | autoprefixer handles the prefix                 |
 
 ---
 
@@ -12183,18 +12968,23 @@ npm install core-js@3
 ## Module 15 — Interview Q&A
 
 **Q: How do environment variables work in Vite? What is the `VITE_` prefix rule?**
+
 > Vite exposes env vars to the browser bundle only if they are prefixed with `VITE_`. Non-prefixed vars (like `DATABASE_URL`) are available in `vite.config.ts` but NOT in browser code — this prevents accidentally leaking server-side secrets. Access them via `import.meta.env.VITE_*` (not `process.env`).
 
 **Q: What is the `.env` file priority order in Vite?**
+
 > Highest to lowest: `.env.[mode].local` > `.env.local` > `.env.[mode]` > `.env`. Files ending in `.local` are never committed to git (add to `.gitignore`). The `--mode` flag switches which `[mode]` file is loaded: `vite --mode staging` loads `.env.staging`.
 
 **Q: Why should you centralise `import.meta.env` access in a `config.ts` file?**
+
 > Scattering `import.meta.env.VITE_*` calls throughout the codebase makes refactoring hard (rename requires many changes), bypasses type-safety, and prevents fail-fast validation. A single `config.ts` validates all vars at startup (throwing a clear error if one is missing), types them, and exports a typed `config` object. The rest of the app imports `config`, never `import.meta.env`.
 
 **Q: What does `try_files $uri $uri/ /index.html` in Nginx do for a React SPA?**
+
 > Without it: refreshing `/dashboard/settings` makes Nginx look for a file at that path — it doesn't exist — returns 404. With `try_files`: Nginx first checks for a real file (`$uri`), then a directory (`$uri/`), then falls back to `index.html` — letting React Router handle the URL client-side.
 
 **Q: What is the caching strategy for a React SPA in Nginx?**
+
 > Two rules: (1) **`index.html`**: never cache (`no-store, no-cache, must-revalidate`) — it references hashed asset filenames, so users must always get the latest. (2) **Hashed assets** (JS, CSS, images): cache forever (`Cache-Control: public, immutable, max-age=31536000`) — the hash changes on every deploy, so old cache is never stale.
 
 ---
@@ -12380,12 +13170,12 @@ eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMjMifQ.SIGNATURE
 
 ### Token Storage: The Security Dilemma
 
-| Storage               | XSS Risk | CSRF Risk               | Accessible to JS     | Recommendation            |
-| --------------------- | -------- | ----------------------- | -------------------- | ------------------------- |
-| `localStorage`        | ❌ HIGH   | ✅ None                  | Yes                  | **Avoid** for auth tokens |
-| `sessionStorage`      | ❌ HIGH   | ✅ None                  | Yes                  | **Avoid** for auth tokens |
-| **`httpOnly` Cookie** | ✅ None   | ⚠️ Needs CSRF protection | No                   | **Recommended**           |
-| Memory (React state)  | ✅ None   | ✅ None                  | Yes (during session) | Good, but lost on refresh |
+| Storage               | XSS Risk | CSRF Risk                | Accessible to JS     | Recommendation            |
+| --------------------- | -------- | ------------------------ | -------------------- | ------------------------- |
+| `localStorage`        | ❌ HIGH  | ✅ None                  | Yes                  | **Avoid** for auth tokens |
+| `sessionStorage`      | ❌ HIGH  | ✅ None                  | Yes                  | **Avoid** for auth tokens |
+| **`httpOnly` Cookie** | ✅ None  | ⚠️ Needs CSRF protection | No                   | **Recommended**           |
+| Memory (React state)  | ✅ None  | ✅ None                  | Yes (during session) | Good, but lost on refresh |
 
 > **Why `localStorage` is dangerous for auth tokens**: Any JavaScript on your page can read `localStorage`. If an attacker injects malicious JavaScript (XSS), they steal the token instantly. `httpOnly` cookies cannot be read by any JavaScript — only sent automatically by the browser.
 
@@ -12484,17 +13274,20 @@ function SafeHtmlRenderer({ htmlContent }) {
 | -------------- | ----------------------- | ------------------------ | ---------------------- |
 | Rendered where | Browser                 | Server, per request      | Server, at build time  |
 | First HTML     | Empty `<div id="root">` | Full HTML                | Full HTML              |
-| SEO            | ❌ Poor                  | ✅ Good                   | ✅ Excellent            |
+| SEO            | ❌ Poor                 | ✅ Good                  | ✅ Excellent           |
 | Data freshness | Always fresh            | Always fresh             | Stale until redeploy   |
 | Best for       | Auth dashboards, SPAs   | Public pages, e-commerce | Blogs, docs, marketing |
 
 **Q: What is hydration? What is a hydration mismatch?**
+
 > Hydration is React attaching event listeners and state to server-rendered HTML without re-creating DOM nodes. React renders the component tree client-side and matches it against the existing HTML — if they match, it just "wires up" interactivity. A **hydration mismatch** occurs when the server-rendered HTML differs from what React would render client-side (e.g., using `Math.random()`, `Date.now()`, or reading `window` during render). React must discard and re-render the mismatched subtree.
 
 **Q: Why is JWT in an `httpOnly` cookie more secure than `localStorage`?**
+
 > `localStorage` is readable by any JavaScript on the page — an XSS attack can steal the token. An `httpOnly` cookie is set by the server and is NOT accessible to JavaScript at all — only the browser sends it automatically with each request. Pair with `SameSite=Strict`/`Lax` to prevent CSRF. For most production apps: `httpOnly` + `Secure` + `SameSite=Lax` is the recommended auth token storage.
 
 **Q: What is `dangerouslySetInnerHTML` and when is it safe to use?**
+
 > It's React's explicit way to inject raw HTML into the DOM (equivalent to `element.innerHTML = ...`). It's safe ONLY when the HTML is sanitized first with a library like DOMPurify. Never pass user-provided content directly — this is the primary XSS vector in React apps.
 
 ---
@@ -12988,17 +13781,20 @@ function LikeButton({ postId, initialLikes }) {
 
 |            | Debounce                                    | Throttle                                   |
 | ---------- | ------------------------------------------- | ------------------------------------------ |
-| Fires when | After N ms of *silence* (user stops)        | At most once per N ms                      |
+| Fires when | After N ms of _silence_ (user stops)        | At most once per N ms                      |
 | Use for    | Search input, form autosave, resize-end     | Scroll handler, mouse move, resize-ongoing |
 | Example    | Fire API call 400ms after user stops typing | Update position every 200ms while dragging |
 
 **Q: What is TanStack Query? Why use it instead of `useEffect`+`useState` for data fetching?**
+
 > TanStack Query manages server state: caching, deduplication, background refetching, stale-while-revalidate, pagination, and optimistic updates — all automatically. With `useEffect`+`useState` you manually handle every case. With TanStack Query: `const { data, isLoading, error } = useQuery({ queryKey: ['user', id], queryFn: fetchUser })` — that's it. It also deduplicates — 10 components using the same query key share one network request.
 
 **Q: What is optimistic UI? What can go wrong?**
+
 > Optimistic UI updates the UI immediately (assuming the server will succeed), then reconciles with the server response. Example: clicking "Like" instantly increments the count — if the API call fails, roll back to the previous value. Risk: if the rollback is not implemented, users see a false state. React 19's `useOptimistic` hook handles the pattern natively.
 
 **Q: What is infinite scroll? How is it better than a "Load More" button?**
+
 > Infinite scroll uses `IntersectionObserver` to detect when a sentinel element (invisible div at the bottom of the list) enters the viewport, then automatically loads the next page. Better UX than a button for content feeds. Better performance than the `scroll` event (fires on every pixel — expensive) because `IntersectionObserver` only fires when the threshold is crossed.
 
 ---
@@ -13724,9 +14520,11 @@ export function reportWebVitals(metric) {
 ## Module 18 — Interview Q&A
 
 **Q: How do you handle errors in production React apps?**
+
 > Three layers: (1) **Error Boundaries** — catch synchronous render errors, show fallback UI. (2) **`try/catch` in `useEffect` and event handlers** — catch async errors. (3) **Error monitoring service** (Sentry, Datadog) — report errors with stack traces and user context. Log to the service in `componentDidCatch`. Also set up a global `window.onerror` / `unhandledrejection` handler for anything that slips through.
 
 **Q: What is `React.StrictMode` and why does it double-invoke effects in development?**
+
 > `StrictMode` intentionally mounts → unmounts → remounts every component in development to verify that: (1) effects are properly cleaned up (if your component breaks after a remount, your cleanup is wrong), (2) renders are pure (if side effects appear during the double-render, your render function isn't pure). It does nothing in production.
 
 **Q: What Core Web Vitals metrics matter for React apps?**
@@ -13738,6 +14536,7 @@ export function reportWebVitals(metric) {
 | INP    | Interaction to Next Paint | < 200ms | `useTransition` for expensive state updates        |
 
 **Q: What is the difference between `useMemo`, `useCallback`, and `React.memo`? (Comparison question)**
+
 > `React.memo` wraps a **component** — skips re-render if props didn't change. `useCallback` memoizes a **function reference** — stable reference across renders. `useMemo` memoizes a **computed value** — cached result of a calculation. They work together: `React.memo` is only effective if the props it receives are stable references — which requires `useCallback`/`useMemo` in the parent.
 
 ---
@@ -16695,12 +17494,15 @@ dayjs("03-28-2026 2:30pm", "MM-DD-YYYY h:mma"); // With time
 | Server state with background sync across tabs          | TanStack Query           |
 
 **Q: When would you use Zustand vs Jotai vs Redux Toolkit?**
+
 > Zustand: module-level store, simple `get`/`set` API, selector subscriptions, best general-purpose choice for global state without Redux ceremony. Jotai: atomic state (like Recoil) — fine-grained atoms that update only consumers of that exact atom, good for large apps with many independent state pieces. Redux Toolkit: when you need DevTools, time-travel debugging, complex middleware (saga/thunk), or team conventions.
 
 **Q: Why use Axios over the native `fetch` API?**
+
 > Axios: automatic JSON serialization/deserialization, request/response interceptors (attach auth token, handle 401 refresh globally), cancellation via `CancelToken`/`AbortController`, automatic error throwing for non-2xx status codes (fetch only throws on network errors), request timeout support. For simple apps, `fetch` is fine. For large apps with auth, Axios interceptors save significant boilerplate.
 
 **Q: What is Zod used for?**
+
 > Zod is a TypeScript-first schema validation library. Use it to: validate API response shapes (catch backend changes at runtime), validate form data (with React Hook Form's `zodResolver`), validate environment variables at startup, and parse config objects. A Zod schema both validates AND infers TypeScript types — one source of truth.
 
 ---
@@ -16709,20 +17511,20 @@ dayjs("03-28-2026 2:30pm", "MM-DD-YYYY h:mma"); // With time
 
 | Library            | Category      | Star Rating | Best For                                      |
 | ------------------ | ------------- | ----------- | --------------------------------------------- |
-| **MUI**            | UI Components | ⭐⭐⭐⭐⭐       | Enterprise apps, design system out-of-the-box |
-| **shadcn/ui**      | UI Components | ⭐⭐⭐⭐⭐       | Full control, Tailwind-first, modern projects |
-| **Radix UI**       | Headless UI   | ⭐⭐⭐⭐⭐       | Accessible primitives, bring your own styles  |
-| **Axios**          | HTTP Client   | ⭐⭐⭐⭐⭐       | Large apps needing interceptors + auth        |
-| **SWR**            | Data Fetching | ⭐⭐⭐⭐        | Simple read-heavy apps                        |
-| **TanStack Query** | Data Fetching | ⭐⭐⭐⭐⭐       | Full CRUD, mutations, devtools                |
-| **Zod**            | Validation    | ⭐⭐⭐⭐⭐       | TypeScript schema + form + API validation     |
-| **Jotai**          | State         | ⭐⭐⭐⭐        | Atomic state, simpler than Redux              |
-| **Framer Motion**  | Animation     | ⭐⭐⭐⭐⭐       | Production animations, gestures, layout       |
-| **Recharts**       | Charts        | ⭐⭐⭐⭐        | Composable SVG charts in React                |
-| **TanStack Table** | Tables        | ⭐⭐⭐⭐⭐       | Headless, sortable, filterable data grids     |
-| **Socket.io**      | Real-time     | ⭐⭐⭐⭐⭐       | Chat, live updates, collaborative features    |
-| **dnd-kit**        | Drag & Drop   | ⭐⭐⭐⭐⭐       | Sortable lists, kanban boards                 |
-| **Day.js**         | Dates         | ⭐⭐⭐⭐⭐       | Lightweight Moment.js replacement             |
+| **MUI**            | UI Components | ⭐⭐⭐⭐⭐  | Enterprise apps, design system out-of-the-box |
+| **shadcn/ui**      | UI Components | ⭐⭐⭐⭐⭐  | Full control, Tailwind-first, modern projects |
+| **Radix UI**       | Headless UI   | ⭐⭐⭐⭐⭐  | Accessible primitives, bring your own styles  |
+| **Axios**          | HTTP Client   | ⭐⭐⭐⭐⭐  | Large apps needing interceptors + auth        |
+| **SWR**            | Data Fetching | ⭐⭐⭐⭐    | Simple read-heavy apps                        |
+| **TanStack Query** | Data Fetching | ⭐⭐⭐⭐⭐  | Full CRUD, mutations, devtools                |
+| **Zod**            | Validation    | ⭐⭐⭐⭐⭐  | TypeScript schema + form + API validation     |
+| **Jotai**          | State         | ⭐⭐⭐⭐    | Atomic state, simpler than Redux              |
+| **Framer Motion**  | Animation     | ⭐⭐⭐⭐⭐  | Production animations, gestures, layout       |
+| **Recharts**       | Charts        | ⭐⭐⭐⭐    | Composable SVG charts in React                |
+| **TanStack Table** | Tables        | ⭐⭐⭐⭐⭐  | Headless, sortable, filterable data grids     |
+| **Socket.io**      | Real-time     | ⭐⭐⭐⭐⭐  | Chat, live updates, collaborative features    |
+| **dnd-kit**        | Drag & Drop   | ⭐⭐⭐⭐⭐  | Sortable lists, kanban boards                 |
+| **Day.js**         | Dates         | ⭐⭐⭐⭐⭐  | Lightweight Moment.js replacement             |
 
 ---
 
@@ -17293,6 +18095,7 @@ Button.propTypes = {
 
 The Dropdown component shows the canonical pattern for detecting clicks outside a component:
 recon
+
 ```jsx
 // components/DropDown.jsx
 import { useState, useEffect, useRef } from "react";
@@ -17503,12 +18306,15 @@ function Accordion({ items }) {
 ## Module 20 — Interview Q&A
 
 **Q: How does React Router work under the hood? Can you build a basic router without it?**
+
 > Yes. Three browser primitives: (1) `window.location.pathname` — current URL. (2) `history.pushState(null, '', '/path')` — change URL without page reload. (3) `window.addEventListener('popstate', handler)` — fires when back/forward buttons are pressed. A minimal router: store `currentPath` in state, listen for `popstate` to update it, a `<Route>` component renders children only if `path === currentPath`, a `<Link>` calls `pushState` + updates state.
 
 **Q: What is the config-driven Table pattern? How does it work?**
+
 > Define a `columns` array where each entry has `{ label, render, sortValue }`. A generic `Table` component iterates `columns` to render headers and rows — it doesn't know what data it contains. `render` is a function `(row) => ReactNode` for custom cell formatting. `sortValue` is a function `(row) => string|number` for type-safe sorting. One `Table` component handles any data shape.
 
 **Q: How would you detect a click outside a dropdown/modal and close it?**
+
 ```jsx
 function useOnClickOutside(ref, handler) {
     useEffect(() => {
@@ -17516,18 +18322,20 @@ function useOnClickOutside(ref, handler) {
             if (!ref.current || ref.current.contains(e.target)) return;
             handler(e);
         };
-        document.addEventListener('mousedown', listener);
-        document.addEventListener('touchstart', listener);
+        document.addEventListener("mousedown", listener);
+        document.addEventListener("touchstart", listener);
         return () => {
-            document.removeEventListener('mousedown', listener);
-            document.removeEventListener('touchstart', listener);
+            document.removeEventListener("mousedown", listener);
+            document.removeEventListener("touchstart", listener);
         };
     }, [ref, handler]);
 }
 ```
+
 > Attach a `mousedown` listener to `document`. If the click target is NOT inside the ref'd element (`!ref.current.contains(event.target)`), call the handler. Use `mousedown` (not `click`) so the handler fires before the element's own click handler.
 
 **Q: Why use `ReactDOM.createPortal` for modals instead of a regular positioned div?**
+
 > A regular positioned modal inside a component with `overflow: hidden` or a lower `z-index` stacking context will be visually clipped or hidden behind other elements — no matter how high you set `z-index`. Portals render into a separate DOM node (e.g., `<div class="modal-root">` directly under `<body>`) that is outside any stacking context, guaranteeing the modal appears above everything. React event bubbling still works through the component tree.
 
 ---
@@ -17791,9 +18599,9 @@ const value = inputRef.current.value;
 | ------------------------ | ----------------------- | ---------------------------------- |
 | Source of truth          | React state             | DOM                                |
 | Validation timing        | On every change         | On submit only                     |
-| Instant feedback         | ✅                       | ❌                                  |
+| Instant feedback         | ✅                      | ❌                                 |
 | Re-renders per keystroke | Yes                     | No                                 |
-| File inputs              | ❌ (read-only)           | ✅ Always uncontrolled              |
+| File inputs              | ❌ (read-only)          | ✅ Always uncontrolled             |
 | Library support          | React Hook Form, Formik | React Hook Form (register pattern) |
 
 ---
@@ -17837,6 +18645,472 @@ Virtual DOM (prev)          Virtual DOM (next)
                                            ↑
                               New node — only this gets inserted to real DOM
 ```
+
+---
+
+### Q9-T: Explain the Rules of Hooks. Why can't hooks be called inside loops or conditions? (Amazon, Google, Meta)
+
+**What they're testing**: Whether you understand _why_ the rules exist, not just what they are.
+
+**The two rules**:
+
+1. Only call hooks at the **top level** — never inside loops, conditions, or nested functions
+2. Only call hooks from **React function components** or other custom hooks
+
+**Why these rules exist — the linked list internals**:
+
+React stores all hooks for a component as a **linked list** on the Fiber node. Each `useState`, `useEffect`, `useRef` call corresponds to a node at a fixed position in that list. React matches hooks to their state by **call order index** — not by name.
+
+```jsx
+// On first render, React builds this list:
+//  slot 0: useState(0)   → count = 0
+//  slot 1: useState("")  → name = ""
+//  slot 2: useEffect(fn) → effect
+
+function Counter() {
+  const [count, setCount] = useState(0);    // slot 0
+  const [name, setName]   = useState("");   // slot 1
+  useEffect(() => { ... }, [count]);        // slot 2
+}
+
+// On re-render, React reads the SAME slots in the SAME order
+// If slot 0 is always useState, it correctly gives back count=0
+```
+
+**What breaks when you put a hook in a condition**:
+
+```jsx
+// ❌ BROKEN — conditional hook shifts all subsequent slot indices
+function BrokenComponent({ showExtra }) {
+    const [count, setCount] = useState(0); // slot 0
+
+    if (showExtra) {
+        const [extra, setExtra] = useState(""); // slot 1 — only sometimes!
+    }
+
+    const [name, setName] = useState(""); // slot 1 OR slot 2 depending on showExtra
+    //                                         ↑ React is now reading the wrong slot!
+}
+
+// First render (showExtra=true):  slots → [count, extra, name]
+// Re-render    (showExtra=false): slots → [count, name]
+//   → React reads slot 1 expecting 'extra' but gets 'name' → wrong state!
+```
+
+> **One-line answer**: "Hooks rely on call order to match state to the correct slot in the fiber's linked list. A conditional hook would shift all subsequent indices on re-renders, corrupting the state mapping."
+
+---
+
+### Q10-T: What is the difference between the Render Phase and the Commit Phase? (Meta, Microsoft)
+
+**What they're testing**: Whether you understand what happens inside React _before_ the DOM is touched.
+
+```
+RENDER PHASE  ──────────────────────────────────────────────
+  • React calls your component function (pure computation)
+  • Builds the new Fiber tree (work-in-progress tree)
+  • Diffs prev tree vs new tree (reconciliation)
+  • Interruptible — React can pause/abort/restart this phase
+  • No DOM mutations happen here
+  • Runs on a "work-in-progress" copy, not the real tree
+
+COMMIT PHASE  ──────────────────────────────────────────────
+  • React applies the computed diff to the real DOM
+  • Synchronous — cannot be interrupted once started
+  • Three sub-phases:
+      beforeMutation → getSnapshotBeforeUpdate
+      mutation       → DOM insertions, updates, deletions
+      layout         → useLayoutEffect, componentDidMount/Update
+  • After commit: browser paints, then useEffect runs
+```
+
+```jsx
+// Render phase — pure, side-effect free
+function MyComponent({ count }) {
+    // ✅ This runs in render phase — must be pure
+    // ❌ Never: fetch(), DOM mutation, console.log with side effects
+    return <div>{count}</div>;
+}
+
+// After commit:
+useLayoutEffect(() => {
+    // Runs SYNCHRONOUSLY after DOM update, before paint
+    // Safe to read/write DOM here
+    const height = ref.current.offsetHeight; // accurate measurement
+}, []);
+
+useEffect(() => {
+    // Runs ASYNCHRONOUSLY after paint
+    // Safe for data fetching, subscriptions, analytics
+}, []);
+```
+
+|                | Render Phase                 | Commit Phase                     |
+| -------------- | ---------------------------- | -------------------------------- |
+| What runs      | Component functions, diffing | DOM mutations, lifecycle methods |
+| Interruptible? | ✅ Yes (Concurrent Mode)     | ❌ No — synchronous              |
+| DOM available? | ❌ No                        | ✅ Yes                           |
+| Side effects?  | ❌ Forbidden                 | ✅ Allowed                       |
+
+---
+
+### Q11-T: When do you use `useReducer` instead of `useState`? (Amazon, Flipkart, Atlassian)
+
+**What they're testing**: State modeling judgment — not just knowing the API.
+
+```jsx
+// useState — simple, independent values
+const [count, setCount] = useState(0);
+const [name, setName] = useState("");
+
+// useReducer — when state transitions are complex or related
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+**Use `useReducer` when**:
+
+```jsx
+// 1. Multiple related fields that change together
+const initialState = { isLoading: false, data: null, error: null };
+
+function fetchReducer(state, action) {
+    switch (action.type) {
+        case "FETCH_START":
+            return { isLoading: true, data: null, error: null };
+        case "FETCH_SUCCESS":
+            return { isLoading: false, data: action.data, error: null };
+        case "FETCH_ERROR":
+            return { isLoading: false, data: null, error: action.error };
+    }
+}
+// With useState you'd need 3 separate setters and risk inconsistent state
+// (e.g., isLoading=true AND error set simultaneously)
+
+// 2. Next state depends on previous state via multiple transitions
+// 3. You want testable, pure state logic (reducers are just functions)
+// 4. Complex event-driven UI (shopping cart, form wizard, game state)
+```
+
+**Decision matrix**:
+
+| Scenario                                            | Use                    |
+| --------------------------------------------------- | ---------------------- |
+| 1–2 independent boolean/string values               | `useState`             |
+| Object with 3+ fields updated together              | `useReducer`           |
+| Complex transitions (ADD, REMOVE, INCREMENT, RESET) | `useReducer`           |
+| State logic you want to unit test separately        | `useReducer`           |
+| Sharing state update logic across components        | `useReducer` + Context |
+
+> **Key insight**: `useReducer` is not about complexity — it's about **co-locating related state transitions** and making them pure, predictable, and testable.
+
+---
+
+### Q12-T: How does `React.lazy` and `Suspense` work? What is code splitting? (Uber, Swiggy, Adobe)
+
+**What they're testing**: Performance awareness — understanding bundle size and on-demand loading.
+
+**The problem without code splitting**:
+
+```
+dist/main.js  ← 2MB bundle — user downloads ALL routes on first visit
+               (AdminPanel, Charts, Settings — even if they never visit those pages)
+```
+
+**`React.lazy` + dynamic `import()` — download only what's needed**:
+
+```jsx
+import { lazy, Suspense } from "react";
+
+// lazy() takes a function that returns a dynamic import()
+// The chunk is NOT downloaded until AdminPanel is first rendered
+const AdminPanel = lazy(() => import("./pages/AdminPanel"));
+const Charts = lazy(() => import("./pages/Charts"));
+
+function App() {
+    return (
+        <Router>
+            {/* Suspense catches the "loading" state while the chunk downloads */}
+            <Suspense fallback={<PageSpinner />}>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/admin" element={<AdminPanel />} />{" "}
+                    {/* chunk loaded on demand */}
+                    <Route path="/charts" element={<Charts />} />{" "}
+                    {/* chunk loaded on demand */}
+                </Routes>
+            </Suspense>
+        </Router>
+    );
+}
+```
+
+**What happens at build time**:
+
+```
+dist/
+├── main.a3f9.js          ← core app (Home, NavBar, etc.)
+├── AdminPanel.b7c2.js    ← separate chunk — downloaded only on /admin
+└── Charts.e1d4.js        ← separate chunk — downloaded only on /charts
+```
+
+**Nested Suspense for granular loading UI**:
+
+```jsx
+// Outer Suspense: page-level skeleton
+// Inner Suspense: smaller widget-level spinner
+<Suspense fallback={<PageSkeleton />}>
+    <Dashboard>
+        <Suspense fallback={<ChartSpinner />}>
+            <HeavyChartComponent /> {/* finer-grained loading */}
+        </Suspense>
+    </Dashboard>
+</Suspense>
+```
+
+**Follow-up: What is `Suspense` for data fetching?**
+
+```jsx
+// In React 18+ with a Suspense-aware data library (React Query, Relay, use() hook)
+// A component can "suspend" while data is loading — same Suspense boundary catches it
+function Profile({ userId }) {
+    const user = use(fetchUser(userId)); // suspends if promise is pending
+    return <h1>{user.name}</h1>;
+}
+
+<Suspense fallback={<Spinner />}>
+    <Profile userId={42} />
+</Suspense>;
+```
+
+---
+
+### Q13-T: What is a Custom Hook? What makes it different from a regular function? (All MNCs)
+
+**What they're testing**: Understanding of hook composition and when to extract a custom hook.
+
+**The difference**:
+
+```jsx
+// Regular function — can NOT call hooks inside
+function calculateTotal(items) {
+    // ❌ cannot call useState, useEffect here
+    return items.reduce((sum, i) => sum + i.price, 0);
+}
+
+// Custom Hook — CAN call hooks inside (MUST start with 'use')
+function useCartTotal(items) {
+    const [total, setTotal] = useState(0); // ✅ hooks allowed
+
+    useEffect(() => {
+        setTotal(items.reduce((sum, i) => sum + i.price * i.qty, 0));
+    }, [items]);
+
+    return total;
+}
+```
+
+**The `use` prefix is not just convention** — React's linting rules (`eslint-plugin-react-hooks`) uses the `use` prefix to identify hooks and enforce the Rules of Hooks on them. A function named `calculateTotal` that calls `useState` internally will NOT be validated by the linter.
+
+**When to extract a custom hook**:
+
+```jsx
+// ❌ Logic mixed inside component — hard to reuse, hard to test
+function UserProfile({ userId }) {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setLoading(true);
+        fetchUser(userId)
+            .then(setUser)
+            .catch(setError)
+            .finally(() => setLoading(false));
+    }, [userId]);
+
+    if (loading) return <Spinner />;
+    if (error) return <Error message={error.message} />;
+    return <div>{user.name}</div>;
+}
+
+// ✅ Extracted custom hook — reusable across any component
+function useFetch(url) {
+    const [state, setState] = useState({
+        data: null,
+        loading: true,
+        error: null,
+    });
+
+    useEffect(() => {
+        let cancelled = false;
+        setState({ data: null, loading: true, error: null });
+        fetch(url)
+            .then((r) => r.json())
+            .then(
+                (data) =>
+                    !cancelled &&
+                    setState({ data, loading: false, error: null }),
+            )
+            .catch(
+                (error) =>
+                    !cancelled &&
+                    setState({ data: null, loading: false, error }),
+            );
+        return () => {
+            cancelled = true;
+        };
+    }, [url]);
+
+    return state;
+}
+
+// Now reusable anywhere:
+function UserProfile({ userId }) {
+    const { data: user, loading, error } = useFetch(`/api/users/${userId}`);
+    if (loading) return <Spinner />;
+    if (error) return <Error message={error.message} />;
+    return <div>{user.name}</div>;
+}
+```
+
+> **One-line answer**: "A custom hook is a JavaScript function that starts with `use` and can call other hooks. It's a pattern to extract and reuse stateful logic between components — not a React API, just a convention enforced by the linter."
+
+---
+
+### Q14-T: What is `forwardRef`? When would you need it? (Google, Adobe, Razorpay)
+
+**What they're testing**: Understanding of ref mechanics in component boundaries.
+
+**The problem**:
+
+```jsx
+// ❌ This doesn't work — ref on a custom component gets the component instance (undefined for functions)
+function MyInput(props) {
+    return <input {...props} />;
+}
+
+function Parent() {
+    const ref = useRef();
+    return <MyInput ref={ref} />; // ← ref.current is undefined ❌
+    // React doesn't forward refs to function components by default
+}
+```
+
+**`forwardRef` — thread the ref through the component**:
+
+```jsx
+import { forwardRef, useRef } from "react";
+
+// forwardRef wraps your component and passes ref as the second argument
+const MyInput = forwardRef(function MyInput(props, ref) {
+    return <input ref={ref} {...props} />;
+});
+
+function Parent() {
+    const inputRef = useRef();
+
+    function focusInput() {
+        inputRef.current.focus(); // ✅ now works — ref points to the <input> DOM node
+    }
+
+    return (
+        <>
+            <MyInput ref={inputRef} placeholder="Type here..." />
+            <button onClick={focusInput}>Focus</button>
+        </>
+    );
+}
+```
+
+**`useImperativeHandle` — control what the parent can access via ref**:
+
+```jsx
+const FancyInput = forwardRef(function FancyInput(props, ref) {
+    const inputRef = useRef();
+
+    // Expose only specific methods — not the raw DOM node
+    useImperativeHandle(ref, () => ({
+        focus: () => inputRef.current.focus(),
+        clear: () => {
+            inputRef.current.value = "";
+        },
+        // Parent cannot access inputRef.current directly — only focus() and clear()
+    }));
+
+    return <input ref={inputRef} {...props} />;
+});
+
+// Parent usage:
+fanRef.current.focus(); // ✅
+fanRef.current.clear(); // ✅
+fanRef.current.value; // ❌ undefined — intentionally hidden
+```
+
+**React 19 update**: In React 19, `ref` is now a regular prop — `forwardRef` is no longer needed:
+
+```jsx
+// React 19 — ref as a regular prop (no forwardRef needed)
+function MyInput({ ref, ...props }) {
+    return <input ref={ref} {...props} />;
+}
+```
+
+---
+
+### Q15-T: What is the Virtual DOM? How is it different from the Real DOM and the Shadow DOM? (All MNCs)
+
+**What they're testing**: Whether you can clearly articulate the Virtual DOM — a very common surface-level question with depth expected.
+
+**Real DOM** — the browser's internal tree of nodes. Updating it is expensive because the browser must:
+
+1. Recalculate styles (Style)
+2. Compute layout positions (Layout / Reflow)
+3. Paint pixels (Paint)
+4. Composite layers (Composite)
+
+**Virtual DOM** — a plain JavaScript object tree that mirrors the structure of the real DOM. It lives entirely in memory.
+
+```js
+// A React element (Virtual DOM node) is just this plain object:
+{
+  type: "div",
+  props: {
+    className: "card",
+    children: [
+      { type: "h1", props: { children: "Alice" } },
+      { type: "p",  props: { children: "Engineer" } }
+    ]
+  }
+}
+// Creating JS objects: almost free
+// Inserting into real DOM: expensive (triggers reflow/repaint)
+```
+
+**How the Virtual DOM makes React fast**:
+
+```
+1. State changes → React creates a NEW Virtual DOM tree
+2. React diffs OLD tree vs NEW tree (reconciliation, O(n))
+3. React computes the MINIMAL set of real DOM changes needed
+4. React applies ONLY those changes to the real DOM (batch update)
+
+Instead of:  innerHTML = newHTML  (destroys and rebuilds entire subtree)
+React does:  update only the 2 attributes that actually changed
+```
+
+**Shadow DOM** — a completely different browser concept:
+
+```
+Virtual DOM                          Shadow DOM
+──────────────────────────────────   ──────────────────────────────────
+A JavaScript technique in React      A native browser API
+Lives in JS memory                   Built into the browser
+React's internal optimization        Used for web components encapsulation
+No style encapsulation               True CSS encapsulation
+Destroyed and recreated on render    Persistent — part of the live DOM
+```
+
+> **Common mistake**: Candidates confuse these. Virtual DOM is React's performance technique (JS objects + diffing). Shadow DOM is a browser API for CSS encapsulation in web components (e.g., `<video>` controls, `<input type="range">`).
 
 ---
 
@@ -18675,17 +19949,766 @@ axios.interceptors.request.use((config) => {
 
 ---
 
+## 21.5 — React 18 & 19: Concurrent Features & New APIs
+
+> These are the **highest-signal** questions in 2025–2026 interviews. Every FAANG/MNC interviewer expects you to know these.
+
+---
+
+### Q22: What is `useTransition`? How is it different from a normal state update? (Google, Meta, Adobe)
+
+**What they're testing**: Whether you understand React 18 Concurrent Mode and can identify when a state update is non-urgent.
+
+**The problem** — without `useTransition`:
+
+```jsx
+// Typing in a search box triggers both:
+// 1. Update the input value (urgent — must feel instant)
+// 2. Filter a 10,000-item list (expensive — can be slightly delayed)
+// Both happen synchronously → typing feels sluggish on large lists
+
+function SearchList({ items }) {
+    const [query, setQuery] = useState("");
+    const filtered = items.filter((i) => i.name.includes(query)); // blocks every keystroke
+
+    return (
+        <>
+            <input value={query} onChange={(e) => setQuery(e.target.value)} />
+            {filtered.map((i) => (
+                <Row key={i.id} item={i} />
+            ))}
+        </>
+    );
+}
+```
+
+**Fix with `useTransition`** — mark the expensive update as non-urgent:
+
+```jsx
+import { useState, useTransition } from "react";
+
+function SearchList({ items }) {
+    const [query, setQuery] = useState("");
+    const [filterQuery, setFilterQuery] = useState("");
+    const [isPending, startTransition] = useTransition();
+
+    function handleChange(e) {
+        setQuery(e.target.value); // ← urgent: updates input immediately
+
+        startTransition(() => {
+            setFilterQuery(e.target.value); // ← non-urgent: React can defer this
+        });
+    }
+
+    const filtered = items.filter((i) => i.name.includes(filterQuery));
+
+    return (
+        <>
+            <input value={query} onChange={handleChange} />
+            {isPending && <span>Updating...</span>}{" "}
+            {/* show loading indicator */}
+            {filtered.map((i) => (
+                <Row key={i.id} item={i} />
+            ))}
+        </>
+    );
+}
+```
+
+**What React does under the hood**:
+
+- The `setQuery` update (urgent) commits immediately — input stays responsive
+- The `setFilterQuery` update (inside `startTransition`) is scheduled at lower priority
+- If the user types again before the filter finishes, React **aborts** the in-progress filter render and starts fresh — avoiding wasted work
+
+|                         | Normal `setState`     | `startTransition`                                |
+| ----------------------- | --------------------- | ------------------------------------------------ |
+| Priority                | Urgent (blocks)       | Non-urgent (interruptible)                       |
+| `isPending`             | Not available         | `true` while pending                             |
+| Interrupts on new input | No                    | ✅ Yes — aborts stale work                       |
+| Use for                 | Input, click response | Heavy filtering, tab switches, route transitions |
+
+> **One-line answer**: "`useTransition` marks a state update as non-urgent, letting React stay responsive to urgent updates (typing) while deferring the expensive render (filtering a large list). React will abort and restart the deferred render if a newer update comes in."
+
+---
+
+### Q23: What is `useDeferredValue`? When do you use it instead of `useTransition`? (Amazon, Flipkart)
+
+**The key difference**:
+
+```
+useTransition  → you control the state update (you have the setter)
+useDeferredValue → you receive a value from outside (prop or parent state)
+```
+
+```jsx
+import { useState, useDeferredValue } from "react";
+
+function SearchList({ items }) {
+    const [query, setQuery] = useState("");
+
+    // Defer the query passed to the expensive filter
+    // query updates immediately (input stays snappy)
+    // deferredQuery lags behind — React renders with the old value first
+    const deferredQuery = useDeferredValue(query);
+
+    const filtered = items.filter((i) => i.name.includes(deferredQuery));
+
+    // Show stale indicator while deferred value is catching up
+    const isStale = query !== deferredQuery;
+
+    return (
+        <>
+            <input value={query} onChange={(e) => setQuery(e.target.value)} />
+            <ul style={{ opacity: isStale ? 0.7 : 1 }}>
+                {filtered.map((i) => (
+                    <li key={i.id}>{i.name}</li>
+                ))}
+            </ul>
+        </>
+    );
+}
+```
+
+**When to use which**:
+
+| Scenario                                                      | Use                                            |
+| ------------------------------------------------------------- | ---------------------------------------------- |
+| You own the state setter (local state)                        | `useTransition`                                |
+| Value comes from a prop or context (you don't own the setter) | `useDeferredValue`                             |
+| Need a loading spinner during the transition                  | `useTransition` (`isPending`)                  |
+| Wrapping an expensive child component                         | `useDeferredValue` + `React.memo` on the child |
+
+> **Pro tip**: Wrap the expensive consumer in `React.memo`. Otherwise `useDeferredValue` doesn't help — the child re-renders every time regardless.
+
+---
+
+### Q24: What is Automatic Batching in React 18? (Microsoft, Razorpay)
+
+**Before React 18** — batching only worked inside React event handlers:
+
+```jsx
+// React 17: batches updates inside event handlers
+function handleClick() {
+    setCount((c) => c + 1); // ← batched
+    setFlag((f) => !f); // ← batched → only 1 re-render total ✔
+}
+
+// React 17: NO batching outside event handlers
+setTimeout(() => {
+    setCount((c) => c + 1); // ← triggers re-render immediately
+    setFlag((f) => !f); // ← triggers another re-render
+    // 2 separate re-renders ❌
+}, 1000);
+
+// React 17: NO batching in Promises
+fetch("/api").then(() => {
+    setData(result); // re-render 1
+    setLoading(false); // re-render 2
+    // 2 re-renders ❌
+});
+```
+
+**React 18 — Automatic Batching everywhere**:
+
+```jsx
+// React 18: ALL these are now batched automatically
+setTimeout(() => {
+    setCount((c) => c + 1);
+    setFlag((f) => !f);
+    // ✅ Only 1 re-render
+}, 1000);
+
+fetch("/api").then(() => {
+    setData(result);
+    setLoading(false);
+    // ✅ Only 1 re-render
+});
+```
+
+**Opt out when needed** — use `flushSync` (rare):
+
+```jsx
+import { flushSync } from "react-dom";
+
+flushSync(() => setCount((c) => c + 1)); // forces immediate re-render
+flushSync(() => setFlag((f) => !f)); // forces another immediate re-render
+// Use case: you need to read a DOM measurement between two state updates
+```
+
+---
+
+### Q25: What are the key new features in React 19? (Senior / Staff roles)
+
+React 19 (stable Dec 2024) introduced several major APIs:
+
+#### `use()` — Read Resources in Render
+
+```jsx
+import { use, Suspense } from "react";
+
+// use() can read a Promise directly inside a component
+// Suspense catches the pending state and shows fallback
+function UserProfile({ userPromise }) {
+    const user = use(userPromise); // suspends if promise is pending
+    return <h1>Hello, {user.name}</h1>;
+}
+
+// Parent wraps it in Suspense
+<Suspense fallback={<Spinner />}>
+    <UserProfile userPromise={fetchUser(userId)} />
+</Suspense>;
+
+// use() can also read Context (like useContext, but usable conditionally)
+function Toolbar({ showTheme }) {
+    if (showTheme) {
+        const theme = use(ThemeContext); // ← allowed inside conditionals!
+        return <div style={{ color: theme.text }}>...</div>;
+    }
+    return null;
+}
+```
+
+#### `useOptimistic()` — Optimistic UI Updates
+
+```jsx
+import { useOptimistic } from "react";
+
+function MessageList({ messages, sendMessage }) {
+    const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+        messages,
+        (state, newMessage) => [...state, { ...newMessage, sending: true }],
+    );
+
+    async function handleSubmit(text) {
+        addOptimisticMessage({ id: Date.now(), text }); // immediate UI update
+        await sendMessage(text); // actual API call
+        // When sendMessage resolves, optimistic message is replaced by real one
+    }
+
+    return (
+        <ul>
+            {optimisticMessages.map((m) => (
+                <li key={m.id} style={{ opacity: m.sending ? 0.6 : 1 }}>
+                    {m.text}
+                </li>
+            ))}
+        </ul>
+    );
+}
+```
+
+#### React Compiler (Experimental → Stable track in 2025)
+
+```jsx
+// Before React Compiler — you manually add memo/useCallback/useMemo
+const MemoizedCard = React.memo(UserCard);
+const stableCallback = useCallback(() => handleClick(id), [id]);
+const derived = useMemo(() => expensiveCalc(data), [data]);
+
+// With React Compiler — it automatically adds these optimizations at build time
+// You write plain React code, compiler inserts memoization where needed
+function UserCard({ user }) {
+    // Compiler detects this is pure and memoizes automatically
+    return <div>{user.name}</div>;
+}
+```
+
+> **Key React 19 changes summary**:
+> | Feature | What It Does |
+> |---|---|
+> | `use(promise)` | Read async data directly in render (replaces some `useEffect` data patterns) |
+> | `use(Context)` | Like `useContext` but works conditionally |
+> | `useOptimistic` | Show optimistic UI instantly, roll back on error |
+> | `useFormStatus` | Read pending state of a parent `<form>` (for submit buttons) |
+> | `useActionState` | Manage form action state (loading + result) |
+> | React Compiler | Auto-memoization — eliminates most `useMemo`/`useCallback` boilerplate |
+> | Server Actions | `async` functions that run on the server, called from client components |
+> | `ref` as prop | No more `forwardRef` — pass `ref` as a regular prop in React 19 |
+
+---
+
+### Q26: What is `startTransition` without the hook? When do you use it? (Uber, Atlassian)
+
+```jsx
+import { startTransition } from "react"; // standalone function (no hook needed)
+
+// useTransition gives you isPending — use when you need a loading indicator
+const [isPending, startTransition] = useTransition();
+startTransition(() => setTab("profile"));
+
+// startTransition (standalone) — no isPending — use when you don't need loading state
+import { startTransition } from "react";
+startTransition(() => setTab("profile")); // simpler, no hook required
+
+// Primary use case: route transitions in a router
+function navigate(url) {
+    startTransition(() => {
+        setCurrentRoute(url); // mark route change as non-urgent
+    });
+}
+```
+
+**Difference from `setTimeout`**:
+
+```jsx
+// setTimeout — delays the update by time (arbitrary, not tied to rendering)
+setTimeout(() => setQuery(value), 0);
+// Problem: React doesn't know this is low-priority. The update still blocks.
+// Also: if user types fast, many timeouts queue up → stale updates arrive late
+
+// startTransition — marks the update as low priority in React's scheduler
+startTransition(() => setQuery(value));
+// React knows this is interruptible. New urgent updates automatically preempt it.
+// No stale update problem — React aborts and restarts.
+```
+
+---
+
+## 21.6 — Additional Machine Coding Questions
+
+---
+
+### Q27: Build a Typeahead / Autocomplete Component (Flipkart, Amazon, Google)
+
+**Problem**: Build a search input that shows a dropdown of suggestions as the user types. Requirements: debounce the API call, support keyboard navigation (↑↓ to move, Enter to select, Escape to close).
+
+```jsx
+import { useState, useEffect, useRef, useCallback } from "react";
+
+function useDebounce(value, delay = 300) {
+    const [debounced, setDebounced] = useState(value);
+    useEffect(() => {
+        const t = setTimeout(() => setDebounced(value), delay);
+        return () => clearTimeout(t);
+    }, [value, delay]);
+    return debounced;
+}
+
+function Autocomplete({ onSelect, fetchSuggestions }) {
+    const [query, setQuery] = useState("");
+    const [suggestions, setSuggestions] = useState([]);
+    const [activeIndex, setActiveIndex] = useState(-1); // keyboard nav pointer
+    const [isOpen, setIsOpen] = useState(false);
+    const debouncedQuery = useDebounce(query, 300);
+    const listRef = useRef(null);
+
+    // Fetch suggestions whenever debounced query changes
+    useEffect(() => {
+        if (!debouncedQuery.trim()) {
+            setSuggestions([]);
+            setIsOpen(false);
+            return;
+        }
+
+        let cancelled = false;
+        fetchSuggestions(debouncedQuery).then((results) => {
+            if (!cancelled) {
+                setSuggestions(results);
+                setIsOpen(true);
+                setActiveIndex(-1);
+            }
+        });
+        return () => {
+            cancelled = true;
+        }; // AbortController equivalent for promises
+    }, [debouncedQuery, fetchSuggestions]);
+
+    // Keyboard navigation
+    function handleKeyDown(e) {
+        if (!isOpen) return;
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
+        } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            setActiveIndex((i) => Math.max(i - 1, -1));
+        } else if (e.key === "Enter" && activeIndex >= 0) {
+            selectItem(suggestions[activeIndex]);
+        } else if (e.key === "Escape") {
+            setIsOpen(false);
+            setActiveIndex(-1);
+        }
+    }
+
+    function selectItem(item) {
+        setQuery(item.label);
+        setIsOpen(false);
+        setSuggestions([]);
+        onSelect(item);
+    }
+
+    // Close on outside click
+    useEffect(() => {
+        function handleOutsideClick(e) {
+            if (listRef.current && !listRef.current.contains(e.target))
+                setIsOpen(false);
+        }
+        document.addEventListener("mousedown", handleOutsideClick);
+        return () =>
+            document.removeEventListener("mousedown", handleOutsideClick);
+    }, []);
+
+    return (
+        <div ref={listRef} style={{ position: "relative" }}>
+            <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onFocus={() => suggestions.length && setIsOpen(true)}
+                placeholder="Search..."
+                aria-autocomplete="list"
+                aria-controls="suggestions-list"
+                aria-activedescendant={
+                    activeIndex >= 0 ? `option-${activeIndex}` : undefined
+                }
+            />
+            {isOpen && suggestions.length > 0 && (
+                <ul
+                    id="suggestions-list"
+                    role="listbox"
+                    style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        background: "#fff",
+                        border: "1px solid #ccc",
+                        listStyle: "none",
+                        margin: 0,
+                        padding: 0,
+                        zIndex: 100,
+                    }}
+                >
+                    {suggestions.map((item, index) => (
+                        <li
+                            key={item.id}
+                            id={`option-${index}`}
+                            role="option"
+                            aria-selected={index === activeIndex}
+                            onMouseDown={() => selectItem(item)} // mousedown fires before blur
+                            style={{
+                                padding: "8px 12px",
+                                background:
+                                    index === activeIndex
+                                        ? "#e8f0fe"
+                                        : "transparent",
+                                cursor: "pointer",
+                            }}
+                        >
+                            {item.label}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
+}
+```
+
+**Follow-up interview questions**:
+
+- _Why `onMouseDown` instead of `onClick` on list items?_ — `onClick` fires after `onBlur`, which would close the dropdown before the click registers. `mousedown` fires before `blur`.
+- _How do you handle stale responses (slow network returning old results)?_ — The `cancelled` flag in the `useEffect` cleanup ignores responses for superseded queries.
+- _How would you cache results?_ — `useRef` to keep a `Map<query, results>` — check before fetching.
+
+---
+
+### Q28: Build a Shopping Cart with `useReducer` (Amazon, Myntra, Meesho)
+
+**Problem**: Build an add-to-cart system with add, remove, increment, decrement, and clear. Use `useReducer` to manage complex state transitions.
+
+```jsx
+import { useReducer, createContext, useContext } from "react";
+
+// ─── Reducer ────────────────────────────────────────────────
+const cartReducer = (state, action) => {
+    switch (action.type) {
+        case "ADD_ITEM": {
+            const existing = state.find((i) => i.id === action.item.id);
+            if (existing) {
+                return state.map((i) =>
+                    i.id === action.item.id ? { ...i, qty: i.qty + 1 } : i,
+                );
+            }
+            return [...state, { ...action.item, qty: 1 }];
+        }
+        case "REMOVE_ITEM":
+            return state.filter((i) => i.id !== action.id);
+
+        case "INCREMENT":
+            return state.map((i) =>
+                i.id === action.id ? { ...i, qty: i.qty + 1 } : i,
+            );
+
+        case "DECREMENT":
+            return state
+                .map((i) => (i.id === action.id ? { ...i, qty: i.qty - 1 } : i))
+                .filter((i) => i.qty > 0); // auto-remove when qty reaches 0
+
+        case "CLEAR":
+            return [];
+
+        default:
+            return state;
+    }
+};
+
+// ─── Context ────────────────────────────────────────────────
+const CartContext = createContext(null);
+
+export function CartProvider({ children }) {
+    const [cart, dispatch] = useReducer(cartReducer, []);
+
+    const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+    const totalPrice = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+    return (
+        <CartContext.Provider
+            value={{ cart, dispatch, totalItems, totalPrice }}
+        >
+            {children}
+        </CartContext.Provider>
+    );
+}
+
+export const useCart = () => useContext(CartContext);
+
+// ─── Product Card ────────────────────────────────────────────
+function ProductCard({ product }) {
+    const { cart, dispatch } = useCart();
+    const inCart = cart.find((i) => i.id === product.id);
+
+    return (
+        <div className="product-card">
+            <h3>{product.name}</h3>
+            <p>₹{product.price}</p>
+            {inCart ? (
+                <div className="qty-controls">
+                    <button
+                        onClick={() =>
+                            dispatch({ type: "DECREMENT", id: product.id })
+                        }
+                    >
+                        −
+                    </button>
+                    <span>{inCart.qty}</span>
+                    <button
+                        onClick={() =>
+                            dispatch({ type: "INCREMENT", id: product.id })
+                        }
+                    >
+                        +
+                    </button>
+                </div>
+            ) : (
+                <button
+                    onClick={() =>
+                        dispatch({ type: "ADD_ITEM", item: product })
+                    }
+                >
+                    Add to Cart
+                </button>
+            )}
+        </div>
+    );
+}
+
+// ─── Cart Summary ────────────────────────────────────────────
+function CartSummary() {
+    const { cart, dispatch, totalItems, totalPrice } = useCart();
+    return (
+        <div>
+            <h2>Cart ({totalItems} items)</h2>
+            {cart.map((item) => (
+                <div key={item.id}>
+                    <span>
+                        {item.name} × {item.qty}
+                    </span>
+                    <span>₹{item.price * item.qty}</span>
+                    <button
+                        onClick={() =>
+                            dispatch({ type: "REMOVE_ITEM", id: item.id })
+                        }
+                    >
+                        ✕
+                    </button>
+                </div>
+            ))}
+            <strong>Total: ₹{totalPrice}</strong>
+            <button onClick={() => dispatch({ type: "CLEAR" })}>
+                Clear Cart
+            </button>
+        </div>
+    );
+}
+```
+
+**Why `useReducer` over `useState` here**:
+
+- Multiple related state transitions (add, remove, increment, decrement, clear)
+- The next state depends on the previous state
+- Easy to test the reducer in isolation: `expect(cartReducer(state, action)).toEqual(expected)`
+- Reducer is a pure function — predictable, debuggable
+
+---
+
+### Q29: Build a Global Toast / Notification System (Razorpay, Swiggy, Uber)
+
+**Problem**: Build a toast system where any component in the app can trigger a notification — success, error, warning. Toasts auto-dismiss after 3 seconds.
+
+```jsx
+import { createContext, useContext, useReducer, useCallback } from "react";
+import { createPortal } from "react-dom";
+
+// ─── Types ───────────────────────────────────────────────────
+// Toast: { id, message, type: 'success' | 'error' | 'warning', duration }
+
+// ─── Reducer ────────────────────────────────────────────────
+function toastReducer(state, action) {
+    switch (action.type) {
+        case "ADD":
+            return [...state, action.toast];
+        case "REMOVE":
+            return state.filter((t) => t.id !== action.id);
+        default:
+            return state;
+    }
+}
+
+// ─── Context ────────────────────────────────────────────────
+const ToastContext = createContext(null);
+
+export function ToastProvider({ children }) {
+    const [toasts, dispatch] = useReducer(toastReducer, []);
+
+    // Stable reference so consumers don't re-render on unrelated toast changes
+    const showToast = useCallback(
+        ({ message, type = "success", duration = 3000 }) => {
+            const id = Date.now() + Math.random();
+            dispatch({ type: "ADD", toast: { id, message, type } });
+            setTimeout(() => dispatch({ type: "REMOVE", id }), duration);
+        },
+        [],
+    );
+
+    return (
+        <ToastContext.Provider value={showToast}>
+            {children}
+            {/* Portal — renders outside component tree so z-index/overflow can't clip it */}
+            {createPortal(
+                <ToastContainer
+                    toasts={toasts}
+                    onDismiss={(id) => dispatch({ type: "REMOVE", id })}
+                />,
+                document.body,
+            )}
+        </ToastContext.Provider>
+    );
+}
+
+export const useToast = () => useContext(ToastContext);
+
+// ─── Toast Container (positioned fixed at bottom-right) ─────
+const STYLES = {
+    success: { background: "#22c55e", color: "#fff" },
+    error: { background: "#ef4444", color: "#fff" },
+    warning: { background: "#f59e0b", color: "#fff" },
+};
+
+function ToastContainer({ toasts, onDismiss }) {
+    return (
+        <div
+            style={{
+                position: "fixed",
+                bottom: 24,
+                right: 24,
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+                zIndex: 9999,
+            }}
+        >
+            {toasts.map((toast) => (
+                <div
+                    key={toast.id}
+                    style={{
+                        padding: "12px 16px",
+                        borderRadius: 8,
+                        minWidth: 200,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                        animation: "slideIn 0.2s ease",
+                        ...STYLES[toast.type],
+                    }}
+                >
+                    <span>{toast.message}</span>
+                    <button
+                        onClick={() => onDismiss(toast.id)}
+                        style={{
+                            background: "none",
+                            border: "none",
+                            color: "inherit",
+                            cursor: "pointer",
+                            marginLeft: 12,
+                            fontSize: 16,
+                        }}
+                    >
+                        ✕
+                    </button>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// ─── Usage — anywhere in the app ────────────────────────────
+function SaveButton() {
+    const toast = useToast();
+
+    async function handleSave() {
+        try {
+            await saveData();
+            toast({ message: "Saved successfully!", type: "success" });
+        } catch {
+            toast({ message: "Failed to save. Try again.", type: "error" });
+        }
+    }
+
+    return <button onClick={handleSave}>Save</button>;
+}
+
+// ─── Wrap app at the root ────────────────────────────────────
+// <ToastProvider>
+//   <App />
+// </ToastProvider>
+```
+
+**Patterns demonstrated**:
+
+- `createPortal` — renders toasts outside the component tree so CSS stacking context never clips them
+- `useReducer` — clean ADD/REMOVE transitions; easy to extend (pauseOnHover, priority queue)
+- `useCallback` on `showToast` — stable reference means consumers of the context don't re-render when an unrelated toast appears
+- Context only exposes `showToast` (not the full `toasts` array) to components that trigger toasts — only the `ToastContainer` reads `toasts`, preventing unnecessary re-renders across the app
+
+---
+
 ## Module 21 Summary
 
-| Category           | Key Topics                                                                              |
-| ------------------ | --------------------------------------------------------------------------------------- |
-| **Internals**      | Fiber, Reconciliation, diffing O(n), StrictMode double-invoke                           |
-| **Hooks**          | Stale closure in setTimeout, useLayoutEffect vs useEffect, useRef array pattern         |
-| **State**          | Functional updater for sequential updates, Context re-render pitfalls                   |
-| **Machine Coding** | OTP Input, Search+Debounce, Infinite Scroll, Star Rating, Tabs with Compound Components |
-| **Custom Hooks**   | useFetch+cache, useDebounce, useLocalStorage, useWindowSize+throttle                    |
-| **Architecture**   | Auth flow, Performance optimization checklist, RSC vs SSR                               |
-| **Quick-fire**     | 20 common one-liner answers across all MNC levels                                       |
+| Category           | Key Topics                                                                                                |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| **Internals**      | Fiber, Reconciliation O(n), Render Phase vs Commit Phase, Rules of Hooks (why), Virtual DOM vs Shadow DOM |
+| **Hooks**          | Stale closure, useLayoutEffect vs useEffect, useRef array, useState vs useReducer decision matrix         |
+| **Patterns**       | Custom Hooks design, forwardRef + useImperativeHandle, React.lazy + Suspense code splitting               |
+| **State**          | Functional updater for sequential updates, Context re-render pitfalls                                     |
+| **Machine Coding** | OTP Input, Search+Debounce, Infinite Scroll, Star Rating, Tabs, Typeahead, Shopping Cart, Toast           |
+| **Custom Hooks**   | useFetch+cache, useDebounce, useLocalStorage, useWindowSize+throttle                                      |
+| **Architecture**   | Auth flow, Performance optimization checklist, RSC vs SSR                                                 |
+| **React 18**       | useTransition, useDeferredValue, Automatic Batching, startTransition vs setTimeout                        |
+| **React 19**       | use() hook, useOptimistic, useFormStatus, React Compiler, Server Actions, ref-as-prop                     |
+| **Quick-fire**     | 20 common one-liner answers across all MNC levels                                                         |
 
 ---
 
@@ -18740,22 +20763,28 @@ export default [
         settings: { react: { version: "detect" } },
         rules: {
             // ---- React Rules ----
-            "react/react-in-jsx-scope": "off",          // Not needed with new JSX transform
-            "react/prop-types": "off",                  // TypeScript handles this
+            "react/react-in-jsx-scope": "off", // Not needed with new JSX transform
+            "react/prop-types": "off", // TypeScript handles this
             "react/display-name": "warn",
-            "react/no-array-index-key": "warn",         // Discourage index-as-key
-            "react/self-closing-comp": "warn",          // <Component /> not <Component></Component>
+            "react/no-array-index-key": "warn", // Discourage index-as-key
+            "react/self-closing-comp": "warn", // <Component /> not <Component></Component>
 
             // ---- Hooks Rules (CRITICAL) ----
-            "react-hooks/rules-of-hooks": "error",      // Enforces Rules of Hooks
-            "react-hooks/exhaustive-deps": "warn",      // Missing useEffect dependencies
+            "react-hooks/rules-of-hooks": "error", // Enforces Rules of Hooks
+            "react-hooks/exhaustive-deps": "warn", // Missing useEffect dependencies
 
             // ---- React Refresh (HMR) ----
-            "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+            "react-refresh/only-export-components": [
+                "warn",
+                { allowConstantExport: true },
+            ],
 
             // ---- TypeScript Rules ----
             "@typescript-eslint/no-explicit-any": "warn",
-            "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+            "@typescript-eslint/no-unused-vars": [
+                "error",
+                { argsIgnorePattern: "^_" },
+            ],
             "@typescript-eslint/consistent-type-imports": "warn", // import type { X }
 
             // ---- General ----
@@ -18797,11 +20826,11 @@ export default [
 ```json
 // package.json
 {
-  "scripts": {
-    "lint":        "eslint src --ext .ts,.tsx",
-    "lint:fix":    "eslint src --ext .ts,.tsx --fix",
-    "lint:ci":     "eslint src --ext .ts,.tsx --max-warnings 0"
-  }
+    "scripts": {
+        "lint": "eslint src --ext .ts,.tsx",
+        "lint:fix": "eslint src --ext .ts,.tsx --fix",
+        "lint:ci": "eslint src --ext .ts,.tsx --max-warnings 0"
+    }
 }
 ```
 
@@ -18822,14 +20851,14 @@ npm install -D prettier eslint-config-prettier
 
 ```json
 {
-  "semi": true,
-  "singleQuote": false,
-  "jsxSingleQuote": false,
-  "trailingComma": "all",
-  "tabWidth": 4,
-  "printWidth": 100,
-  "bracketSameLine": false,
-  "arrowParens": "always"
+    "semi": true,
+    "singleQuote": false,
+    "jsxSingleQuote": false,
+    "trailingComma": "all",
+    "tabWidth": 4,
+    "printWidth": 100,
+    "bracketSameLine": false,
+    "arrowParens": "always"
 }
 ```
 
@@ -18851,7 +20880,7 @@ import prettierConfig from "eslint-config-prettier";
 
 export default [
     // ... all your rules ...
-    prettierConfig,   // disables ESLint formatting rules that Prettier handles
+    prettierConfig, // disables ESLint formatting rules that Prettier handles
 ];
 ```
 
@@ -18859,10 +20888,10 @@ export default [
 
 ```json
 {
-  "scripts": {
-    "format":      "prettier --write src",
-    "format:check":"prettier --check src"   // Used in CI — fails if files aren't formatted
-  }
+    "scripts": {
+        "format": "prettier --write src",
+        "format:check": "prettier --check src" // Used in CI — fails if files aren't formatted
+    }
 }
 ```
 
@@ -18890,19 +20919,18 @@ npx lint-staged
 
 ```json
 {
-  "lint-staged": {
-    "src/**/*.{ts,tsx}": [
-      "eslint --fix --max-warnings 0",
-      "prettier --write"
-    ],
-    "src/**/*.{css,json,md}": [
-      "prettier --write"
-    ]
-  }
+    "lint-staged": {
+        "src/**/*.{ts,tsx}": [
+            "eslint --fix --max-warnings 0",
+            "prettier --write"
+        ],
+        "src/**/*.{css,json,md}": ["prettier --write"]
+    }
 }
 ```
 
 **How it works**:
+
 1. You run `git commit`
 2. Husky intercepts and runs `lint-staged`
 3. `lint-staged` runs ESLint + Prettier **only on staged files** (fast!)
@@ -18984,6 +21012,7 @@ npx --no -- commitlint --edit "$1"
 ```
 
 Now every commit message is validated:
+
 ```bash
 git commit -m "updated stuff"
 # ✘ subject may not be empty [subject-empty]
@@ -19002,30 +21031,30 @@ A correctly configured `tsconfig.json` catches more bugs at compile time.
 
 ```json
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "jsx": "react-jsx",          // New JSX transform — no need to import React
-    "strict": true,              // Enables all strict checks below:
-                                 //   noImplicitAny, strictNullChecks, strictFunctionTypes,
-                                 //   strictBindCallApply, noImplicitThis, alwaysStrict
-    "noUnusedLocals": true,      // Error on unused variables
-    "noUnusedParameters": true,  // Error on unused function params
-    "noFallthroughCasesInSwitch": true,
-    "exactOptionalPropertyTypes": true, // {a?: string} ≠ {a: string | undefined}
-    "noUncheckedIndexedAccess": true,   // arr[0] is T | undefined (not just T)
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]           // Path alias — import from "@/components/Button"
+    "compilerOptions": {
+        "target": "ES2020",
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx", // New JSX transform — no need to import React
+        "strict": true, // Enables all strict checks below:
+        //   noImplicitAny, strictNullChecks, strictFunctionTypes,
+        //   strictBindCallApply, noImplicitThis, alwaysStrict
+        "noUnusedLocals": true, // Error on unused variables
+        "noUnusedParameters": true, // Error on unused function params
+        "noFallthroughCasesInSwitch": true,
+        "exactOptionalPropertyTypes": true, // {a?: string} ≠ {a: string | undefined}
+        "noUncheckedIndexedAccess": true, // arr[0] is T | undefined (not just T)
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"] // Path alias — import from "@/components/Button"
+        },
+        "allowImportingTsExtensions": true,
+        "isolatedModules": true,
+        "skipLibCheck": true
     },
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "skipLibCheck": true
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
 }
 ```
 
@@ -19034,16 +21063,18 @@ A correctly configured `tsconfig.json` catches more bugs at compile time.
 ```ts
 // strictNullChecks — null/undefined must be handled explicitly
 const user: User | null = getUser();
-user.name;         // ❌ Error: Object is possibly null
-user?.name;        // ✅
+user.name; // ❌ Error: Object is possibly null
+user?.name; // ✅
 
 // noUncheckedIndexedAccess — array access returns T | undefined
 const items = ["a", "b"];
-const first = items[0];     // first: string | undefined (not just string)
+const first = items[0]; // first: string | undefined (not just string)
 if (first) console.log(first.toUpperCase()); // must check
 
 // exactOptionalPropertyTypes
-interface Config { timeout?: number; }
+interface Config {
+    timeout?: number;
+}
 const c: Config = { timeout: undefined }; // ❌ Error — use {} instead
 ```
 
@@ -19079,29 +21110,34 @@ trim_trailing_whitespace = false
 ```json
 // .vscode/settings.json — commit this to the repo
 {
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit"
+    },
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ]
 }
 ```
 
 ```json
 // .vscode/extensions.json — recommend to team
 {
-  "recommendations": [
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "bradlc.vscode-tailwindcss",
-    "ms-vscode.vscode-typescript-next",
-    "formulahendry.auto-rename-tag",
-    "christian-kohler.path-intellisense",
-    "streetsidesoftware.code-spell-checker"
-  ]
+    "recommendations": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-typescript-next",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense",
+        "streetsidesoftware.code-spell-checker"
+    ]
 }
 ```
 
@@ -19116,42 +21152,43 @@ All the local checks must also run in CI to catch anything that slips past git h
 name: Quality Gate
 
 on:
-  push:
-    branches: ["**"]
-  pull_request:
-    branches: [main, staging]
+    push:
+        branches: ["**"]
+    pull_request:
+        branches: [main, staging]
 
 jobs:
-  quality:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    quality:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "npm"
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: TypeScript type check
-        run: npx tsc --noEmit
+            - name: TypeScript type check
+              run: npx tsc --noEmit
 
-      - name: ESLint (zero warnings)
-        run: npm run lint:ci      # eslint --max-warnings 0
+            - name: ESLint (zero warnings)
+              run: npm run lint:ci # eslint --max-warnings 0
 
-      - name: Prettier format check
-        run: npm run format:check # prettier --check src
+            - name: Prettier format check
+              run: npm run format:check # prettier --check src
 
-      - name: Run tests
-        run: npm run test -- --run --coverage
+            - name: Run tests
+              run: npm run test -- --run --coverage
 
-      - name: Build check
-        run: npm run build
+            - name: Build check
+              run: npm run build
 ```
 
 **The quality pipeline catches**:
+
 1. TypeScript type errors
 2. ESLint rule violations (including missing deps, hook rules)
 3. Unformatted code
@@ -19165,18 +21202,23 @@ jobs:
 ## Module 22 — Interview Q&A
 
 **Q: What is the `react-hooks/exhaustive-deps` ESLint rule and why is it important?**
+
 > It warns when a value used inside `useEffect`, `useMemo`, or `useCallback` is missing from the dependency array. Missing deps cause stale closure bugs — the effect uses an old value from a previous render. The rule is a safety net that catches the most common `useEffect` bug automatically.
 
 **Q: What is the difference between Prettier and ESLint?**
+
 > ESLint is a linter — it analyzes code for bugs, anti-patterns, and style issues. Many ESLint rules are opinionated style rules. Prettier is a code **formatter** — it reprints your code with consistent style, ignoring your input formatting entirely. They serve different purposes: use ESLint for code quality rules + `eslint-config-prettier` to disable the style rules, let Prettier handle all formatting.
 
 **Q: What are Husky and lint-staged? Why use both?**
-> Husky installs git hooks (pre-commit, commit-msg, pre-push) via npm scripts so they work for every team member without manual setup. lint-staged runs linters only on *staged* files (not the whole codebase), making pre-commit checks fast even in large repos. Together: every commit is automatically linted and formatted before it hits the repo.
+
+> Husky installs git hooks (pre-commit, commit-msg, pre-push) via npm scripts so they work for every team member without manual setup. lint-staged runs linters only on _staged_ files (not the whole codebase), making pre-commit checks fast even in large repos. Together: every commit is automatically linted and formatted before it hits the repo.
 
 **Q: What are Conventional Commits? How do they help a team?**
+
 > Conventional Commits is a spec for commit message format (`type(scope): summary`). Benefits: (1) Git history is self-documenting. (2) Automated changelog generation (`CHANGELOG.md` from `feat`/`fix` commits). (3) Semantic versioning automation (fix = patch, feat = minor, BREAKING CHANGE = major). (4) Easier code review — type immediately tells the reviewer what kind of change to expect.
 
 **Q: What does `"strict": true` enable in `tsconfig.json`?**
+
 > It enables a group of checks: `noImplicitAny` (no implicit `any` type), `strictNullChecks` (null/undefined must be handled explicitly), `strictFunctionTypes` (correct function signature variance), `noImplicitThis`, and more. The most important for React: `strictNullChecks` — it forces you to handle `null`/`undefined` returned from APIs, `useRef(null)`, and optional props, eliminating a whole class of runtime errors.
 
 ---
@@ -19294,7 +21336,11 @@ export const metadata: Metadata = {
     description: "MyApp description",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     return (
         <html lang="en">
             <body className={inter.className}>
@@ -19310,7 +21356,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```tsx
 // app/dashboard/layout.tsx — Nested layout for /dashboard/*
 // This renders INSIDE the root layout — the sidebar persists across dashboard pages
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     return (
         <div className="flex">
             <Sidebar />
@@ -19350,7 +21400,9 @@ async function ProductsPage() {
     return (
         <div>
             <h1>Products</h1>
-            {products.map(p => <ProductCard key={p.id} product={p} />)}
+            {products.map((p) => (
+                <ProductCard key={p.id} product={p} />
+            ))}
         </div>
     );
 }
@@ -19382,7 +21434,8 @@ import { Modal } from "@/components/Modal"; // Client Component
 export default function Page() {
     return (
         <Modal>
-            <ServerContent /> {/* Server Component as child of Client — allowed */}
+            <ServerContent />{" "}
+            {/* Server Component as child of Client — allowed */}
         </Modal>
     );
 }
@@ -19396,13 +21449,15 @@ export default function Page() {
 
 ```tsx
 // app/users/[id]/page.tsx
-interface Props { params: { id: string }; }
+interface Props {
+    params: { id: string };
+}
 
 async function UserPage({ params }: Props) {
     // Fetch runs on server — no loading state needed
     const user = await fetch(`https://api.example.com/users/${params.id}`, {
         next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
-    }).then(r => r.json());
+    }).then((r) => r.json());
 
     return <UserProfile user={user} />;
 }
@@ -19413,10 +21468,7 @@ async function UserPage({ params }: Props) {
 ```tsx
 async function DashboardPage() {
     // ✅ Both fetches run in PARALLEL — not sequential
-    const [user, stats] = await Promise.all([
-        fetchUser(),
-        fetchStats(),
-    ]);
+    const [user, stats] = await Promise.all([fetchUser(), fetchStats()]);
 
     return (
         <>
@@ -19475,8 +21527,8 @@ import { db } from "@/lib/db";
 async function submitContact(formData: FormData) {
     "use server"; // marks this function as a Server Action
 
-    const name    = formData.get("name")    as string;
-    const email   = formData.get("email")   as string;
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
     const message = formData.get("message") as string;
 
     // Direct DB write — no API endpoint needed
@@ -19487,10 +21539,12 @@ async function submitContact(formData: FormData) {
 
 export default function ContactPage() {
     return (
-        <form action={submitContact}>  {/* pass Server Action directly */}
-            <input name="name"    placeholder="Name"    required />
-            <input name="email"   type="email"          required />
-            <textarea name="message"                    required />
+        <form action={submitContact}>
+            {" "}
+            {/* pass Server Action directly */}
+            <input name="name" placeholder="Name" required />
+            <input name="email" type="email" required />
+            <textarea name="message" required />
             <button type="submit">Send</button>
         </form>
     );
@@ -19555,16 +21609,17 @@ export async function POST(request: NextRequest) {
 // app/api/users/[id]/route.ts — dynamic route
 export async function GET(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: string } },
 ) {
     const user = await db.users.findUnique({ where: { id: params.id } });
-    if (!user) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (!user)
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
     return NextResponse.json(user);
 }
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: { id: string } },
 ) {
     await db.users.delete({ where: { id: params.id } });
     return new NextResponse(null, { status: 204 });
@@ -19585,17 +21640,19 @@ export const dynamic = "force-static"; // default for routes with no dynamic dat
 export const dynamic = "force-dynamic";
 
 // ISR — static with periodic revalidation
-export async function generateStaticParams() { /* ... */ }
+export async function generateStaticParams() {
+    /* ... */
+}
 // AND in fetch:
-fetch(url, { next: { revalidate: 3600 } }) // revalidate every 1 hour
+fetch(url, { next: { revalidate: 3600 } }); // revalidate every 1 hour
 
 // On-demand revalidation — programmatic cache invalidation
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function POST() {
     await updateProduct();
-    revalidatePath("/products");       // Invalidate a specific path
-    revalidateTag("products");         // Invalidate all fetches tagged "products"
+    revalidatePath("/products"); // Invalidate a specific path
+    revalidateTag("products"); // Invalidate all fetches tagged "products"
     return NextResponse.json({ ok: true });
 }
 ```
@@ -19606,9 +21663,9 @@ export async function POST() {
 // Tag fetches for group invalidation
 const data = await fetch("/api/products", {
     next: {
-        tags: ["products"],      // Can be invalidated by revalidateTag("products")
-        revalidate: 300,         // Also revalidate after 5 minutes
-    }
+        tags: ["products"], // Can be invalidated by revalidateTag("products")
+        revalidate: 300, // Also revalidate after 5 minutes
+    },
 });
 ```
 
@@ -19637,7 +21694,10 @@ export function middleware(request: NextRequest) {
     }
 
     // ---- Locale redirect ----
-    const locale = request.headers.get("accept-language")?.split(",")[0].split("-")[0];
+    const locale = request.headers
+        .get("accept-language")
+        ?.split(",")[0]
+        .split("-")[0];
     if (pathname === "/" && locale === "fr") {
         return NextResponse.redirect(new URL("/fr", request.url));
     }
@@ -19674,10 +21734,10 @@ import Image from "next/image";
     alt="Hero"
     width={1200}
     height={600}
-    priority          // LCP image — disable lazy loading
+    priority // LCP image — disable lazy loading
     placeholder="blur"
     blurDataURL="..."
-/>
+/>;
 
 // Remote images — configure in next.config.ts
 // images: { remotePatterns: [{ hostname: "cdn.myapp.com" }] }
@@ -19691,7 +21751,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 
 const inter = Inter({
     subsets: ["latin"],
-    variable: "--font-inter",  // CSS variable
+    variable: "--font-inter", // CSS variable
     display: "swap",
 });
 
@@ -19715,7 +21775,9 @@ const robotoMono = Roboto_Mono({
 // app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
 
-interface Props { params: { slug: string }; }
+interface Props {
+    params: { slug: string };
+}
 
 // Static metadata
 export const metadata: Metadata = {
@@ -19791,7 +21853,7 @@ export default auth((req) => {
 });
 ```
 
-```tsx
+````tsx
 // Server Component — read session without API call
 import { auth } from "@/auth";
 
@@ -19861,7 +21923,7 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-```
+````
 
 ---
 
@@ -19876,6 +21938,7 @@ vercel --prod  # Deploy to production
 ```
 
 Vercel automatically:
+
 - Detects Next.js
 - Builds and deploys
 - Provisions Edge Network CDN
@@ -19919,17 +21982,19 @@ CMD ["node", "server.js"]
 | ----------------- | -------------------------------------- | -------------------------------------- |
 | Directory         | `pages/`                               | `app/`                                 |
 | React version     | React 17+                              | React 18+ (required for RSC)           |
-| Server Components | ❌ All client                           | ✅ Default                              |
+| Server Components | ❌ All client                          | ✅ Default                             |
 | Data fetching     | `getServerSideProps`, `getStaticProps` | `async/await` in component body        |
 | Layouts           | `_app.tsx` (whole app)                 | Nested `layout.tsx` per segment        |
 | Loading UI        | Manual                                 | Automatic via `loading.tsx` + Suspense |
 | Error handling    | `_error.tsx`                           | Automatic via `error.tsx`              |
-| Server Actions    | ❌                                      | ✅ `"use server"` functions             |
+| Server Actions    | ❌                                     | ✅ `"use server"` functions            |
 
 **Q: What is ISR (Incremental Static Regeneration)?**
+
 > ISR generates static pages at build time but allows them to be revalidated in the background after a set time interval. The first user after the revalidation period gets the stale page (and triggers a regeneration in the background); subsequent users get the fresh page. Best for: e-commerce product pages, blog posts, dashboards with data that changes every few minutes but doesn't need real-time freshness. Use `fetch(url, { next: { revalidate: 60 } })` in the App Router.
 
 **Q: What are Server Actions? Why are they better than API routes for forms?**
+
 > Server Actions are async functions marked with `"use server"` that execute on the server when called from a form `action` or client event handler. Advantages over API routes: (1) No boilerplate — no `fetch`, no request/response handling, no endpoint URL to manage. (2) Progressive enhancement — forms work even with JavaScript disabled (native HTML form submit). (3) Type-safe — the function signature is the contract. (4) Co-location — the action can live in the same file as the form component.
 
 **Q: When would you use a Server Component vs a Client Component in Next.js?**
@@ -19943,9 +22008,11 @@ CMD ["node", "server.js"]
 | SEO-critical content          | Real-time updates (WebSocket, polling)         |
 
 **Q: What does `"use client"` do? Is the component rendered only in the browser?**
+
 > `"use client"` marks a component as a Client Component — it uses React features that require the browser (hooks, events). However, Next.js still renders it **on the server as HTML** (for the initial page load / SSR) AND sends the JavaScript to the browser for hydration. "Client" means "has client-side JS" — not "only runs in browser."
 
 **Q: What is the difference between `revalidatePath` and `revalidateTag`?**
+
 > `revalidatePath("/products")` purges the Next.js cache for a specific URL. `revalidateTag("products")` purges all fetches that were tagged with `{ next: { tags: ["products"] } }` — regardless of which URL they came from. Use `revalidateTag` for data-centric cache invalidation (e.g., after updating a product, invalidate all pages that show product data).
 
 ---
