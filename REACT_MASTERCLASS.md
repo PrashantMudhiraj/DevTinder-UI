@@ -1949,6 +1949,336 @@ graph TD
 
 ---
 
+## 1.6.1 — Babel Deep Dive: Config, Presets, Polyfilling & Plugins
+
+> This section completes the Babel picture. Understanding config files and presets is essential for debugging build issues, setting up new projects, and senior-level interviews.
+
+---
+
+### Babel Config Files
+
+Babel is configured via one of two file formats. Both do the same thing — the difference is **scope**:
+
+| File                         | Scope                          | Best For            |
+| ---------------------------- | ------------------------------ | ------------------- |
+| `babel.config.json`          | Entire project (monorepos too) | Apps, Next.js, CRA  |
+| `.babelrc` / `.babelrc.json` | Only the package it lives in   | Libraries, packages |
+
+```json
+// babel.config.json — the most common setup for a React app
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": "> 0.5%, not dead",
+                "useBuiltIns": "usage",
+                "corejs": 3
+            }
+        ],
+        ["@babel/preset-react", { "runtime": "automatic" }],
+        "@babel/preset-typescript"
+    ],
+    "plugins": ["babel-plugin-macros"]
+}
+```
+
+```json
+// .babelrc — scoped to a single package in a monorepo
+{
+    "presets": ["@babel/preset-react"]
+}
+```
+
+> **Rule**: Use `babel.config.json` for applications. Use `.babelrc` for publishable library packages.
+
+---
+
+### The Three Core Presets
+
+A **preset** is a pre-packaged collection of Babel plugins. You rarely configure individual plugins — you configure presets.
+
+#### 1. `@babel/preset-env` — Downcompile Modern JS
+
+Transforms modern JavaScript (ES2015+) syntax into code that older browsers can run. It reads your `targets` (which browsers to support) and only applies the transforms those browsers actually need.
+
+```bash
+npm install --save-dev @babel/preset-env
+```
+
+```json
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": "> 0.5%, last 2 versions, not dead",
+                // OR point to a .browserslistrc file — same syntax
+                "useBuiltIns": "usage", // Automatically inject polyfills only for features you use
+                "corejs": 3 // Version of core-js to use for polyfills
+            }
+        ]
+    ]
+}
+```
+
+**How `targets` works:**
+
+```
+"targets": "> 0.5%, last 2 versions, not dead"
+```
+
+Babel uses **browserslist** to resolve this query into a list of real browser versions. Then it checks which ES features each browser already supports natively. If a browser natively supports `async/await`, Babel skips transforming it for that target.
+
+```mermaid
+graph TD
+    A["Your Code uses: async/await, optional chaining, arrow functions"]
+    B["Babel checks targets: Chrome 120, Safari 17, Firefox 121"]
+    C["Chrome 120: supports all three natively → skip transforms"]
+    D["Safari 14 (if in targets): no optional chaining → transform it"]
+    A --> B --> C
+    B --> D
+```
+
+#### 2. `@babel/preset-react` — JSX Transform
+
+Handles JSX → JavaScript. Two modes:
+
+```json
+// Classic (React ≤ 16): requires `import React from 'react'` everywhere
+["@babel/preset-react", { "runtime": "classic" }]
+
+// Automatic (React 17+): no manual import needed
+["@babel/preset-react", { "runtime": "automatic" }]
+
+// Development mode: adds extra debugging info (component names in errors)
+["@babel/preset-react", { "runtime": "automatic", "development": true }]
+```
+
+```bash
+npm install --save-dev @babel/preset-react
+```
+
+#### 3. `@babel/preset-typescript` — Strip TypeScript Types
+
+Babel **does not type-check** TypeScript. It simply strips all type annotations and produces plain JavaScript. Type checking is handled separately by `tsc --noEmit`.
+
+```bash
+npm install --save-dev @babel/preset-typescript
+```
+
+```ts
+// Input (.tsx)
+function greet(name: string): string {
+    return `Hello, ${name}`;
+}
+
+// Output after Babel strips types
+function greet(name) {
+    return `Hello, ${name}`;
+}
+```
+
+> **Key distinction — Babel vs `tsc`**:
+> | | Babel | TypeScript Compiler (`tsc`) |
+> |---|---|---|
+> | **Strips types** | ✅ Yes | ✅ Yes |
+> | **Type checks** | ❌ No | ✅ Yes |
+> | **Speed** | Very fast | Slower |
+> | **Use in build** | Transpile only | Use `tsc --noEmit` for CI checks |
+>
+> In a Vite or CRA project, Babel (or SWC) handles transpilation. TypeScript type errors are caught separately in your IDE (via `tsserver`) and in CI (`tsc --noEmit`).
+
+---
+
+### Polyfilling: Syntax vs. Runtime Features
+
+This is one of the most misunderstood Babel topics. Babel handles two fundamentally different things:
+
+```
+Syntax Transform  →  Babel rewrites the CODE
+Runtime Polyfill  →  Babel injects a FUNCTION that didn't exist in the old browser
+```
+
+| Feature                | Type        | Handled by                                             |
+| ---------------------- | ----------- | ------------------------------------------------------ |
+| Arrow functions        | Syntax      | `@babel/preset-env` rewrites to `function`             |
+| `async/await`          | Syntax      | `@babel/preset-env` rewrites to Promises               |
+| `Promise`              | Runtime API | `core-js` polyfill injects `Promise` globally          |
+| `Array.prototype.flat` | Runtime API | `core-js` polyfill adds `.flat()` to Array prototype   |
+| `fetch`                | Runtime API | NOT in `core-js` — use `whatwg-fetch` or `cross-fetch` |
+
+```json
+// Three modes for useBuiltIns:
+
+// "false" (default) — no polyfills injected, you handle them manually
+{ "useBuiltIns": false }
+
+// "entry" — replace `import 'core-js'` with only the polyfills your targets need
+//   Requires you to add `import 'core-js'` at the top of your entry file
+{ "useBuiltIns": "entry", "corejs": 3 }
+
+// "usage" (recommended) — automatically inject polyfills per file, only for APIs you actually use
+{ "useBuiltIns": "usage", "corejs": 3 }
+```
+
+```bash
+# Install core-js alongside preset-env
+npm install core-js@3
+```
+
+**With `useBuiltIns: "usage"`, Babel auto-injects exactly what's needed:**
+
+```js
+// Your source code
+const result = [1, [2, 3]].flat();
+
+// Babel output (for a target that doesn't support Array.flat)
+import "core-js/modules/es.array.flat.js"; // ← injected automatically
+const result = [1, [2, 3]].flat();
+```
+
+---
+
+### Babel Plugins
+
+Presets are bundles of plugins. You can also add individual plugins for specific transforms or tooling:
+
+```json
+{
+    "plugins": [
+        // ---- COMMONLY USED PLUGINS ----
+
+        // Babel macros — enables compile-time code transforms (used by styled-components, twin.macro)
+        "babel-plugin-macros",
+
+        // Class properties (now in preset-env, but sometimes needed standalone)
+        "@babel/plugin-proposal-class-properties",
+
+        // Decorators (for MobX, Angular-style class decorators)
+        ["@babel/plugin-proposal-decorators", { "legacy": true }],
+
+        // Module resolver — cleaner imports (maps '@/components' to './src/components')
+        [
+            "module-resolver",
+            {
+                "root": ["./src"],
+                "alias": { "@": "./src" }
+            }
+        ],
+
+        // React hot loader for HMR (legacy; Vite's built-in HMR is preferred today)
+        "react-hot-loader/babel"
+    ]
+}
+```
+
+---
+
+### Babel Macros
+
+**Babel macros** are a special category of plugin that run at compile time without requiring Babel config changes. A library ships a `.macro.js` file, and when you import from it, Babel automatically transforms the code.
+
+```bash
+npm install babel-plugin-macros  # one-time setup in babel.config.json
+```
+
+```js
+// ---- styled-components/macro — adds display names + SSR class stability ----
+import styled from "styled-components/macro";
+const Button = styled.button`
+    color: red;
+`; // Babel transforms at compile time
+
+// ---- twin.macro — use Tailwind classes inside styled-components ----
+import tw from "twin.macro";
+const Card = tw.div`rounded shadow p-4`; // Outputs real styled-component at compile time
+
+// ---- preval.macro — run Node.js code at build time ----
+import preval from "preval.macro";
+const buildTime = preval`module.exports = new Date().toISOString()`;
+// buildTime is REPLACED at compile time with the actual ISO string — zero runtime cost
+```
+
+> **Why macros matter**: They let library authors ship zero-config compile-time transforms. The consumer just imports from the `.macro` path — no plugin setup needed beyond `babel-plugin-macros`.
+
+---
+
+### Babel vs. `tsc` vs. SWC — Full Comparison
+
+|                      | Babel               | TypeScript (`tsc`)        | SWC                          |
+| -------------------- | ------------------- | ------------------------- | ---------------------------- |
+| **Language**         | JavaScript          | TypeScript (Go internals) | Rust                         |
+| **Speed**            | Slow (JS)           | Medium                    | 20–70× faster than Babel     |
+| **Type checking**    | ❌                  | ✅                        | ❌                           |
+| **JSX support**      | ✅ via preset       | ✅ built-in               | ✅ built-in                  |
+| **Plugin ecosystem** | Huge                | Limited                   | Growing                      |
+| **Used by**          | CRA, older setups   | CI type checks            | Vite (default), Next.js 13+  |
+| **Config file**      | `babel.config.json` | `tsconfig.json`           | `.swcrc` or `vite.config.ts` |
+
+**Typical production setup:**
+
+```
+Source (.tsx) → SWC/Babel (transpile, strip types) → Browser JS
+Source (.tsx) → tsc --noEmit (type check in CI only, no output)
+```
+
+---
+
+### Complete `babel.config.json` for a React + TypeScript App
+
+```json
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets": "> 0.5%, last 2 versions, not dead",
+                "useBuiltIns": "usage",
+                "corejs": 3
+            }
+        ],
+        [
+            "@babel/preset-react",
+            {
+                "runtime": "automatic"
+            }
+        ],
+        "@babel/preset-typescript"
+    ],
+    "plugins": ["babel-plugin-macros"],
+    "env": {
+        "test": {
+            "presets": [
+                ["@babel/preset-env", { "targets": { "node": "current" } }],
+                ["@babel/preset-react", { "runtime": "automatic" }],
+                "@babel/preset-typescript"
+            ]
+        }
+    }
+}
+```
+
+> **Note the `env.test` block**: Jest runs in Node.js, not a browser. You override `targets` to `{ "node": "current" }` for tests so Babel doesn't downcompile Node-native syntax unnecessarily.
+
+---
+
+### Babel Deep Dive Summary
+
+| Concept                        | Key Takeaway                                                         |
+| ------------------------------ | -------------------------------------------------------------------- |
+| **Config files**               | `babel.config.json` for apps; `.babelrc` for library packages        |
+| **`@babel/preset-env`**        | Downcompiles modern JS based on your browser targets                 |
+| **`@babel/preset-react`**      | Transforms JSX; use `runtime: "automatic"` for React 17+             |
+| **`@babel/preset-typescript`** | Strips types only — does NOT type-check                              |
+| **Syntax vs Runtime**          | Syntax → Babel rewrites code. Runtime APIs → `core-js` polyfills     |
+| **`useBuiltIns: "usage"`**     | Auto-inject only the polyfills you actually use                      |
+| **Babel macros**               | Compile-time transforms with zero config — just import from `.macro` |
+| **Babel vs SWC**               | Same job, SWC is 20–70× faster but fewer plugins                     |
+| **Babel vs `tsc`**             | Babel transpiles only; `tsc --noEmit` for type checking in CI        |
+
+---
+
 ## 1.6.2 — Bundlers: What They Are, Why They Exist & How They Work
 
 > Babel transforms syntax. Bundlers solve an entirely different problem — **taking hundreds of disconnected files and turning them into something a browser can actually load efficiently**.
@@ -2756,10 +3086,6 @@ Bundlers analyze your `import` statements and remove code that is never imported
 A small module React ships alongside the main `react` package. It exports `jsx()`, `jsxs()`, and `Fragment`. With the automatic transform, Babel/SWC injects `import { jsx } from 'react/jsx-runtime'` at the top of your compiled file — you never write it manually.
 
 ---
-
-## 1.6.1 — Babel Deep Dive: Config, Presets, Polyfilling & Plugins
-
-> This section completes the Babel picture. Understanding config files and presets is essential for debugging build issues, setting up new projects, and senior-level interviews.
 
 ---
 
