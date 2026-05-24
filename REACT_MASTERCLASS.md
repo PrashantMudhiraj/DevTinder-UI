@@ -10,219 +10,249 @@
 ### Core Concepts
 
 - [Module 1: The Foundation](#module-1-the-foundation)
-    - 1.0 UI Was Built with Pure JavaScript First
-        - 1.0.1 How a Web App is Built in HTML (`<script>` Tags)
-        - 1.0.2 Sync vs Async JS Loading (`defer`, `async`, `type="module"`)
-    - 1.1 Why Does React Exist?
-    - 1.2 JSX: Syntactic Sugar Over `React.createElement`
-    - 1.3 Props: The Contractual Interface of a Component
-    - 1.4 The Pure Component Philosophy
-    - 1.5 Component Tree & The Virtual DOM
-    - 1.6 How React Code Compiles and Builds (Full Pipeline)
-        - 1.6.1 Babel Deep Dive: Config, Presets, Polyfilling & Plugins
-        - 1.6.2 Bundlers: What They Are, Why They Exist & How They Work
-        - 1.6.3 Building a React App with Parcel (Zero-Config Bundler)
-        - 1.6.4 Types of React Components: Class vs Functional + Full Lifecycle
-    - 1.7 Conditional Rendering
-    - 1.8 Fragments
+    - [1.0 UI Was Built with Pure JavaScript First](#10--ui-was-built-with-pure-javascript-first)
+        - [1.0.1 How a Web App is Built in HTML (`<script>` Tags)](#101--how-a-web-app-is-built-in-html-script-tags)
+        - [1.0.2 Sync vs Async JS Loading (`defer`, `async`, `type="module"`)](#102--sync-vs-async-js-loading-defer-async-typemodule)
+        - [1.0.3 How JavaScript Executes in the Browser: Call Stack, Event Loop & Async](#103--how-javascript-executes-in-the-browser-call-stack-event-loop--async)
+    - [1.1 Why Does React Exist?](#11--why-does-react-exist)
+    - [1.2 JSX: Syntactic Sugar Over `React.createElement`](#12--jsx-syntactic-sugar-over-reactcreateelement)
+    - [1.3 Props: The Contractual Interface of a Component](#13--props-the-contractual-interface-of-a-component)
+    - [1.4 The Pure Component Philosophy](#14--the-pure-component-philosophy)
+    - [1.5 Component Tree & The Virtual DOM](#15--component-tree--the-virtual-dom)
+    - [1.6 How React Code Compiles and Builds (Full Pipeline)](#16--how-react-code-compiles-and-builds-full-pipeline)
+        - [1.6.1 Babel Deep Dive: Config, Presets, Polyfilling & Plugins](#161--babel-deep-dive-config-presets-polyfilling--plugins)
+        - [1.6.2 Bundlers: What They Are, Why They Exist & How They Work](#162--bundlers-what-they-are-why-they-exist--how-they-work)
+        - [1.6.3 Building a React App with Parcel (Zero-Config Bundler)](#163--building-a-react-app-with-parcel-zero-config-bundler)
+        - [1.6.4 Types of React Components: Class vs Functional + Full Lifecycle](#164--types-of-react-components-class-vs-functional)
+    - [1.7 Conditional Rendering](#17--conditional-rendering)
+    - [1.8 Fragments](#18--fragments-grouping-without-extra-dom-nodes)
     - [Module 1 — Interview Q&A](#module-1--interview-qa)
 
 - [Module 2: State Mechanics](#module-2-state-mechanics)
-    - 2.1 Why Does State Exist?
-    - 2.2 `useState` Under the Hood: The Fiber Node
-    - 2.3 `useState` Batching
-    - 2.4 The Reconciliation Algorithm (Diffing)
-    - 2.5 State Mutation: Who Actually Changes It?
-    - 2.6 State as a Snapshot
+    - [2.1 Why Does State Exist?](#21--why-does-state-exist)
+    - [2.2 `useState` Under the Hood: The Fiber Node](#22--usestate-under-the-hood-the-fiber-node)
+    - [2.3 `useState` Batching](#23--usestate-batching)
+    - [2.4 The Reconciliation Algorithm (Diffing)](#24--the-reconciliation-algorithm-diffing)
+    - [2.5 State Mutation: Who Actually Changes It?](#25--state-mutation-who-actually-changes-it)
+    - [2.6 State as a Snapshot](#26--state-as-a-snapshot)
     - [Module 2 — Interview Q&A](#module-2--interview-qa)
 
 - [Module 3: Side Effects & Synchronization](#module-3-side-effects--synchronization)
-    - 3.1 The Why: What Is a Side Effect?
-    - 3.2 The Correct Mental Model
-    - 3.3 The `useEffect` Lifecycle
-    - 3.4 The Dependency Array
-    - 3.5 Code Lab: Data Fetching
-    - 3.6 Code Lab: Event Listeners & Subscriptions
+    - [3.1 The Why: What Is a Side Effect?](#31--the-why-what-is-a-side-effect)
+    - [3.2 The Correct Mental Model](#32--the-correct-mental-model)
+    - [3.3 The `useEffect` Lifecycle](#33--the-useeffect-lifecycle)
+    - [3.4 The Dependency Array](#34--the-dependency-array)
+    - [3.5 Code Lab: Data Fetching](#35--code-lab-data-fetching)
+    - [3.6 Code Lab: Event Listeners & Subscriptions](#36--code-lab-event-listeners--subscriptions)
     - [Module 3 — Interview Q&A](#module-3--interview-qa)
 
 - [Module 4: Performance & Memoization](#module-4-performance--memoization)
-    - 4.1 The Default Behavior
-    - 4.2 `React.memo`: Skip Re-rendering a Component
-    - 4.3 `useMemo`: Memoize an Expensive Computation
-    - 4.4 The Internal Mechanics of Memoization
-    - 4.5 When NOT to Memoize
+    - [4.1 The Default Behavior](#41--the-why-the-default-behavior)
+    - [4.2 `React.memo`: Skip Re-rendering a Component](#42--reactmemo-skip-re-rendering-a-component)
+    - [4.3 `useMemo`: Memoize an Expensive Computation](#43--usememo-memoize-an-expensive-computation)
+    - [4.4 The Internal Mechanics of Memoization](#44--the-internal-mechanics-of-memoization)
+    - [4.5 When NOT to Memoize](#45--when-not-to-memoize)
     - [Module 4 — Interview Q&A](#module-4--interview-qa)
 
 - [Module 5: Advanced Patterns](#module-5-advanced-patterns)
-    - 5.1 Compound Components
-    - 5.2 Render Props
-    - 5.3 Higher-Order Components (HOCs)
-    - 5.4 `React.Children` and `React.cloneElement`
+    - [5.1 Compound Components](#51--compound-components)
+    - [5.2 Render Props](#52--render-props)
+    - [5.3 Higher-Order Components (HOCs)](#53--higher-order-components-hocs)
+    - [5.4 `React.Children` and `React.cloneElement`](#54--reactchildren-and-reactcloneelement)
     - [Module 5 — Interview Q&A](#module-5--interview-qa)
 
 - [Module 6: Modern Ecosystem](#module-6-modern-ecosystem)
-    - 6.1 React Server Components (RSC)
-    - 6.2 Suspense
-    - 6.3 Transitions (`useTransition`)
-    - 6.4 React 19: What's New (`use()`, `useActionState`, `useOptimistic`, ref-as-prop)
+    - [6.1 React Server Components (RSC)](#61--react-server-components-rsc)
+    - [6.2 Suspense](#62--suspense)
+    - [6.3 Transitions (`useTransition`)](#63--transitions-usetransition)
+    - [6.4 React 19: What's New (`use()`, `useActionState`, `useOptimistic`, ref-as-prop)](#64--react-19-whats-new)
     - [Module 6 — Interview Q&A](#module-6--interview-qa)
 
 ### Hooks Deep Dive
 
 - [Module 7: Hooks — Complete Guide](#module-7-hooks--complete-guide)
-    - 7.1 `useReducer`: State Machine for Complex State
-    - 7.2 `useContext`: Dependency Injection for React
-    - 7.3 `useRef`: Mutable Container & DOM Access
-    - 7.4 `useImperativeHandle`: Controlled Ref Exposure
-    - 7.5 `useLayoutEffect`: Synchronous Post-DOM Effect
-    - 7.6 `useDeferredValue`: Debounce Without Timers
-    - 7.7 `useId`: Stable, Unique IDs for Accessibility
-    - 7.8 Custom Hooks: 15-Hook Library, Composition, Testing, Anti-patterns
-    - 7.9 `useDebugValue`: Custom Hook DevTools Labels
-    - 7.10 `useSyncExternalStore`: Safe External Subscriptions
+    - [7.1 `useReducer`: State Machine for Complex State](#71--usereducer-state-machine-for-complex-state)
+    - [7.2 `useContext`: Dependency Injection for React](#72--usecontext-dependency-injection-for-react)
+    - [7.3 `useRef`: Mutable Container & DOM Access](#73--useref-mutable-container--dom-access)
+    - [7.4 `useImperativeHandle`: Controlled Ref Exposure](#74--useimperativehandle-controlled-ref-exposure)
+    - [7.5 `useLayoutEffect`: Synchronous Post-DOM Effect](#75--uselayouteffect-synchronous-post-dom-effect)
+    - [7.6 `useDeferredValue`: Debounce Without Timers](#76--usedeferredvalue-debounce-without-timers)
+    - [7.7 `useId`: Stable, Unique IDs for Accessibility](#77--useid-stable-unique-ids-for-accessibility)
+    - [7.8 Custom Hooks: 15-Hook Library, Composition, Testing, Anti-patterns](#78--custom-hooks-extracting--sharing-logic)
+    - [7.9 `useDebugValue`: Custom Hook DevTools Labels](#79--usedebugvalue-custom-hook-devtools-labels)
+    - [7.10 `useSyncExternalStore`: Safe External Subscriptions](#710--usesyncexternalstore-safe-external-subscriptions)
     - [Module 7 — Interview Q&A](#module-7--interview-qa)
 
 ### Building Real Apps
 
 - [Module 8: Event Handling & Forms](#module-8-event-handling--forms)
-    - 8.1 Event Handling in React (Event Delegation)
-    - 8.2 Controlled vs Uncontrolled Components
-    - 8.3 Forms: Building from Scratch
-    - 8.4 React Hook Form: Forms Without the Boilerplate
-    - 8.4 Interview: Build a 6-Digit OTP Input UI _(Flipkart · Swiggy · Razorpay)_
+    - [8.1 Event Handling in React (Event Delegation & Event Bubbling)](#81--event-handling-in-react)
+    - [8.2 Controlled vs Uncontrolled Components](#82--controlled-vs-uncontrolled-components)
+    - [8.3 Forms: Building from Scratch](#83--forms-building-from-scratch)
+    - [8.4 React Hook Form: Forms Without the Boilerplate](#84--react-hook-form-forms-without-the-boilerplate)
+    - [8.4 Interview: Build a 6-Digit OTP Input UI _(Flipkart · Swiggy · Razorpay)_](#84--interview-question-build-a-6-digit-otp-input-ui)
     - [Module 8 — Interview Q&A](#module-8--interview-qa)
 
 - [Module 9: Component Design Patterns](#module-9-component-design-patterns)
-    - 9.1 Single Page Application (SPA)
-    - 9.2 Presentational vs Container Components
-    - 9.3 Lifting State Up
-    - 9.4 Composition vs Inheritance
-    - 9.5 Data-Driven UI & Config-Driven UI _(Swiggy Homepage pattern)_
+    - [9.1 Single Page Application (SPA)](#91--single-page-application-spa)
+    - [9.2 Presentational vs Container Components](#92--presentational-vs-container-components)
+    - [9.3 Lifting State Up](#93--lifting-state-up)
+    - [9.4 Composition vs Inheritance](#94--composition-vs-inheritance)
+    - [9.5 Data-Driven UI & Config-Driven UI _(Swiggy Homepage pattern)_](#95--data-driven-ui--config-driven-ui)
     - [Module 9 — Interview Q&A](#module-9--interview-qa)
 
 - [Module 10: Routing with React Router](#module-10-routing-with-react-router)
-    - 10.1–10.7 Route Config, Navigation, Dynamic Routes, Nested Routes, Protected Routes, Hooks
-    - 10.8 React Router v7: Data Mode (`createBrowserRouter`, loaders, actions)
-    - 10.9 v6 → v7 Key Differences
-    - 10.10 Alternate Routing Libraries (TanStack Router, Wouter, Next.js)
+    - [10.1 The Why](#101--the-why)
+    - [10.2 Basic Setup](#102--basic-setup)
+    - [10.3 Navigation](#103--navigation)
+    - [10.4 Dynamic Routes](#104--dynamic-routes)
+    - [10.5 Nested Routes (Layouts)](#105--nested-routes-layouts)
+    - [10.6 Protected Routes](#106--protected-routes)
+    - [10.7 Useful Router Hooks](#107--useful-router-hooks)
+    - [10.8 React Router v7: Data Mode (`createBrowserRouter`, loaders, actions)](#108--react-router-v7-data-mode-createbrowserrouter)
+    - [10.9 v6 → v7 Key Differences](#109--v6--v7-key-differences)
+    - [10.10 Alternate Routing Libraries (TanStack Router, Wouter, Next.js)](#1010--alternate-routing-libraries)
     - [Module 10 — Interview Q&A](#module-10--interview-qa)
 
 - [Module 11: State Management](#module-11-state-management)
-    - 11.1 When Do You Need a State Management Library?
-    - 11.2 Redux Toolkit (RTK)
-    - 11.3 Zustand: Minimal Global State
+    - [11.1 When Do You Need a State Management Library?](#111--when-do-you-need-a-state-management-library)
+    - [11.2 Redux Toolkit (RTK)](#112--redux-toolkit-rtk)
+    - [11.3 Zustand: Minimal Global State](#113--zustand-minimal-global-state)
     - [Module 11 — Interview Q&A](#module-11--interview-qa)
 
 ### Advanced Topics
 
 - [Module 12: Error Boundaries & Portals](#module-12-error-boundaries--portals)
-    - 12.1 Error Boundaries
-    - 12.2 Portals
+    - [12.1 Error Boundaries](#121--error-boundaries)
+    - [12.2 Portals](#122--portals)
     - [Module 12 — Interview Q&A](#module-12--interview-qa)
 
 - [Module 13: Styling in React](#module-13-styling-in-react)
-    - 13.1 The Styling Landscape
-    - 13.2 CSS Modules
-    - 13.3 Tailwind CSS
-    - 13.4 Styled-components (CSS-in-JS)
-    - 13.5 Theming
-    - 13.6 `clsx` and `cn()`: Conditional Class Names
+    - [13.1 The Styling Landscape](#131--the-styling-landscape)
+    - [13.2 CSS Modules](#132--css-modules)
+    - [13.3 Tailwind CSS](#133--tailwind-css)
+    - [13.4 Styled-components (CSS-in-JS)](#134--styled-components-css-in-js)
+    - [13.5 Theming](#135--theming)
+    - [13.6 `clsx` and `cn()`: Conditional Class Names](#136--clsx-and-cn-conditional-class-names)
     - [Module 13 — Interview Q&A](#module-13--interview-qa)
 
 - [Module 14: Testing](#module-14-testing)
-    - 14.1 The Why: What to Test and Why
-    - 14.2 Jest Basics
-    - 14.3 React Testing Library
-    - 14.4 Testing Async Components
-    - 14.5 RTL Query Cheat Sheet
-    - 14.6 Vitest: The Vite-Native Test Runner
+    - [14.1 The Why: What to Test and Why](#141--the-why-what-to-test-and-why)
+    - [14.2 Jest Basics](#142--jest-basics)
+    - [14.3 React Testing Library](#143--react-testing-library)
+    - [14.4 Testing Async Components](#144--testing-async-components)
+    - [14.5 RTL Query Cheat Sheet](#145--rtl-query-cheat-sheet)
+    - [14.6 Vitest: The Vite-Native Test Runner](#146--vitest-the-vite-native-test-runner)
+    - [14.7 MSW: Mock Service Worker](#147--msw-mock-service-worker-realistic-api-mocking)
     - [Module 14 — Interview Q&A](#module-14--interview-qa)
 
 - [Module 15: Project Architecture & Build Tools](#module-15-project-architecture--build-tools)
-    - 15.1 Feature-Based Folder Structure
-    - 15.2 Vite Configuration
-    - 15.3 Environment Variables: Full Multi-Environment Setup (dev/test/e2e/staging/prod)
-    - 15.4 Nginx Configuration for Serving a React App
-    - 15.5 Browser Compatibility (`.browserslistrc`, Babel, `@vitejs/plugin-legacy`, autoprefixer, feature detection)
+    - [15.1 Feature-Based Folder Structure](#151--folder-structure-best-practices)
+    - [15.2 Vite Configuration](#152--vite-the-modern-build-tool)
+    - [15.3 Environment Variables: Full Multi-Environment Setup](#153--environment-variables-full-multi-environment-setup)
+    - [15.4 Nginx Configuration for Serving a React App](#154--nginx-configuration-for-serving-a-react-app)
+    - [15.5 Browser Compatibility](#155--browser-compatibility)
     - [Module 15 — Interview Q&A](#module-15--interview-qa)
 
 - [Module 16: SSR, SSG, Hydration & Auth Security](#module-16-ssr-ssg-hydration--auth-security)
-    - 16.1 Rendering Strategies (CSR / SSR / SSG)
-    - 16.2 Hydration
-    - 16.3 Auth & JWT Security
+    - [16.1 Rendering Strategies (CSR / SSR / SSG)](#161--csr-vs-ssr-vs-ssg)
+    - [16.2 Hydration](#162--hydration)
+    - [16.3 Auth & JWT Security](#163--authentication--jwt-security)
+    - [16.4 XSS Prevention in React](#164--xss-prevention-in-react)
     - [Module 16 — Interview Q&A](#module-16--interview-qa)
 
 ### Production & Real-World
 
 - [Module 17: Real-World Concepts](#module-17-real-world-concepts)
-    - 17.1 Pagination
-    - 17.2 Infinite Scroll
-    - 17.3 Debounce & Throttle
-    - 17.4 TanStack Query
-    - 17.5 Optimistic UI
+    - [17.1 Pagination](#171--pagination)
+    - [17.2 Infinite Scroll](#172--infinite-scrolling)
+    - [17.3 Debounce & Throttle](#173--debouncing-vs-throttling)
+    - [17.4 TanStack Query](#174--tanstack-query-react-query)
+    - [17.5 Optimistic UI](#175--optimistic-ui-updates)
     - [Module 17 — Interview Q&A](#module-17--interview-qa)
 
 - [Module 18: Production, Scaling & Glossary](#module-18-production-scaling--glossary)
-    - 18.1 Production Error Handling Strategy
-    - 18.2 Performance Tracking & Core Web Vitals
-    - 18.3 Interview-Focused: Key Comparisons
-    - 18.4 Glossary
+    - [18.1 Production Error Handling Strategy](#181--production-error-handling-strategy)
+    - [18.2 Performance Tracking & Core Web Vitals](#182--performance-tracking)
+    - [18.3 Interview-Focused: Key Comparisons](#183--interview-focused-key-comparisons)
+    - [18.4 TypeScript with React: Generic Components and Types](#184--typescript-with-react-generic-components-and-types)
+    - [18.5 `flushSync`: Force Synchronous Rendering](#185--flushsync-force-synchronous-rendering)
+    - [18.6 Lighthouse & Core Web Vitals](#186--lighthouse--core-web-vitals-measuring-real-performance)
     - [Module 18 — Interview Q&A](#module-18--interview-qa)
 
 ### Ecosystem Libraries
 
 - [Module 19: Essential React Ecosystem Libraries](#module-19-essential-react-ecosystem-libraries)
-    - MUI · shadcn/ui · Radix UI · Axios · SWR · TanStack Query · Zod · Jotai · Framer Motion · Recharts · TanStack Table · Socket.io · dnd-kit · Day.js
+    - [19.1 MUI (Material UI)](#191--mui-material-ui-the-most-popular-react-ui-framework)
+    - [19.2 shadcn/ui + Radix UI](#192--shadcnui--radix-ui-the-modern-component-approach)
+    - [19.3 Axios](#193--axios-the-http-client)
+    - [19.4 SWR: Stale-While-Revalidate](#194--swr-stale-while-revalidate-data-fetching)
+    - [19.5 Zod: Runtime Schema Validation](#195--zod-runtime-schema-validation)
+    - [19.6 Jotai: Atomic State Management](#196--jotai-atomic-state-management)
+    - [19.7 Framer Motion: Animations](#197--framer-motion-production-grade-animations)
+    - [19.8 Recharts: Composable Charts](#198--recharts-composable-charts)
+    - [19.9 TanStack Table](#199--tanstack-table-react-table-headless-data-tables)
+    - [19.10 Socket.io: Real-Time Communication](#1910--socketio-real-time-communication)
+    - [19.11 dnd-kit: Drag and Drop](#1911--dnd-kit-drag-and-drop)
+    - [19.12 Day.js: Lightweight Date Handling](#1912--dayjs-lightweight-date-handling)
     - [Module 19 — Interview Q&A](#module-19--interview-qa)
 
 ### Building From Scratch
 
 - [Module 20: Building From Scratch — Custom Router & UI Patterns](#module-20-building-from-scratch--custom-router--ui-patterns)
-    - 20.1 Manual Routing (pushState + popstate + Context)
-    - 20.2 Config-Driven Table, useSort, SortableTable
-    - 20.3 Click-Outside Detection, Modal Portal
-    - 20.4 Custom Hooks from Scratch
+    - [20.1 Manual Routing (pushState + popstate + Context)](#201--manual-routing-no-react-router)
+    - [20.2 Config-Driven Table, useSort, SortableTable](#202--config-driven-table--sortabletable-pattern)
+    - [20.3 Button with `classnames` + `tailwind-merge`](#203--button-with-classnames--tailwind-merge)
+    - [20.4 Dropdown with Click-Outside Detection (`useRef`)](#204--dropdown-with-click-outside-detection-useref)
+    - [20.5 Modal with `ReactDOM.createPortal`](#205--modal-with-reactdomcreateportal)
+    - [20.6 `useCounter` Custom Hook](#206--usecounter-custom-hook)
+    - [20.7 Accordion with Functional `setState`](#207--accordion-with-functional-setstate)
     - [Module 20 — Interview Q&A](#module-20--interview-qa)
 
 ### MNC Interview Preparation
 
 - [Module 21: MNC React Interview Questions](#module-21-mnc-react-interview-questions)
-    - 21.1 Conceptual / Theory Questions (Fiber, Reconciliation, StrictMode, Context, Controlled vs Uncontrolled, setState in useEffect, Rules of Hooks, Render vs Commit Phase, useState vs useReducer, React.lazy+Suspense, Custom Hooks, forwardRef, Virtual DOM vs Real DOM)
-    - 21.2 Coding / Machine Coding (Search+Debounce, Infinite Scroll, useFetch+Cache, Star Rating, useLocalStorage, ErrorBoundary, Stale Closure, Throttled Resize, Tabs)
-    - 21.3 System Design / Architecture (Performance Optimization, Auth Flow)
-    - 21.4 Quick-Fire Q&A _(Google · Meta · Amazon · Microsoft · Flipkart · Swiggy · Razorpay · Uber · Adobe · Atlassian)_
-    - 21.5 React 18 & 19 Concurrent Features (useTransition, useDeferredValue, Automatic Batching, use(), useOptimistic, React Compiler)
-    - 21.6 Additional Machine Coding (Typeahead/Autocomplete, Shopping Cart with useReducer, Global Toast System)
+    - [21.1 Conceptual / Theory Questions](#211--conceptual--theory-questions)
+        - Q1: key vs ref · Q2: React Fiber · Q3: setState in useEffect · Q4: useLayoutEffect · Q5: StrictMode · Q6: Context pitfalls · Q7: Controlled vs Uncontrolled · Q8: Reconciliation O(n) · Q9-T: Rules of Hooks · Q10-T: Render vs Commit Phase · Q11-T: useState vs useReducer · Q12-T: React.lazy + Suspense · Q13-T: Custom Hooks · Q14-T: forwardRef · Q15-T: Virtual DOM vs Real DOM
+    - [21.2 Coding / Machine Coding Questions](#212--coding--machine-coding-questions)
+        - Q9: Debounced Search · Q10: Infinite Scroll · Q11: useFetch+Cache · Q12: Star Rating · Q13: useLocalStorage · Q14: ErrorBoundary · Q15: Stale Closure · Q16: Throttled Resize · Q17: Tabs Compound Components
+    - [21.3 System Design / Architecture Questions (Senior Roles)](#213--system-design--architecture-questions-senior-roles)
+        - Q18: useMemo vs useCallback · Q19: RSC vs SSR · Q20: Performance checklist · Q21: Auth in SPA
+    - [21.4 Quick-Fire Q&A _(Google · Meta · Amazon · Microsoft · Flipkart · Swiggy · Razorpay · Uber · Adobe · Atlassian)_](#214--quick-fire-questions-common-across-all-mncs)
+    - [21.5 React 18 & 19: Concurrent Features & New APIs](#215--react-18--19-concurrent-features--new-apis)
+        - Q22: useTransition · Q23: useDeferredValue · Q24: Automatic Batching · Q25: React 19 APIs · Q26: startTransition vs setTimeout
+    - [21.6 Additional Machine Coding Questions](#216--additional-machine-coding-questions)
+        - Q27: Typeahead/Autocomplete · Q28: Shopping Cart with useReducer · Q29: Global Toast System
 
 ### Tooling & Frameworks
 
 - [Module 22: Tooling & Code Quality](#module-22-tooling--code-quality)
-    - 22.1 ESLint: Static Analysis for React (flat config, react-hooks plugin)
-    - 22.2 Prettier: Automatic Code Formatting
-    - 22.3 Husky + lint-staged: Git Hooks (pre-commit enforcement)
-    - 22.4 Conventional Commits + commitlint
-    - 22.5 TypeScript `tsconfig.json` for React (strict mode)
-    - 22.6 `.editorconfig`: Consistent Editor Settings
-    - 22.7 VSCode Workspace Settings & Extensions
-    - 22.8 CI Quality Gate (GitHub Actions: typecheck + lint + format + test + build)
+    - [22.1 ESLint: Static Analysis for React](#221--eslint-static-analysis-for-react)
+    - [22.2 Prettier: Automatic Code Formatting](#222--prettier-automatic-code-formatting)
+    - [22.3 Husky + lint-staged: Git Hooks (pre-commit enforcement)](#223--husky--lint-staged-git-hooks)
+    - [22.4 Conventional Commits + commitlint](#224--conventional-commits)
+    - [22.5 TypeScript `tsconfig.json` for React (strict mode)](#225--typescript-tsconfigjson-for-react)
+    - [22.6 `.editorconfig`: Consistent Editor Settings](#226--editorconfig-consistent-editor-settings)
+    - [22.7 VSCode Workspace Settings & Extensions](#227--vscode-workspace-settings)
+    - [22.8 CI Quality Gate (GitHub Actions)](#228--ci-quality-gate)
     - [Module 22 — Interview Q&A](#module-22--interview-qa)
 
 - [Module 23: Next.js & Full-Stack React](#module-23-nextjs--full-stack-react)
-    - 23.1 Next.js vs Plain React (Vite)
-    - 23.2 Project Structure (App Router)
-    - 23.3 File-Based Routing: Special Files (`page`, `layout`, `loading`, `error`, `route`)
-    - 23.4 Layouts & Nested Routing
-    - 23.5 Server vs Client Components (`"use client"`)
-    - 23.6 Data Fetching Patterns (parallel fetch, `loading.tsx`, `error.tsx`)
-    - 23.7 Server Actions: Forms Without APIs
-    - 23.8 API Routes (`route.ts`)
-    - 23.9 Rendering Strategies per Route (Static, SSR, ISR, on-demand revalidation)
-    - 23.10 Middleware (Edge, auth guard, locale)
-    - 23.11 `next/image` and `next/font`
-    - 23.12 SEO with Metadata API
-    - 23.13 Authentication (Auth.js / NextAuth)
-    - 23.14 `next.config.ts`
-    - 23.15 Deployment (Vercel + Docker standalone)
+    - [23.1 Next.js vs Plain React (Vite)](#231--nextjs-vs-plain-react-vite)
+    - [23.2 Project Structure (App Router)](#232--project-structure-app-router)
+    - [23.3 File-Based Routing: Special Files (`page`, `layout`, `loading`, `error`, `route`)](#233--file-based-routing-special-files)
+    - [23.4 Layouts & Nested Routing](#234--layouts--nested-routing)
+    - [23.5 Server vs Client Components (`"use client"`)](#235--server-vs-client-components-in-nextjs)
+    - [23.6 Data Fetching Patterns (parallel fetch, `loading.tsx`, `error.tsx`)](#236--data-fetching-patterns)
+    - [23.7 Server Actions: Forms Without APIs](#237--server-actions-forms-without-apis)
+    - [23.8 API Routes (`route.ts`)](#238--api-routes-routets)
+    - [23.9 Rendering Strategies per Route (Static, SSR, ISR, on-demand revalidation)](#239--rendering-strategies-per-route)
+    - [23.10 Middleware (Edge, auth guard, locale)](#2310--middleware)
+    - [23.11 `next/image` and `next/font`](#2311--nextimage-and-nextfont)
+    - [23.12 SEO with Metadata API](#2312--seo-with-metadata-api)
+    - [23.13 Authentication (Auth.js / NextAuth)](#2313--authentication-in-nextjs-authjs--nextauth)
+    - [23.14 `next.config.ts`](#2314--nextconfigts)
+    - [23.15 Deployment (Vercel + Docker standalone)](#2315--deployment)
     - [Module 23 — Interview Q&A](#module-23--interview-qa)
 
 ---
@@ -947,6 +977,379 @@ root.render(
 | **`type="module"`**    | Like `defer` + ES Module scope + strict mode + single execution            |
 | **`DOMContentLoaded`** | HTML parsed + defer scripts done — use for app init                        |
 | **`load`**             | Everything including images loaded — use for full-page measurements        |
+
+---
+
+## 1.0.3 — How JavaScript Executes in the Browser: Call Stack, Event Loop & Async
+
+> This is the most misunderstood topic in JavaScript — yet it explains _why_ `setTimeout(() => {}, 0)` doesn't run instantly, why `setState` is asynchronous, why `useEffect` fires after paint, and why your fetch callback never blocks the UI.
+
+---
+
+### JavaScript Is Single-Threaded
+
+JavaScript has **one call stack** and **one thread of execution**. It can only do one thing at a time. There is no true parallelism in JS — only the _illusion_ of it via the **Event Loop**.
+
+```
+THE BROWSER RUNTIME (not just the JS engine):
+
+  ┌───────────────────────────────────────┐
+  │           JavaScript Engine           │   ← V8 (Chrome), SpiderMonkey (Firefox)
+  │                                       │
+  │   ┌─────────────┐   ┌─────────────┐   │
+  │   │  Call Stack │   │    Heap     │   │
+  │   │             │   │  (memory    │   │
+  │   │  fn3()      │   │  allocation)│   │
+  │   │  fn2()      │   │             │   │
+  │   │  fn1()      │   │  objects,   │   │
+  │   │  main()     │   │  closures   │   │
+  │   └─────────────┘   └─────────────┘   │
+  └───────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────┐
+  │              Browser Web APIs (NOT in V8)            │
+  │                                                      │
+  │  setTimeout / setInterval  ←  Timer thread           │
+  │  fetch / XHR               ←  Network thread         │
+  │  DOM events                ←  Event listener thread  │
+  │  requestAnimationFrame     ←  Render thread          │
+  └──────────────────────────────────────────────────────┘
+
+  ┌─────────────────────┐   ┌─────────────────────────┐
+  │   Microtask Queue   │   │   Macrotask Queue       │
+  │  (high priority)    │   │   (low priority)        │
+  │                     │   │                         │
+  │  Promise.then()     │   │  setTimeout callback    │
+  │  queueMicrotask()   │   │  setInterval callback   │
+  │  MutationObserver   │   │  DOM event callbacks    │
+  │  async/await        │   │  I/O callbacks          │
+  └─────────────────────┘   └─────────────────────────┘
+
+                      ↑ ↑ ↑
+              ┌─────────────────┐
+              │   Event Loop    │  ← orchestrates everything
+              └─────────────────┘
+```
+
+---
+
+### The Call Stack — JavaScript's Execution Context
+
+The call stack tracks which function is currently executing. It's a **LIFO** (Last In, First Out) stack:
+
+```js
+function multiply(a, b) {
+    return a * b; // ← 3. multiply() is on top of the stack
+}
+
+function square(n) {
+    return multiply(n, n); // ← 2. square() calls multiply()
+}
+
+function main() {
+    const result = square(5); // ← 1. main() calls square()
+    console.log(result); // ← 4. back in main()
+}
+
+main(); // ← 0. starts here
+```
+
+```
+Stack trace (grows upward):
+
+Step 1:    Step 2:    Step 3:    Step 4:    Step 5:
+           square()   multiply()
+main()     main()     square()   main()     (empty)
+           main()
+```
+
+**Stack overflow** = calling a function recursively with no base case — the stack grows until the browser throws `Maximum call stack size exceeded`.
+
+---
+
+### The Event Loop — How Async Works
+
+JavaScript offloads async tasks to **browser Web APIs** (which run on separate threads managed by the browser, not V8). When an async task completes, its callback is placed in a **queue**. The Event Loop's job is simple:
+
+```
+Event Loop Algorithm:
+1. Execute everything currently on the Call Stack
+2. When Call Stack is EMPTY:
+   a. Drain the ENTIRE Microtask Queue (run all microtasks)
+   b. Re-check microtask queue (microtasks can add more microtasks)
+   c. Take ONE task from the Macrotask Queue and push to Call Stack
+3. Browser may repaint here (between macrotasks)
+4. Go back to step 1
+```
+
+```mermaid
+graph TD
+    A["Call Stack<br/>(running)"] --> B{Empty?}
+    B -- No --> A
+    B -- Yes --> C["Drain Microtask Queue<br/>(ALL tasks, including new ones added)"]
+    C --> D["Browser Repaint<br/>(if needed — requestAnimationFrame)"]
+    D --> E["Take ONE task from<br/>Macrotask Queue"]
+    E --> A
+```
+
+---
+
+### Microtasks vs Macrotasks — The Critical Difference
+
+```js
+console.log("1. Start");
+
+// Macrotask — goes to Macrotask Queue
+setTimeout(() => console.log("4. setTimeout"), 0);
+
+// Microtask — goes to Microtask Queue (higher priority)
+Promise.resolve().then(() => console.log("3. Promise.then"));
+
+// Microtask — async/await is Promise under the hood
+async function run() {
+    await Promise.resolve();
+    console.log("3b. after await");
+}
+run();
+
+console.log("2. End");
+
+// Output:
+// 1. Start               ← synchronous, call stack
+// 2. End                 ← synchronous, call stack
+// 3. Promise.then        ← microtask queue (drained BEFORE macrotask)
+// 3b. after await        ← microtask queue
+// 4. setTimeout          ← macrotask queue (runs AFTER microtasks are empty)
+```
+
+**Why microtasks run before macrotasks**: The spec guarantees the microtask queue is **fully drained** after every macrotask, and before the browser is allowed to repaint. This means Promise callbacks always run before the next `setTimeout`.
+
+|                   | Microtask Queue                                                                     | Macrotask Queue                                                                  |
+| ----------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Priority**      | Higher                                                                              | Lower                                                                            |
+| **Drained**       | Fully, all at once                                                                  | One per event loop tick                                                          |
+| **Sources**       | `Promise.then/catch/finally`, `async/await`, `queueMicrotask()`, `MutationObserver` | `setTimeout`, `setInterval`, `setImmediate` (Node), DOM events, `fetch` callback |
+| **Blocks paint?** | ✅ Yes (if infinite)                                                                | ❌ No (browser paints between tasks)                                             |
+
+---
+
+### Why `setTimeout(() => {}, 0)` Is Not Truly "Immediate"
+
+```js
+setTimeout(() => console.log("C"), 0); // 0ms delay
+Promise.resolve().then(() => console.log("B"));
+console.log("A");
+
+// Output: A → B → C
+// Even though setTimeout has 0ms delay, it's a macrotask.
+// The Promise microtask runs FIRST — before any macrotask.
+```
+
+Furthermore, browsers enforce a **minimum delay of ~4ms** for nested `setTimeout` calls (after the 5th level of nesting). A `0ms` timeout may actually wait 4ms+.
+
+---
+
+### A Full Async Example — Step by Step
+
+```js
+console.log("script start");
+
+setTimeout(function macrotask1() {
+    console.log("setTimeout");
+}, 0);
+
+Promise.resolve()
+    .then(function micro1() {
+        console.log("promise 1");
+    })
+    .then(function micro2() {
+        console.log("promise 2"); // added by micro1 completing
+    });
+
+console.log("script end");
+
+// ─── Execution trace: ───────────────────────────────────
+// Call Stack runs synchronously:
+//   "script start"
+//   "script end"
+//
+// Call Stack empty → drain Microtask Queue:
+//   micro1 → "promise 1" → adds micro2 to microtask queue
+//   micro2 → "promise 2"
+//   microtask queue is now empty
+//
+// Browser may repaint here
+//
+// Take 1 macrotask: macrotask1 → "setTimeout"
+//
+// Final output:
+// script start → script end → promise 1 → promise 2 → setTimeout
+```
+
+---
+
+### `requestAnimationFrame` — The Render Queue
+
+`requestAnimationFrame` (rAF) is a special queue that fires **just before the browser paints**:
+
+```
+Macrotask → Microtasks → requestAnimationFrame → Browser Paint → next Macrotask
+```
+
+```js
+// rAF is ideal for animations — it fires at 60fps synchronized with the display refresh
+requestAnimationFrame(() => {
+    // Safe to read/write DOM layout here — runs just before paint
+    element.style.transform = `translateX(${x}px)`;
+});
+```
+
+> **React's connection**: `useLayoutEffect` fires synchronously after DOM mutations, before the browser paints — in the same place as rAF. `useEffect` fires after paint — in the next macrotask cycle.
+
+---
+
+### How Fetch Works With the Event Loop
+
+```js
+console.log("1. start");
+
+fetch("https://api.example.com/data")
+    .then((res) => res.json()) // runs as microtask when network responds
+    .then((data) => {
+        console.log("3. data:", data); // runs as microtask (chained)
+    });
+
+console.log("2. sync continues"); // runs immediately — fetch doesn't block
+
+// Output (assuming instant network):
+// 1. start
+// 2. sync continues
+// 3. data: { ... }    ← after network responds AND call stack is empty
+```
+
+`fetch()` itself is a Web API. The network request runs on a separate browser thread. When the response arrives, the `.then()` callback is placed in the **microtask queue** (not macrotask), so it runs before the next timer or DOM event.
+
+---
+
+### Browser JS Engine vs Node.js — Key Differences
+
+Both Chrome's V8 and Node.js use **V8 as the JS engine**. The difference is in the **runtime environment** around V8:
+
+```
+BROWSER RUNTIME                          NODE.JS RUNTIME
+─────────────────────────────────        ─────────────────────────────────
+V8 JS Engine                             V8 JS Engine
+
+Web APIs (browser-provided):             Node.js APIs (libuv-provided):
+  window, document, DOM                    fs (file system)
+  setTimeout, setInterval                  http, https
+  fetch                                    path, os, crypto
+  localStorage, sessionStorage             process, Buffer
+  navigator, location                      child_process
+  XMLHttpRequest                           stream
+  requestAnimationFrame                    worker_threads
+  WebSockets                               dgram (UDP)
+  canvas, WebGL                            cluster
+
+Event Loop: provided by browser          Event Loop: provided by libuv (C library)
+
+Global object: window                    Global object: global / globalThis
+
+Module system: ES Modules (native)       Module system: CommonJS (require) + ESM
+
+I/O: DOM events, user input,             I/O: File system, network sockets,
+     network (via fetch/XHR)                  child processes, timers
+```
+
+**The libuv event loop (Node.js) has more phases than the browser**:
+
+```
+Node.js Event Loop Phases (per tick):
+  ┌─────────────────────────┐
+  │ 1. timers               │  ← setTimeout, setInterval callbacks
+  │ 2. pending callbacks    │  ← I/O errors from previous tick
+  │ 3. idle, prepare        │  ← internal use
+  │ 4. poll                 │  ← retrieve new I/O events (blocks here if idle)
+  │ 5. check                │  ← setImmediate callbacks  ← Node-only!
+  │ 6. close callbacks      │  ← socket.on('close', ...)
+  └─────────────────────────┘
+  Microtasks (Promise.then, queueMicrotask) run between EACH phase
+```
+
+**`setImmediate` — Node.js only**:
+
+```js
+// In Node.js:
+setTimeout(() => console.log("setTimeout"), 0);
+setImmediate(() => console.log("setImmediate")); // Node.js only — doesn't exist in browsers
+
+// In the poll phase with no I/O: setImmediate runs BEFORE setTimeout
+// In a setTimeout callback: order may vary (implementation-dependent)
+
+// In browser: setImmediate doesn't exist — use setTimeout(fn, 0) or queueMicrotask(fn)
+```
+
+**`process.nextTick` — Node.js only, even higher priority than microtasks**:
+
+```js
+// Node.js priority order (highest → lowest):
+// process.nextTick  > Promise.then > setImmediate > setTimeout
+
+process.nextTick(() => console.log("nextTick")); // runs before any Promise
+Promise.resolve().then(() => console.log("promise")); // runs after nextTick
+setImmediate(() => console.log("setImmediate")); // runs in 'check' phase
+setTimeout(() => console.log("setTimeout"), 0); // runs in 'timers' phase
+
+// Output in Node.js: nextTick → promise → setImmediate (or setTimeout depending on context)
+```
+
+---
+
+### Side-by-Side Comparison
+
+| Feature                 | Browser                                  | Node.js                                            |
+| ----------------------- | ---------------------------------------- | -------------------------------------------------- |
+| **JS Engine**           | V8 (Chrome/Edge), SpiderMonkey (Firefox) | V8                                                 |
+| **Global object**       | `window`                                 | `global` / `globalThis`                            |
+| **DOM API**             | ✅ `document`, `window`, `location`      | ❌ Not available                                   |
+| **HTTP requests**       | `fetch`, `XMLHttpRequest`                | `http`, `https`, `fetch` (Node 18+)                |
+| **File system**         | ❌ (sandboxed — no direct FS access)     | ✅ `fs` module                                     |
+| **Timers**              | `setTimeout`, `setInterval`, `rAF`       | `setTimeout`, `setInterval`, `setImmediate`        |
+| **High-priority queue** | `queueMicrotask()`                       | `process.nextTick()` (even higher than microtasks) |
+| **Event loop**          | Managed by browser                       | Managed by libuv (C++)                             |
+| **Module system**       | ES Modules natively                      | CommonJS (`require`) + ES Modules                  |
+| **Threads**             | Web Workers                              | Worker Threads, Cluster                            |
+| **Process control**     | ❌                                       | `process.env`, `process.exit()`, `process.argv`    |
+
+---
+
+### How This Connects to React
+
+| React Behaviour                                            | Event Loop Explanation                                                                     |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `setState` is async — UI doesn't update immediately        | React batches state updates and schedules re-renders as microtasks (React 18)              |
+| `useEffect` runs after paint                               | React schedules effects via a post-paint macrotask (or `MessageChannel`)                   |
+| `useLayoutEffect` runs before paint                        | React flushes layout effects synchronously in the commit phase, before the browser paint   |
+| `startTransition` doesn't block typing                     | Transition updates are low-priority macrotasks; urgent updates (keystrokes) are microtasks |
+| `setTimeout(() => {}, 0)` ≠ "next render"                  | setTimeout is a macrotask; React's batching uses microtasks — resolve order differs        |
+| `Promise.resolve().then(...)` runs before any `setTimeout` | Microtask queue drains completely before any macrotask — always                            |
+
+---
+
+### 1.0.3 Summary
+
+| Concept                | Key Takeaway                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **Call Stack**         | Single LIFO stack — JS executes one thing at a time                             |
+| **Heap**               | Unstructured memory — where objects and closures live                           |
+| **Web APIs**           | Browser-managed threads for timers, network, DOM events — not V8                |
+| **Microtask Queue**    | `Promise.then`, `async/await` — drained fully before next macrotask             |
+| **Macrotask Queue**    | `setTimeout`, `setInterval`, DOM events — one per event loop tick               |
+| **Event Loop**         | Checks if stack is empty → drains microtasks → takes 1 macrotask → repeats      |
+| **rAF**                | Runs just before paint — ideal for animations                                   |
+| **Browser vs Node**    | Same V8 engine, different runtime APIs (DOM vs fs, libuv vs browser event loop) |
+| **`setImmediate`**     | Node.js only — runs in the 'check' phase, after I/O                             |
+| **`process.nextTick`** | Node.js only — runs before even Promise microtasks                              |
 
 ---
 
