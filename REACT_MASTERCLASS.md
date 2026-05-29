@@ -5455,110 +5455,268 @@ function Component() {
 
 ## 5.1 — Compound Components
 
-### The Why
+### The Problem It Solves
 
-Compound components give consumers **flexibility** over the internal structure of a UI while maintaining encapsulated logic. Think of `<select>` and `<option>` in HTML — they're useless apart but powerful together.
-
-The key idea: a **parent component owns the shared state** and passes it down through **Context** to its sub-components. Neither the parent nor consumer needs to explicitly wire props between siblings.
-
-```mermaid
-graph TD
-    ACC["<Accordion> Root Component<br/>Owns: isOpen state<br/>Provides: Context"]
-    ACC --> CTX["AccordionContext.Provider<br/>{ isOpen, toggleOpen }"]
-    CTX --> HDR["<Accordion.Header><br/>consumes: toggleOpen"]
-    CTX --> PNL["<Accordion.Panel><br/>consumes: isOpen"]
-    HDR -->|"User clicks header"| TOGGLE["toggleOpen() → setIsOpen flip"]
-    TOGGLE --> ACC
-    PNL -->|"isOpen: true"| SHOW["Renders panel content"]
-    PNL -->|"isOpen: false"| HIDE["Returns null (hidden)"]
-
-    style ACC fill:#61dafb,color:#000
-    style CTX fill:#6f42c1,color:#fff
-    style TOGGLE fill:#28a745,color:#fff
-```
-
-> **Why Context not prop drilling?** With Context, `<Accordion.Header>` and `<Accordion.Panel>` can be nested anywhere in the consumer's JSX tree — they don't need to be direct children of `<Accordion>`. The consumer has full layout control.
+Imagine you need to build an **Accordion** component (a box with a clickable header that shows/hides content). The simple approach is a single component with lots of props:
 
 ```jsx
-// ============================================================
-// ❌ BAD CODE: Rigid component with too many props for configuration
-// ============================================================
+// ❌ APPROACH 1 — "Props explosion"
+// Every new UI requirement adds another prop. The API becomes unmanageable.
 <Accordion
-    title="FAQ"
-    content="..."
+    title="What is React?"
+    content="React is a library..."
     isOpen={true}
     headerStyle={{ color: "red" }}
+    headerIcon={<MyIcon />}
     iconPosition="left"
     onToggle={handleToggle}
-    // ... 15 more props for every UI variation
+    animatePanel={true}
+    headerClassName="my-header"
+    // ...user keeps asking for more and more props
 />
 ```
 
-```jsx
-// ============================================================
-// ✅ BEST PRACTICE: Compound Component Pattern with Context
-// ============================================================
+**Problems with this approach:**
+1. Every new layout requirement needs a new prop
+2. The component becomes hard to maintain
+3. The consumer (you using it) has zero control over the structure — you can't add a badge next to the title, or put a button inside the header, without the component author adding yet another prop
 
-// 1. Create a context to share state between compound parts
+---
+
+### The Solution — Compound Components
+
+The idea comes directly from **HTML itself**. Look at `<select>` and `<option>`:
+
+```html
+<!-- HTML already uses this pattern! -->
+<select>
+  <option value="1">Apple</option>
+  <option value="2">Banana</option>
+</select>
+```
+
+`<select>` owns the logic (which option is selected). `<option>` is just a piece that plugs into it. They share state **implicitly** — you don't pass `selected={...}` to each `<option>` manually. HTML does it internally.
+
+**Compound Components bring this same pattern to React.**
+
+Break one big component into small pieces. The parent piece owns the state and shares it secretly (via Context) with all child pieces. The consumer assembles the pieces however they want.
+
+```jsx
+// ✅ APPROACH 2 — Compound Component
+// The consumer controls the structure completely.
+// No extra props needed for layout changes.
+<Accordion>
+    <Accordion.Header>
+        <MyIcon /> What is React?   {/* add anything here — no prop needed */}
+    </Accordion.Header>
+    <Accordion.Panel>
+        <RichTextContent />          {/* put any content here */}
+    </Accordion.Panel>
+</Accordion>
+```
+
+---
+
+### How the State Sharing Works (The Secret)
+
+The parent (`<Accordion>`) creates a **Context** and puts its state (`isOpen`, `toggleOpen`) into it. Every sub-component (`Accordion.Header`, `Accordion.Panel`) reads from that Context. The consumer never has to wire anything — it just places the pieces in JSX.
+
+```
+<Accordion>            ← owns state: isOpen = true/false
+    │                     shares via Context invisibly
+    ├── <Accordion.Header>   ← reads toggleOpen from Context → calls it on click
+    └── <Accordion.Panel>    ← reads isOpen from Context → shows/hides content
+```
+
+---
+
+### Step-by-Step Implementation
+
+```jsx
+import React, { useState, useContext, useCallback, useMemo } from "react";
+
+// ─── STEP 1: Create a Context to hold shared state ──────────────────────────
+// This is the "invisible wire" between parent and children.
 const AccordionContext = React.createContext(null);
 
-// 2. Build the root container that owns the state
+// ─── STEP 2: Parent component — owns state, provides Context ─────────────────
 function Accordion({ children, defaultOpen = false }) {
     const [isOpen, setIsOpen] = useState(defaultOpen);
-    const toggleOpen = useCallback(() => setIsOpen((o) => !o), []);
 
-    const contextValue = useMemo(
-        () => ({ isOpen, toggleOpen }),
-        [isOpen, toggleOpen],
-    );
+    // toggleOpen flips isOpen between true and false
+    const toggleOpen = useCallback(() => setIsOpen((prev) => !prev), []);
+
+    // Put both values into Context so children can read them
+    const value = useMemo(() => ({ isOpen, toggleOpen }), [isOpen, toggleOpen]);
 
     return (
-        <AccordionContext.Provider value={contextValue}>
+        <AccordionContext.Provider value={value}>
             <div className="accordion">{children}</div>
         </AccordionContext.Provider>
     );
 }
 
-// 3. Build named sub-components that consume the context
+// ─── STEP 3: Header sub-component — reads toggleOpen from Context ────────────
 function AccordionHeader({ children }) {
     const { isOpen, toggleOpen } = useContext(AccordionContext);
+    //                              ↑ reads from parent's Context — no props needed!
+
     return (
-        <button
-            className="accordion-header"
-            onClick={toggleOpen}
-            aria-expanded={isOpen}
-        >
+        <button onClick={toggleOpen} aria-expanded={isOpen}>
             {children}
             <span>{isOpen ? "▲" : "▼"}</span>
         </button>
     );
 }
 
+// ─── STEP 4: Panel sub-component — reads isOpen from Context ─────────────────
 function AccordionPanel({ children }) {
     const { isOpen } = useContext(AccordionContext);
+    //       ↑ reads from parent's Context — no props needed!
+
     return isOpen ? <div className="accordion-panel">{children}</div> : null;
 }
 
-// 4. Attach sub-components as static properties (clean API)
+// ─── STEP 5: Attach sub-components as properties on the parent ───────────────
+// This is what makes the <Accordion.Header> dot-notation API work.
 Accordion.Header = AccordionHeader;
-Accordion.Panel = AccordionPanel;
+Accordion.Panel  = AccordionPanel;
+```
 
-// ============================================================
-// Usage: Consumer has full control over structure
-// ============================================================
+---
+
+### Using It — Full Flexibility
+
+```jsx
+// Basic usage
 function FAQ() {
     return (
         <Accordion defaultOpen={true}>
+            <Accordion.Header>What is React?</Accordion.Header>
+            <Accordion.Panel>React is a JavaScript library for building UIs.</Accordion.Panel>
+        </Accordion>
+    );
+}
+
+// Add a badge next to the title? Just put it in JSX — no new prop needed!
+function FAQWithBadge() {
+    return (
+        <Accordion>
             <Accordion.Header>
-                <MyCustomIcon /> What is React?
+                <span className="badge">NEW</span>
+                What is React?
             </Accordion.Header>
             <Accordion.Panel>
-                <RichTextContent />
+                <p>React is a JavaScript library for building UIs.</p>
+                <a href="/docs">Read more →</a>   {/* any content works */}
             </Accordion.Panel>
         </Accordion>
     );
 }
+
+// Multiple independent accordions — each has its own state
+function FAQList() {
+    return (
+        <>
+            <Accordion>
+                <Accordion.Header>Question 1</Accordion.Header>
+                <Accordion.Panel>Answer 1</Accordion.Panel>
+            </Accordion>
+
+            <Accordion>
+                <Accordion.Header>Question 2</Accordion.Header>
+                <Accordion.Panel>Answer 2</Accordion.Panel>
+            </Accordion>
+        </>
+    );
+}
 ```
+
+---
+
+### Real-World Example — Tabs
+
+The same pattern used for a Tab component (most common real-world use):
+
+```jsx
+// ─── Context ─────────────────────────────────────────────────────────────────
+const TabsContext = React.createContext(null);
+
+// ─── Root ─────────────────────────────────────────────────────────────────────
+function Tabs({ children, defaultTab = 0 }) {
+    const [activeTab, setActiveTab] = useState(defaultTab);
+    const value = useMemo(() => ({ activeTab, setActiveTab }), [activeTab]);
+    return (
+        <TabsContext.Provider value={value}>
+            <div className="tabs">{children}</div>
+        </TabsContext.Provider>
+    );
+}
+
+// ─── Tab List (the row of clickable tab buttons) ──────────────────────────────
+function TabList({ children }) {
+    return <div role="tablist" className="tab-list">{children}</div>;
+}
+
+// ─── Individual Tab Button ────────────────────────────────────────────────────
+function Tab({ children, index }) {
+    const { activeTab, setActiveTab } = useContext(TabsContext);
+    const isActive = activeTab === index;
+    return (
+        <button
+            role="tab"
+            aria-selected={isActive}
+            className={isActive ? "tab active" : "tab"}
+            onClick={() => setActiveTab(index)}
+        >
+            {children}
+        </button>
+    );
+}
+
+// ─── Tab Panel (the content shown when a tab is active) ───────────────────────
+function TabPanel({ children, index }) {
+    const { activeTab } = useContext(TabsContext);
+    if (activeTab !== index) return null;
+    return <div role="tabpanel">{children}</div>;
+}
+
+// ─── Attach ───────────────────────────────────────────────────────────────────
+Tabs.List  = TabList;
+Tabs.Tab   = Tab;
+Tabs.Panel = TabPanel;
+
+// ─── Usage ────────────────────────────────────────────────────────────────────
+function App() {
+    return (
+        <Tabs defaultTab={0}>
+            <Tabs.List>
+                <Tabs.Tab index={0}>Profile</Tabs.Tab>
+                <Tabs.Tab index={1}>Settings</Tabs.Tab>
+                <Tabs.Tab index={2}>Billing</Tabs.Tab>
+            </Tabs.List>
+
+            <Tabs.Panel index={0}><ProfileContent /></Tabs.Panel>
+            <Tabs.Panel index={1}><SettingsContent /></Tabs.Panel>
+            <Tabs.Panel index={2}><BillingContent /></Tabs.Panel>
+        </Tabs>
+    );
+}
+```
+
+---
+
+### Summary — When to Use Compound Components
+
+| Situation | Use Compound Components? |
+|---|---|
+| Component needs flexible layout/structure | ✅ Yes |
+| Multiple related pieces share the same state | ✅ Yes |
+| Building a UI library or design system | ✅ Yes |
+| Simple component with 1–2 props | ❌ No — overkill |
+| Logic sharing without UI flexibility needed | ❌ No — use a custom hook |
+
+**Rule of thumb**: If you find yourself adding a new prop every time someone wants a slightly different layout, it's a sign to switch to Compound Components.
 
 ---
 
@@ -6035,9 +6193,9 @@ graph TD
     CHUNK2["analytics.chunk.js<br/>(downloaded only if /analytics)"]
     CHUNK3["editor.chunk.js<br/>(downloaded on button click)"]
 
-    HOME -.->|lazy()| CHUNK1
-    HOME -.->|lazy()| CHUNK2
-    HOME -.->|lazy()| CHUNK3
+    HOME -.->|React.lazy| CHUNK1
+    HOME -.->|React.lazy| CHUNK2
+    HOME -.->|React.lazy| CHUNK3
 
     style BUNDLE fill:#6366f1,color:#fff
     style CHUNK1 fill:#28a745,color:#fff
