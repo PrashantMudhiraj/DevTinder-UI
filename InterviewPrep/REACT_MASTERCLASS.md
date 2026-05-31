@@ -26873,7 +26873,7 @@ CMD ["node", "server.js"]
 
 Use this when starting a new project or when an interviewer asks “why did you choose Next.js or Vite?”
 
-| Criteria | Vite + React | Next.js |
+| Criteria | Vite + React | Next.js |j
 |----------|-------------|----------|
 | Needs SEO (blog, marketing, product pages) | ❌ Hard to achieve | ✅ SSG/SSR built in |
 | Internal dashboard / admin tool (no SEO) | ✅ Perfect fit | ⚠️ Overkill |
